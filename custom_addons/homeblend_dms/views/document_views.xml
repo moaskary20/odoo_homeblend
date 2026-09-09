@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_homeblend_document_list" model="ir.ui.view">
+        <field name="name">homeblend.document.list</field>
+        <field name="model">homeblend.document</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="partner_id"/>
+                <field name="sign_state" widget="badge"/>
+                <field name="signed_date"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_homeblend_document_form" model="ir.ui.view">
+        <field name="name">homeblend.document.form</field>
+        <field name="model">homeblend.document</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_request_sign" type="object" string="طلب توقيع" class="btn-primary" invisible="sign_state != 'draft'"/>
+                    <button name="action_sign" type="object" string="توقيع" class="btn-primary" invisible="sign_state not in ('draft','pending')"/>
+                    <button name="action_refuse" type="object" string="رفض" invisible="sign_state not in ('draft','pending')"/>
+                    <field name="sign_state" widget="statusbar" statusbar_visible="draft,pending,signed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="reference"/>
+                            <field name="name"/>
+                            <field name="document_type"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="datas" filename="datas_fname"/>
+                            <field name="datas_fname" invisible="1"/>
+                            <field name="signature" widget="signature" readonly="sign_state == 'signed'"/>
+                            <field name="signed_by" readonly="1"/>
+                            <field name="signed_date" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="ملاحظات"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_homeblend_document" model="ir.actions.act_window">
+        <field name="name">الوثائق</field>
+        <field name="res_model">homeblend.document</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_homeblend_root" name="Home Blend" sequence="40"
+              web_icon="homeblend_tenant,static/description/icon.svg"/>
+    <menuitem id="menu_homeblend_tenants" name="المستأجرون" parent="menu_homeblend_root"
+              action="action_homeblend_tenants" sequence="10"/>
+    <menuitem id="menu_homeblend_contracts" name="العقود" parent="menu_homeblend_root"
+              action="action_homeblend_tenant_contract" sequence="20"/>
+
+    <menuitem id="menu_homeblend_sales" name="المبيعات" parent="menu_homeblend_root" sequence="30"/>
+    <menuitem id="menu_homeblend_quotations" name="عروض الأسعار" parent="menu_homeblend_sales"
+              action="sale.action_quotations" sequence="10"/>
+    <menuitem id="menu_homeblend_orders" name="أوامر البيع" parent="menu_homeblend_sales"
+              action="sale.action_orders" sequence="20"/>
+    <menuitem id="menu_homeblend_customer_invoices" name="فواتير العملاء" parent="menu_homeblend_sales"
+              action="account.action_move_out_invoice_type" sequence="30"/>
+    <menuitem id="menu_homeblend_credit_notes" name="الإشعارات الدائنة" parent="menu_homeblend_sales"
+              action="account.action_move_out_refund_type" sequence="40"/>
+
+    <record id="action_homeblend_overdue_invoices" model="ir.actions.act_window">
+        <field name="name">المتأخرات</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial']), ('tenant_id', '!=', False)]</field>
+        <field name="context">{'default_move_type': 'out_invoice'}</field>
+    </record>
+    <menuitem id="menu_homeblend_collection" name="التحصيل" parent="menu_homeblend_root" sequence="40"/>
+    <menuitem id="menu_homeblend_payments" name="المدفوعات" parent="menu_homeblend_collection"
+              action="account.action_account_payments" sequence="10"/>
+    <menuitem id="menu_homeblend_overdue" name="المتأخرات" parent="menu_homeblend_collection"
+              action="action_homeblend_overdue_invoices" sequence="20"/>
+    <menuitem id="menu_homeblend_payment_terms" name="شروط الدفع / الأقساط" parent="menu_homeblend_collection"
+              action="account.action_payment_term_form" sequence="30"/>
+
+    <record id="action_homeblend_coupons" model="ir.actions.act_window">
+        <field name="name">الكوبونات</field>
+        <field name="res_model">loyalty.card</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">أكواد جاهزة: HB10 نسبة، HB50 مبلغ، HBCAT فئة، HB1 مرة واحدة، HBGROUP مجموعة</p>
+        </field>
+    </record>
+    <menuitem id="menu_homeblend_loyalty_group" name="الكوبونات والولاء" parent="menu_homeblend_root" sequence="50"/>
+    <menuitem id="menu_homeblend_coupons" name="الكوبونات" parent="menu_homeblend_loyalty_group"
+              action="action_homeblend_coupons" sequence="10"/>
+    <menuitem id="menu_homeblend_loyalty" name="نقاط الولاء" parent="menu_homeblend_loyalty_group"
+              action="loyalty.loyalty_program_discount_loyalty_action" sequence="20"/>
+
+    <menuitem id="menu_homeblend_tracking" name="تتبع الطلبات" parent="menu_homeblend_root" sequence="60"/>
+
+    <menuitem id="menu_homeblend_purchase_group" name="المشتريات" parent="menu_homeblend_root" sequence="70"/>
+    <menuitem id="menu_homeblend_purchase" name="طلب عروض أسعار" parent="menu_homeblend_purchase_group"
+              action="purchase.purchase_rfq" sequence="10"/>
+    <menuitem id="menu_homeblend_purchase_orders" name="أوامر الشراء" parent="menu_homeblend_purchase_group"
+              action="purchase.purchase_form_action" sequence="15"/>
+    <menuitem id="menu_homeblend_vendor_bills" name="فواتير الموردين" parent="menu_homeblend_purchase_group"
+              action="account.action_move_in_invoice_type" sequence="20"/>
+    <menuitem id="menu_homeblend_vendor_payments" name="مدفوعات الموردين" parent="menu_homeblend_purchase_group"
+              action="account.action_account_payments_payable" sequence="25"/>
+    <menuitem id="menu_homeblend_vendors" name="الموردون" parent="menu_homeblend_purchase_group"
+              action="account.res_partner_action_supplier" sequence="30"/>
+</odoo>

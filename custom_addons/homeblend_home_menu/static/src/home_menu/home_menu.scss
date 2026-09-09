@@ -1,0 +1,133 @@
+@function hb-long-shadow($color: rgba(0, 0, 0, 0.18), $steps: 42) {
+    $shadow: null;
+    @for $i from 1 through $steps {
+        $entry: #{$i}px #{$i}px 0 $color;
+        @if $shadow {
+            $shadow: $shadow, $entry;
+        } @else {
+            $shadow: $entry;
+        }
+    }
+    @return $shadow;
+}
+
+.hb_home_menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    background-color: #6b5368;
+    background-image:
+        radial-gradient(ellipse at top, rgba(255, 255, 255, 0.06), transparent 55%),
+        linear-gradient(180deg, #7a6278 0%, #5d465c 100%);
+    padding: 48px 24px 64px;
+}
+
+.hb_home_search {
+    position: absolute;
+    top: 28px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+}
+
+.hb_apps_grid {
+    display: grid;
+    grid-template-columns: repeat(6, 126px);
+    gap: 28px 18px;
+    justify-content: center;
+    max-width: 900px;
+}
+
+.hb_app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 126px;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        color: #fff;
+        text-decoration: none;
+
+        .hb_app_icon {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 18px rgba(0, 0, 0, 0.28);
+        }
+    }
+}
+
+.hb_app_icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    overflow: hidden;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    i {
+        color: #fff;
+        font-size: 30px;
+        line-height: 1;
+        text-shadow: hb-long-shadow();
+    }
+}
+
+.hb_app_name {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.25;
+    text-align: center;
+    max-width: 120px;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 991.98px) {
+    .hb_apps_grid {
+        grid-template-columns: repeat(4, 120px);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .hb_apps_grid {
+        grid-template-columns: repeat(3, 110px);
+        gap: 22px 12px;
+    }
+
+    .hb_app {
+        width: 110px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hb_apps_grid {
+        grid-template-columns: repeat(3, 96px);
+    }
+
+    .hb_app {
+        width: 96px;
+    }
+
+    .hb_app_icon {
+        width: 58px;
+        height: 58px;
+
+        i {
+            font-size: 24px;
+        }
+    }
+}

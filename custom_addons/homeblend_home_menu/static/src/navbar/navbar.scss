@@ -1,0 +1,30 @@
+.o_main_navbar .o_navbar_apps_menu .dropdown-toggle {
+    background: transparent;
+    border: 0;
+}
+
+body:has(.hb_home_menu) {
+    .o_navbar,
+    .o_main_navbar {
+        background: transparent !important;
+        border-bottom: 0 !important;
+        box-shadow: none !important;
+        position: relative;
+        z-index: 1050;
+    }
+
+    .o_main_navbar .o_menu_brand,
+    .o_main_navbar .o_menu_sections,
+    .o_main_navbar .o_navbar_breadcrumbs,
+    .o_main_navbar .o_menu_systray {
+        visibility: hidden;
+    }
+
+    .o_navbar_apps_menu .dropdown-toggle {
+        color: #fff !important;
+    }
+
+    .o_action_manager {
+        visibility: hidden;
+    }
+}

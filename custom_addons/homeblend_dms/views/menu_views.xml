@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_homeblend_dms_root" name="الوثائق" sequence="60"
+              web_icon="homeblend_dms,static/description/icon.svg"/>
+    <menuitem id="menu_homeblend_document" name="الوثائق"
+              parent="menu_homeblend_dms_root"
+              action="action_homeblend_document" sequence="10"/>
+</odoo>

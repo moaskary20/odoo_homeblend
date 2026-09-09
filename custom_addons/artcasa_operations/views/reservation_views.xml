@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_artcasa_reservation_list" model="ir.ui.view">
+        <field name="name">artcasa.stock.reservation.list</field>
+        <field name="model">artcasa.stock.reservation</field>
+        <field name="arch" type="xml">
+            <list decoration-success="is_active" decoration-muted="state in ('released','consumed')">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="partner_id"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="warehouse_id"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="is_active" column_invisible="1"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_artcasa_reservation_form" model="ir.ui.view">
+        <field name="name">artcasa.stock.reservation.form</field>
+        <field name="model">artcasa.stock.reservation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_reserve" type="object" string="تأكيد الحجز" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_release" type="object" string="تحرير" invisible="state != 'reserved'"/>
+                    <button name="action_consume" type="object" string="استهلاك بالبيع" invisible="state != 'reserved'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,reserved,consumed,released"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="user_id"/>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                        </group>
+                        <group>
+                            <field name="warehouse_id"/>
+                            <field name="company_id" groups="base.group_multi_company" readonly="1"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="sale_order_id" readonly="1"/>
+                            <field name="qty_on_hand"/>
+                            <field name="qty_reserved_others"/>
+                            <field name="qty_free"/>
+                            <field name="is_active"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="ملاحظات"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_artcasa_reservation_search" model="ir.ui.view">
+        <field name="name">artcasa.stock.reservation.search</field>
+        <field name="model">artcasa.stock.reservation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="user_id"/>
+                <filter string="محجوز" name="reserved" domain="[('state', '=', 'reserved')]"/>
+                <filter string="ساري الآن" name="active_now" domain="[('is_active', '=', True)]"/>
+                <group>
+                    <filter string="المخزن" name="group_wh" context="{'group_by': 'warehouse_id'}"/>
+                    <filter string="المندوب" name="group_user" context="{'group_by': 'user_id'}"/>
+                    <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_artcasa_reservation" model="ir.actions.act_window">
+        <field name="name">حجز المندوب</field>
+        <field name="res_model">artcasa.stock.reservation</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_reserved': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">احجز كمية لفترة محددة دون صرفها من المخزن</p>
+            <p>لتظهر منتجات وحجوزات Art Casa، فعّل شركة Art Casa من محوّل الشركات أعلى الشاشة.</p>
+        </field>
+    </record>
+</odoo>

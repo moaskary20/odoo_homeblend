@@ -1,0 +1,21 @@
+{
+    "name": "Home Blend Order Tracking",
+    "version": "19.0.1.7.0",
+    "category": "Sales",
+    "summary": "تتبع الطلبات والتنبيهات وKPI المستأجر",
+    "author": "HomeBlend",
+    "license": "LGPL-3",
+    "depends": ["homeblend_tenant", "sale_management", "sale_loyalty", "stock", "mail"],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/fulfillment_security.xml",
+        "data/fulfillment_data.xml",
+        "views/order_track_views.xml",
+        "views/sale_order_views.xml",
+        "views/res_partner_views.xml",
+        "views/complaint_views.xml",
+        "views/menu_views.xml",
+    ],
+    "installable": True,
+    "application": True,
+}

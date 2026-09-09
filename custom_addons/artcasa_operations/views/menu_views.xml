@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_artcasa_root" name="Art Casa" sequence="45"
+              web_icon="artcasa_operations,static/description/icon.svg"/>
+
+    <!-- 1. المبيعات -->
+    <menuitem id="menu_artcasa_sales" name="المبيعات" parent="menu_artcasa_root" sequence="8"/>
+    <menuitem id="menu_artcasa_quotations" name="عروض الأسعار"
+              parent="menu_artcasa_sales" action="sale.action_quotations" sequence="10"/>
+    <menuitem id="menu_artcasa_reservations" name="حجز المندوب"
+              parent="menu_artcasa_sales" action="action_artcasa_reservation" sequence="12"/>
+    <menuitem id="menu_artcasa_sale_orders" name="أوامر البيع"
+              parent="menu_artcasa_sales" action="sale.action_orders" sequence="14"/>
+    <menuitem id="menu_artcasa_deliveries" name="التسليم"
+              parent="menu_artcasa_sales" action="stock.action_picking_tree_outgoing" sequence="16"/>
+    <menuitem id="menu_artcasa_returns" name="مرتجعات العملاء"
+              parent="menu_artcasa_sales" action="action_artcasa_returns" sequence="18"/>
+    <menuitem id="menu_artcasa_credit_notes" name="إشعارات العملاء"
+              parent="menu_artcasa_sales" action="account.action_move_out_refund_type" sequence="20"/>
+    <menuitem id="menu_artcasa_pos" name="فوترة بالماسح"
+              parent="menu_artcasa_sales" action="point_of_sale.action_pos_config_kanban" sequence="22"/>
+    <menuitem id="menu_artcasa_customers" name="العملاء"
+              parent="menu_artcasa_sales" action="account.res_partner_action_customer" sequence="30"/>
+
+    <!-- 2. التحصيل -->
+    <menuitem id="menu_artcasa_collection" name="التحصيل" parent="menu_artcasa_root" sequence="10"/>
+    <menuitem id="menu_artcasa_customer_invoices" name="فواتير العملاء"
+              parent="menu_artcasa_collection" action="account.action_move_out_invoice_type" sequence="10"/>
+    <menuitem id="menu_artcasa_payments" name="سندات القبض والمدفوعات"
+              parent="menu_artcasa_collection" action="account.action_account_payments" sequence="20"/>
+    <menuitem id="menu_artcasa_overdue" name="المتأخرات"
+              parent="menu_artcasa_collection" action="action_artcasa_overdue" sequence="30"/>
+    <menuitem id="menu_artcasa_receivables" name="الذمم المدينة"
+              parent="menu_artcasa_collection" action="action_artcasa_receivables" sequence="35"/>
+    <menuitem id="menu_artcasa_payment_terms" name="شروط الدفع / الأقساط"
+              parent="menu_artcasa_collection" action="account.action_payment_term_form" sequence="40"/>
+
+    <!-- 3. المنتجات والتسعير -->
+    <menuitem id="menu_artcasa_catalog" name="المنتجات والتسعير" parent="menu_artcasa_root" sequence="12"/>
+    <menuitem id="menu_artcasa_products" name="المنتجات"
+              parent="menu_artcasa_catalog" action="stock.product_template_action_product" sequence="10"/>
+    <menuitem id="menu_artcasa_categories" name="الفئات"
+              parent="menu_artcasa_catalog" action="product.product_category_action_form" sequence="20"/>
+    <menuitem id="menu_artcasa_pricelists" name="قوائم الأسعار"
+              parent="menu_artcasa_catalog" action="product.product_pricelist_action2" sequence="30"/>
+    <menuitem id="menu_artcasa_promotions" name="العروض والخصومات"
+              parent="menu_artcasa_catalog"
+              action="loyalty.loyalty_program_discount_loyalty_action" sequence="40"/>
+
+    <!-- 4. المخزون والباركود -->
+    <menuitem id="menu_artcasa_inventory" name="المخزون" parent="menu_artcasa_root" sequence="16"/>
+    <menuitem id="menu_artcasa_picking_types" name="عمليات المخزن"
+              parent="menu_artcasa_inventory" action="stock.stock_picking_type_action" sequence="5"/>
+    <menuitem id="menu_artcasa_barcode" name="الجرد بالباركود"
+              parent="menu_artcasa_inventory" action="action_artcasa_barcode_inventory" sequence="10"/>
+    <menuitem id="menu_artcasa_quants" name="الكميات"
+              parent="menu_artcasa_inventory" action="action_report_product_qty" sequence="20"/>
+    <menuitem id="menu_artcasa_receipts_inv" name="استلام الأصناف"
+              parent="menu_artcasa_inventory" action="stock.action_picking_tree_incoming" sequence="25"/>
+    <menuitem id="menu_artcasa_deliveries_inv" name="صرف الأصناف"
+              parent="menu_artcasa_inventory" action="stock.action_picking_tree_outgoing" sequence="26"/>
+    <menuitem id="menu_artcasa_internal" name="تحويل بين المخازن"
+              parent="menu_artcasa_inventory" action="stock.action_picking_tree_internal" sequence="30"/>
+    <menuitem id="menu_artcasa_moves" name="حركة المخزون"
+              parent="menu_artcasa_inventory" action="stock.stock_move_action" sequence="35"/>
+    <menuitem id="menu_artcasa_lots" name="التشغيلات والأرقام التسلسلية"
+              parent="menu_artcasa_inventory" action="stock.action_production_lot_form" sequence="40"
+              groups="stock.group_production_lot"/>
+    <menuitem id="menu_artcasa_orderpoints" name="حدود المخزون"
+              parent="menu_artcasa_inventory" action="stock.action_orderpoint" sequence="45"/>
+    <menuitem id="menu_artcasa_warehouses" name="المخازن / الفروع"
+              parent="menu_artcasa_inventory" action="stock.action_warehouse_form" sequence="50"
+              groups="stock.group_stock_multi_warehouses"/>
+    <menuitem id="menu_artcasa_locations" name="مواقع التخزين"
+              parent="menu_artcasa_inventory" action="stock.action_location_form" sequence="55"
+              groups="stock.group_stock_multi_locations"/>
+
+    <!-- 5. المشتريات -->
+    <menuitem id="menu_artcasa_suppliers_root" name="المشتريات" parent="menu_artcasa_root" sequence="20"/>
+    <menuitem id="menu_artcasa_requisition" name="طلب شراء / اتفاقية"
+              parent="menu_artcasa_suppliers_root"
+              action="purchase_requisition.action_purchase_requisition" sequence="5"/>
+    <menuitem id="menu_artcasa_purchase" name="طلب عروض أسعار"
+              parent="menu_artcasa_suppliers_root" action="purchase.purchase_rfq" sequence="10"/>
+    <menuitem id="menu_artcasa_purchase_compare" name="مقارنة الموردين"
+              parent="menu_artcasa_suppliers_root" action="action_artcasa_purchase_compare" sequence="12"/>
+    <menuitem id="menu_artcasa_purchase_orders" name="أوامر الشراء"
+              parent="menu_artcasa_suppliers_root" action="purchase.purchase_form_action" sequence="14"/>
+    <menuitem id="menu_artcasa_receipts" name="استلام الأصناف"
+              parent="menu_artcasa_suppliers_root" action="stock.action_picking_tree_incoming" sequence="16"/>
+    <menuitem id="menu_artcasa_vendor_bills" name="فاتورة المورد"
+              parent="menu_artcasa_suppliers_root" action="account.action_move_in_invoice_type" sequence="20"/>
+
+    <!-- 6. الموردون -->
+    <menuitem id="menu_artcasa_vendors_root" name="الموردون" parent="menu_artcasa_root" sequence="24"/>
+    <menuitem id="menu_artcasa_vendors" name="بيانات المورد"
+              parent="menu_artcasa_vendors_root" action="account.res_partner_action_supplier" sequence="10"/>
+    <menuitem id="menu_artcasa_vendor_contracts" name="عقود الموردين"
+              parent="menu_artcasa_vendors_root" action="action_artcasa_vendor_contracts" sequence="15"/>
+    <menuitem id="menu_artcasa_supplier_eval" name="تقييم المورد"
+              parent="menu_artcasa_vendors_root" action="action_artcasa_supplier_eval" sequence="20"/>
+    <menuitem id="menu_artcasa_payables" name="الذمم الدائنة"
+              parent="menu_artcasa_vendors_root" action="action_artcasa_payables" sequence="30"/>
+
+    <!-- 7. المشاريع والعقود -->
+    <menuitem id="menu_artcasa_projects_root" name="المشاريع والعقود" parent="menu_artcasa_root" sequence="28"/>
+    <menuitem id="menu_artcasa_projects" name="المشاريع والعقود"
+              parent="menu_artcasa_projects_root" action="project.open_view_project_all" sequence="10"/>
+    <menuitem id="menu_artcasa_project_extracts" name="المستخلصات"
+              parent="menu_artcasa_projects_root" action="action_report_extracts" sequence="20"/>
+    <menuitem id="menu_artcasa_project_delayed" name="المشاريع المتأخرة"
+              parent="menu_artcasa_projects_root" action="action_report_projects_delayed" sequence="30"/>
+
+    <!-- 8. الحسابات -->
+    <menuitem id="menu_artcasa_accounting" name="الحسابات" parent="menu_artcasa_root" sequence="32"/>
+    <menuitem id="menu_artcasa_coa" name="دليل الحسابات"
+              parent="menu_artcasa_accounting" action="account.action_account_form" sequence="10"/>
+    <menuitem id="menu_artcasa_analytic" name="مراكز التكلفة"
+              parent="menu_artcasa_accounting" action="analytic.action_analytic_account_form" sequence="15"
+              groups="analytic.group_analytic_accounting"/>
+    <menuitem id="menu_artcasa_journal_entries" name="القيود اليومية"
+              parent="menu_artcasa_accounting" action="account.action_move_journal_line" sequence="20"/>
+    <menuitem id="menu_artcasa_income" name="الإيرادات"
+              parent="menu_artcasa_accounting" action="action_artcasa_income" sequence="25"/>
+    <menuitem id="menu_artcasa_expenses" name="المصروفات"
+              parent="menu_artcasa_accounting" action="action_artcasa_expenses" sequence="30"/>
+    <menuitem id="menu_artcasa_journals" name="اليوميات"
+              parent="menu_artcasa_accounting" action="account.action_account_journal_form" sequence="40"/>
+    <menuitem id="menu_artcasa_taxes" name="الضرائب"
+              parent="menu_artcasa_accounting" action="account.action_tax_form" sequence="50"/>
+    <menuitem id="menu_artcasa_trial" name="ميزان المراجعة"
+              parent="menu_artcasa_accounting" action="action_artcasa_trial_balance" sequence="55"/>
+
+    <!-- 9. التقارير -->
+    <menuitem id="menu_artcasa_reports" name="التقارير" parent="menu_artcasa_root" sequence="40"/>
+    <menuitem id="menu_artcasa_report_products" name="تقارير المنتجات"
+              parent="menu_artcasa_reports" sequence="10"/>
+    <menuitem id="menu_artcasa_report_moves" name="حركة المنتج"
+              parent="menu_artcasa_report_products" action="action_report_product_moves" sequence="10"/>
+    <menuitem id="menu_artcasa_report_qty" name="الكميات"
+              parent="menu_artcasa_report_products" action="action_report_product_qty" sequence="20"/>
+    <menuitem id="menu_artcasa_report_profit" name="أرباح وتكلفة المنتج"
+              parent="menu_artcasa_report_products" action="action_report_product_profit" sequence="30"/>
+    <menuitem id="menu_artcasa_report_best" name="أفضل المنتجات مبيعاً"
+              parent="menu_artcasa_report_products" action="action_report_best_products" sequence="40"/>
+
+    <menuitem id="menu_artcasa_report_sales" name="تقارير المبيعات"
+              parent="menu_artcasa_reports" sequence="20"/>
+    <menuitem id="menu_artcasa_report_daily" name="المبيعات اليومية"
+              parent="menu_artcasa_report_sales" action="action_report_sales_daily" sequence="10"/>
+    <menuitem id="menu_artcasa_report_monthly" name="المبيعات الشهرية / العميل"
+              parent="menu_artcasa_report_sales" action="action_report_sales_monthly" sequence="20"/>
+    <menuitem id="menu_artcasa_report_warehouse" name="المبيعات حسب الفرع"
+              parent="menu_artcasa_report_sales" action="action_report_sales_warehouse" sequence="30"/>
+    <menuitem id="menu_artcasa_report_user" name="المبيعات حسب الموظف"
+              parent="menu_artcasa_report_sales" action="action_report_sales_user" sequence="40"/>
+
+    <menuitem id="menu_artcasa_report_projects_g" name="تقارير المشاريع"
+              parent="menu_artcasa_reports" sequence="30"/>
+    <menuitem id="menu_artcasa_report_projects" name="ميزانية وتحصيل المشروع"
+              parent="menu_artcasa_report_projects_g" action="action_report_projects" sequence="10"/>
+    <menuitem id="menu_artcasa_report_project_profit" name="أرباح ومصروفات المشروع"
+              parent="menu_artcasa_report_projects_g" action="action_report_project_profit" sequence="15"/>
+    <menuitem id="menu_artcasa_report_delayed" name="المشاريع المتأخرة"
+              parent="menu_artcasa_report_projects_g" action="action_report_projects_delayed" sequence="20"/>
+    <menuitem id="menu_artcasa_report_extracts" name="المستخلصات"
+              parent="menu_artcasa_report_projects_g" action="action_report_extracts" sequence="30"/>
+</odoo>

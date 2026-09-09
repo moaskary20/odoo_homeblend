@@ -1,0 +1,30 @@
+// يُحمَّل قبل primary_variables.scss في أودو، فتتفرّع منه بقية متغيّرات
+// الخطوط تلقائياً: $o-font-family-sans-serif و $font-family-sans-serif
+// في الواجهة الأمامية والخلفية وقوالب التقارير.
+// ملاحظة: sans-serif في نهاية القائمة مقصود، لأن o-add-unicode-support-font
+// تُدرج خط دعم اليونيكود قبلها.
+$o-system-fonts: (
+    "Tajawal",
+    "Noto Kufi Arabic",
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji"
+) !default;
+
+// أودو يضع "SF Pro Display" قبل خطوط النظام في العناوين، فنستبدلها بـ Tajawal.
+$o-headings-font-family: (
+    "Tajawal",
+    "Noto Kufi Arabic",
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Odoo Unicode Support Noto",
+    sans-serif
+) !default;

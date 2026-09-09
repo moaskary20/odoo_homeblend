@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_financial_report_wizard_form" model="ir.ui.view">
+        <field name="name">homeblend.financial.report.wizard.form</field>
+        <field name="model">homeblend.financial.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="قائمة مالية">
+                <group>
+                    <field name="report_type"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                </group>
+                <footer>
+                    <button name="action_print" type="object" string="طباعة PDF" class="btn-primary"/>
+                    <button string="إغلاق" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_financial_report_wizard" model="ir.actions.act_window">
+        <field name="name">قائمة مالية رسمية</field>
+        <field name="res_model">homeblend.financial.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="action_report_financial_pdf" model="ir.actions.report">
+        <field name="name">قائمة مالية</field>
+        <field name="model">homeblend.financial.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_financial_statement</field>
+        <field name="report_file">homeblend_reports.report_financial_statement</field>
+        <field name="print_report_name">'قائمة مالية'</field>
+    </record>
+    <template id="report_financial_statement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-set="data" t-value="o._get_report_data()"/>
+                <t t-call="web.external_layout">
+                    <div class="page" dir="rtl">
+                        <h2 t-out="data['title']"/>
+                        <p>
+                            الشركة: <span t-field="o.company_id"/> —
+                            من <span t-field="o.date_from"/> إلى <span t-field="o.date_to"/>
+                        </p>
+                        <t t-foreach="data['sections']" t-as="section">
+                            <h3 t-out="section['name']"/>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>الكود</th>
+                                        <th>الحساب</th>
+                                        <th class="text-end">الرصيد</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="section['lines']" t-as="line">
+                                        <td t-out="line['code']"/>
+                                        <td t-out="line['name']"/>
+                                        <td class="text-end" t-out="line['balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="2">الإجمالي</th>
+                                        <th class="text-end" t-out="section['total']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </t>
+                        <t t-if="o.report_type == 'pnl'">
+                            <p><strong>صافي النتيجة: <t t-out="data['net']" t-options="{'widget': 'float', 'precision': 2}"/></strong></p>
+                        </t>
+                        <t t-if="o.report_type == 'balance'">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th>إجمالي الأصول</th>
+                                    <th class="text-end" t-out="data['assets_total']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                                <tr>
+                                    <th>إجمالي الخصوم وحقوق الملكية</th>
+                                    <th class="text-end" t-out="data['liab_equity_total']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                                <tr t-if="data['difference']">
+                                    <th class="text-danger">فرق غير متوازن</th>
+                                    <th class="text-end text-danger" t-out="data['difference']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="view_homeblend_budget_list" model="ir.ui.view">
+        <field name="name">homeblend.budget.list</field>
+        <field name="model">homeblend.budget</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="planned_total"/>
+                <field name="actual_total"/>
+                <field name="variance_total"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_homeblend_budget_form" model="ir.ui.view">
+        <field name="name">homeblend.budget.form</field>
+        <field name="model">homeblend.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open" type="object" string="اعتماد" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_done" type="object" string="إقفال" invisible="state != 'open'"/>
+                    <button name="action_draft" type="object" string="إعادة مسودة" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="planned_total"/>
+                            <field name="actual_total"/>
+                            <field name="variance_total"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="account_id"/>
+                            <field name="analytic_account_id"/>
+                            <field name="planned_amount"/>
+                            <field name="actual_amount"/>
+                            <field name="variance_amount"/>
+                        </list>
+                    </field>
+                    <field name="notes" placeholder="ملاحظات"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_homeblend_budget" model="ir.actions.act_window">
+        <field name="name">الميزانيات</field>
+        <field name="res_model">homeblend.budget</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

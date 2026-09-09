@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_artcasa_stock_reservation" model="ir.sequence">
+        <field name="name">حجز مندوب Art Casa</field>
+        <field name="code">artcasa.stock.reservation</field>
+        <field name="prefix">RSV/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="ir_cron_low_stock" model="ir.cron">
+        <field name="name">Art Casa: تنبيه حد المخزون</field>
+        <field name="model_id" ref="stock.model_stock_warehouse_orderpoint"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_artcasa_low_stock()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_project_contract" model="ir.cron">
+        <field name="name">Art Casa: تنبيه عقود المشاريع</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_contract_expiry()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_release_reservations" model="ir.cron">
+        <field name="name">Art Casa: تحرير الحجوزات المنتهية</field>
+        <field name="model_id" ref="model_artcasa_stock_reservation"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_release_expired()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

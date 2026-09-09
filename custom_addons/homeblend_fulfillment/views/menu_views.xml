@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_homeblend_tracks" name="دورة الطلب"
+              parent="homeblend_tenant.menu_homeblend_tracking"
+              action="action_homeblend_order_track" sequence="10"/>
+    <menuitem id="menu_homeblend_complaints" name="الشكاوى"
+              parent="homeblend_tenant.menu_homeblend_tracking"
+              action="action_homeblend_complaint" sequence="20"/>
+</odoo>

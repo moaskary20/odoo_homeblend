@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_homeblend_payslip_user,homeblend.payslip.user,model_homeblend_payslip,hr.group_hr_user,1,1,1,0
+access_homeblend_payslip_manager,homeblend.payslip.manager,model_homeblend_payslip,hr.group_hr_manager,1,1,1,1
+access_homeblend_payslip_hb,homeblend.payslip.hb,model_homeblend_payslip,homeblend_base.group_homeblend_manager,1,1,1,1

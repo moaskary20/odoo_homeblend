@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_homeblend_asset_user,homeblend.asset.user,model_homeblend_asset,homeblend_base.group_homeblend_user,1,1,1,0
+access_homeblend_asset_manager,homeblend.asset.manager,model_homeblend_asset,homeblend_base.group_homeblend_manager,1,1,1,1
+access_homeblend_asset_internal,homeblend.asset.internal,model_homeblend_asset,base.group_user,1,0,0,0
+access_homeblend_fin_wiz_user,homeblend.financial.report.wizard.user,model_homeblend_financial_report_wizard,account.group_account_invoice,1,1,1,1
+access_homeblend_budget_user,homeblend.budget.user,model_homeblend_budget,account.group_account_invoice,1,1,1,0
+access_homeblend_budget_manager,homeblend.budget.manager,model_homeblend_budget,account.group_account_manager,1,1,1,1
+access_homeblend_budget_line_user,homeblend.budget.line.user,model_homeblend_budget_line,account.group_account_invoice,1,1,1,1

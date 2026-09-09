@@ -1,0 +1,24 @@
+# Runtime
+venv/
+.cache/
+/logs/
+/data/
+*.pid
+*.pyc
+__pycache__/
+*.pyo
+.pytest_cache/
+
+# Secrets — copy from odoo.conf.example instead
+config/odoo.conf
+config/credentials.txt
+
+# Editor / OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+
+# Nested official Odoo core clone (github.com/odoo/odoo @ 19.0)
+/odoo/

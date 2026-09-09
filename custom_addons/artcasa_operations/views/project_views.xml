@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_form_artcasa_split" model="ir.ui.view">
+        <field name="name">project.project.form.artcasa.split</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="artcasa_split_invoicing"/>
+                <field name="customer_share_percent" invisible="not artcasa_split_invoicing"/>
+                <field name="project_share_percent" invisible="not artcasa_split_invoicing"/>
+                <field name="bill_partner_id" invisible="not artcasa_split_invoicing"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="العقد" name="artcasa_contract">
+                    <group>
+                        <group string="بيانات العقد">
+                            <field name="contract_date_start"/>
+                            <field name="contract_date_end"/>
+                            <field name="contract_duration_days"/>
+                            <field name="contract_value"/>
+                            <field name="payment_term_id"/>
+                        </group>
+                        <group string="الضمانات">
+                            <field name="contract_guarantee"/>
+                            <field name="contract_guarantee_amount"/>
+                            <field name="contract_guarantee_end"/>
+                        </group>
+                        <group string="متابعة التنفيذ">
+                            <field name="contract_progress" widget="progressbar"/>
+                            <field name="contract_delayed"/>
+                            <field name="collected_amount"/>
+                            <field name="outstanding_amount"/>
+                            <field name="extract_count"/>
+                        </group>
+                        <group string="التوقيع الإلكتروني">
+                            <field name="signed" readonly="1"/>
+                            <field name="signed_by" invisible="not signed" readonly="1"/>
+                            <field name="signed_date" invisible="not signed" readonly="1"/>
+                            <field name="signature" widget="signature" readonly="signed" nolabel="1"/>
+                        </group>
+                    </group>
+                    <group string="شروط العقد">
+                        <field name="contract_notes" nolabel="1"
+                               placeholder="مراحل التنفيذ، غرامات التأخير، مسؤوليات الطرفين..."/>
+                    </group>
+                    <group string="مرفقات العقد">
+                        <field name="attachment_ids" widget="many2many_binary" nolabel="1"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_sign_contract" type="object" string="توقيع العقد"
+                        class="oe_highlight" invisible="signed"/>
+                <button name="action_view_extracts" type="object" string="المستخلصات"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

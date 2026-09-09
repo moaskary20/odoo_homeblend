@@ -1,0 +1,20 @@
+[Unit]
+Description=Odoo 19 Community
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=mohamed
+Group=mohamed
+ExecStart=/media/mohamed/d1/odoohomeblend/venv/bin/python /media/mohamed/d1/odoohomeblend/odoo/odoo-bin -c /media/mohamed/d1/odoohomeblend/config/odoo.conf
+WorkingDirectory=/media/mohamed/d1/odoohomeblend/odoo
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65535
+KillMode=mixed
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

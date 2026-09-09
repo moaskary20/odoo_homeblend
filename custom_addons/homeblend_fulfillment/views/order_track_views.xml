@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_homeblend_order_track_list" model="ir.ui.view">
+        <field name="name">homeblend.order.track.list</field>
+        <field name="model">homeblend.order.track</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="state == 'delayed'" decoration-success="state == 'completed'">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="partner_id"/>
+                <field name="tenant_id"/>
+                <field name="date_order"/>
+                <field name="commitment_date"/>
+                <field name="user_id"/>
+                <field name="progress" widget="progressbar"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_homeblend_order_track_form" model="ir.ui.view">
+        <field name="name">homeblend.order.track.form</field>
+        <field name="model">homeblend.order.track</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_processing" type="object" string="Processing" invisible="state != 'confirmed'"/>
+                    <button name="action_ready" type="object" string="Ready" class="btn-primary" invisible="state != 'processing'"/>
+                    <button name="action_delivered" type="object" string="Delivered" class="btn-primary" invisible="state != 'ready'"/>
+                    <button name="action_completed" type="object" string="Completed" class="btn-primary" invisible="state != 'delivered'"/>
+                    <button name="action_delayed" type="object" string="Delayed" invisible="state in ('completed','cancelled','returned')"/>
+                    <button name="action_returned" type="object" string="Returned" invisible="state not in ('delivered','completed')"/>
+                    <button name="action_cancelled" type="object" string="Cancelled" invisible="state in ('completed','cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,processing,ready,delivered,completed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sale_order_id"/>
+                            <field name="partner_id"/>
+                            <field name="tenant_id"/>
+                        </group>
+                        <group>
+                            <field name="date_order"/>
+                            <field name="commitment_date"/>
+                            <field name="user_id"/>
+                            <field name="amount_total"/>
+                            <field name="progress" widget="progressbar"/>
+                            <field name="payment_state"/>
+                            <field name="delivery_state" string="حالة التسليم"/>
+                        </group>
+                    </group>
+                    <group string="الفواتير">
+                        <field name="invoice_ids" nolabel="1" colspan="2" readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="invoice_date"/>
+                                <field name="amount_total"/>
+                                <field name="payment_state"/>
+                                <field name="state"/>
+                            </list>
+                        </field>
+                    </group>
+                    <field name="notes" placeholder="ملاحظات"/>
+                    <field name="attachment_ids" widget="many2many_binary"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_homeblend_order_track" model="ir.actions.act_window">
+        <field name="name">تتبع الطلبات</field>
+        <field name="res_model">homeblend.order.track</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

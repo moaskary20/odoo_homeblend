@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="web.NavBar" t-inherit-mode="extension">
+        <xpath expr="//t[@t-call='web.NavBar.AppsMenu']" position="replace">
+            <div class="o_navbar_apps_menu">
+                <button
+                    type="button"
+                    class="dropdown-toggle"
+                    data-hotkey="h"
+                    title="Home Menu"
+                    t-on-click.stop="onHomeMenuToggle"
+                >
+                    <i t-att-class="homeMenu.displayed ? 'oi oi-close' : 'oi oi-apps'"/>
+                </button>
+            </div>
+        </xpath>
+    </t>
+</templates>

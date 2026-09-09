@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_profit_pivot" model="ir.ui.view">
+        <field name="name">sale.order.line.artcasa.profit.pivot</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="أرباح المنتجات">
+                <field name="product_id" type="row"/>
+                <field name="price_subtotal" type="measure"/>
+                <field name="extra_cost_total" type="measure"/>
+                <field name="margin_after_extra" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_product_profit" model="ir.actions.act_window">
+        <field name="name">أرباح وتكلفة المنتجات</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('display_type', 'not in', ['line_section', 'line_subsection', 'line_note'])]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_product_profit_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="action_report_product_moves" model="ir.actions.act_window">
+        <field name="name">حركة المنتج</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">pivot,list,form</field>
+        <field name="domain">[('state', '=', 'done')]</field>
+        <field name="context">{'search_default_done': 1}</field>
+    </record>
+    <record id="action_report_product_qty" model="ir.actions.act_window">
+        <field name="name">كميات المخزون</field>
+        <field name="res_model">stock.quant</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="domain">[('location_id.usage', '=', 'internal')]</field>
+    </record>
+    <record id="view_sale_report_daily_pivot" model="ir.ui.view">
+        <field name="name">sale.report.artcasa.daily.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات اليومية">
+                <field name="date" interval="day" type="row"/>
+                <field name="price_subtotal" type="measure"/>
+                <field name="price_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_daily" model="ir.actions.act_window">
+        <field name="name">المبيعات اليومية</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_report_daily_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="view_sale_report_monthly_pivot" model="ir.ui.view">
+        <field name="name">sale.report.artcasa.monthly.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات الشهرية">
+                <field name="date" interval="month" type="row"/>
+                <field name="partner_id" type="row"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_monthly" model="ir.actions.act_window">
+        <field name="name">المبيعات الشهرية / حسب العميل</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_report_monthly_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="view_project_artcasa_list" model="ir.ui.view">
+        <field name="name">project.project.artcasa.list</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <list string="المشاريع">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="contract_value"/>
+                <field name="collected_amount"/>
+                <field name="outstanding_amount"/>
+                <field name="contract_progress"/>
+                <field name="contract_delayed"/>
+                <field name="contract_date_end"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_report_projects" model="ir.actions.act_window">
+        <field name="name">تقارير المشاريع</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_project_artcasa_list')}),
+            (0, 0, {'view_mode': 'form'})]"/>
+    </record>
+    <record id="action_report_projects_delayed" model="ir.actions.act_window">
+        <field name="name">المشاريع المتأخرة</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('contract_delayed', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_project_artcasa_list')}),
+            (0, 0, {'view_mode': 'form'})]"/>
+    </record>
+    <record id="action_report_extracts" model="ir.actions.act_window">
+        <field name="name">مستخلصات المشاريع</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('artcasa_project_id', '!=', False), ('move_type', '=', 'out_invoice')]</field>
+        <field name="context">{'default_move_type': 'out_invoice'}</field>
+    </record>
+
+    <record id="view_best_products_pivot" model="ir.ui.view">
+        <field name="name">sale.order.line.artcasa.best.pivot</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="أفضل المنتجات مبيعاً">
+                <field name="product_id" type="row"/>
+                <field name="product_uom_qty" type="measure"/>
+                <field name="price_subtotal" type="measure"/>
+                <field name="margin_after_extra" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_best_products" model="ir.actions.act_window">
+        <field name="name">أفضل المنتجات مبيعاً</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('display_type', 'not in', ['line_section', 'line_subsection', 'line_note'])]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_best_products_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+
+    <record id="view_sale_warehouse_pivot" model="ir.ui.view">
+        <field name="name">sale.report.artcasa.warehouse.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات حسب الفرع">
+                <field name="warehouse_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_warehouse" model="ir.actions.act_window">
+        <field name="name">المبيعات حسب الفرع</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_warehouse_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="view_sale_user_pivot" model="ir.ui.view">
+        <field name="name">sale.report.artcasa.user.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات حسب الموظف">
+                <field name="user_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_user" model="ir.actions.act_window">
+        <field name="name">المبيعات حسب الموظف</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_user_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+
+    <record id="action_artcasa_trial_balance" model="ir.actions.act_window">
+        <field name="name">ميزان المراجعة</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('display_type', 'not in', ['line_section', 'line_note'])]</field>
+    </record>
+    <record id="action_artcasa_receivables" model="ir.actions.act_window">
+        <field name="name">الذمم المدينة</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial'])]</field>
+    </record>
+    <record id="action_artcasa_payables" model="ir.actions.act_window">
+        <field name="name">الذمم الدائنة</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('move_type', '=', 'in_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial'])]</field>
+    </record>
+    <record id="action_artcasa_expenses" model="ir.actions.act_window">
+        <field name="name">المصروفات</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', 'in', ['expense', 'expense_depreciation', 'expense_direct_cost']), ('display_type', 'not in', ['line_section', 'line_note'])]</field>
+    </record>
+    <record id="action_artcasa_income" model="ir.actions.act_window">
+        <field name="name">الإيرادات</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', 'in', ['income', 'income_other']), ('display_type', 'not in', ['line_section', 'line_note'])]</field>
+    </record>
+    <record id="action_report_project_profit" model="ir.actions.act_window">
+        <field name="name">أرباح ومصروفات المشاريع</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('project_id', '!=', False)]</field>
+    </record>
+    <record id="action_artcasa_vendor_contracts" model="ir.actions.act_window">
+        <field name="name">عقود الموردين</field>
+        <field name="res_model">purchase.requisition</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('requisition_type', '=', 'blanket_order')]</field>
+        <field name="context">{'default_requisition_type': 'blanket_order'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">لا توجد عقود موردين</p>
+            <p>الاتفاقية طويلة الأجل بأسعار وكميات متفق عليها مع المورد.</p>
+        </field>
+    </record>
+</odoo>

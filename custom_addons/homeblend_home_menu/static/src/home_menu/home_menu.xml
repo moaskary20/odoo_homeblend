@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="homeblend_home_menu.HomeMenu">
+        <div class="hb_home_menu">
+            <div t-if="state.query" class="hb_home_search">
+                <t t-esc="state.query"/>
+            </div>
+            <div class="hb_apps_grid">
+                <a
+                    t-foreach="apps"
+                    t-as="app"
+                    t-key="app.id"
+                    class="hb_app"
+                    t-att-href="getAppHref(app)"
+                    t-att-data-menu-xmlid="app.xmlid"
+                    t-on-click.prevent="() => this.onAppClick(app)"
+                >
+                    <div class="hb_app_icon" t-attf-style="background-color: {{iconFor(app).bg}}">
+                        <i t-att-class="iconFor(app).icon"/>
+                    </div>
+                    <div class="hb_app_name" t-esc="app.name"/>
+                </a>
+            </div>
+        </div>
+    </t>
+</templates>

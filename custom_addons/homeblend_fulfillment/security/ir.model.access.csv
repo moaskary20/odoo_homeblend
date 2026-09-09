@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_homeblend_order_track_user,homeblend.order.track.user,model_homeblend_order_track,base.group_user,1,1,1,0
+access_homeblend_order_track_manager,homeblend.order.track.manager,model_homeblend_order_track,homeblend_base.group_homeblend_manager,1,1,1,1
+access_homeblend_complaint_user,homeblend.complaint.user,model_homeblend_complaint,base.group_user,1,1,1,0
+access_homeblend_complaint_manager,homeblend.complaint.manager,model_homeblend_complaint,homeblend_base.group_homeblend_manager,1,1,1,1

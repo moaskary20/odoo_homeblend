@@ -1,0 +1,22 @@
+{
+    "name": "Home Blend Tenants",
+    "version": "19.0.1.8.0",
+    "category": "Sales",
+    "summary": "المستأجرون والعقود والعمولات",
+    "author": "HomeBlend",
+    "license": "LGPL-3",
+    "depends": ["homeblend_base", "sale_management", "sale_loyalty", "account", "purchase", "product", "mail"],
+    "data": [
+        "security/ir.model.access.csv",
+        "security/tenant_security.xml",
+        "data/tenant_data.xml",
+        "views/tenant_contract_views.xml",
+        "views/sale_order_views.xml",
+        "views/account_move_views.xml",
+        "views/res_partner_views.xml",
+        "views/menu_views.xml",
+        "views/report_invoice.xml",
+    ],
+    "installable": True,
+    "application": True,
+}

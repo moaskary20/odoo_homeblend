@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_homeblend_tenant_contract_list" model="ir.ui.view">
+        <field name="name">homeblend.tenant.contract.list</field>
+        <field name="model">homeblend.tenant.contract</field>
+        <field name="arch" type="xml">
+            <list string="عقود المستأجرين" decoration-success="state == 'active'" decoration-muted="state in ('expired','archived')" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="tenant_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="commission_percent"/>
+                <field name="commission_base"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_homeblend_tenant_contract_form" model="ir.ui.view">
+        <field name="name">homeblend.tenant.contract.form</field>
+        <field name="model">homeblend.tenant.contract</field>
+        <field name="arch" type="xml">
+            <form string="عقد مستأجر">
+                <header>
+                    <button name="action_activate" type="object" string="تفعيل" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_sign" type="object" string="توقيع إلكتروني" invisible="signed or state not in ('draft','active')"/>
+                    <button name="action_suspend" type="object" string="تعليق" invisible="state != 'active'"/>
+                    <button name="action_renew" type="object" string="تجديد" invisible="state not in ('active','expired')"/>
+                    <button name="action_cancel" type="object" string="إنهاء / إلغاء" invisible="state in ('cancelled','archived')"/>
+                    <button name="action_archive_contract" type="object" string="أرشفة" invisible="state != 'expired'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sales" type="object" class="oe_stat_button" icon="fa-usd">
+                            <field name="sale_order_count" widget="statinfo" string="المبيعات"/>
+                        </button>
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-pencil-square-o">
+                            <field name="invoice_count" widget="statinfo" string="الفواتير"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="tenant_id"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="signature" widget="signature" readonly="signed"/>
+                            <field name="signed"/>
+                            <field name="signed_date" invisible="not signed"/>
+                            <field name="signed_by" invisible="not signed" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="commission_percent"/>
+                            <field name="commission_base"/>
+                            <field name="renewed_from_id" readonly="1"/>
+                            <field name="expiring_soon" invisible="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="متابعة الدفعات">
+                            <group>
+                                <group>
+                                    <field name="payment_term_id"/>
+                                    <field name="late_fee_percent"/>
+                                </group>
+                                <group>
+                                    <div class="text-muted">
+                                        شروط الدفع تُنسخ تلقائياً إلى أوامر البيع. غرامة التأخير تُحتسب على المتبقي بعد تاريخ الاستحقاق.
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="الضمانات">
+                            <field name="guarantee_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="amount"/>
+                                    <field name="date_start"/>
+                                    <field name="date_end"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="الشروط">
+                            <field name="notes"/>
+                        </page>
+                        <page string="المرفقات">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_homeblend_tenant_contract_search" model="ir.ui.view">
+        <field name="name">homeblend.tenant.contract.search</field>
+        <field name="model">homeblend.tenant.contract</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="tenant_id"/>
+                <filter string="ساري" name="active_c" domain="[('state', '=', 'active')]"/>
+                <filter string="ينتهي قريباً" name="expiring" domain="[('expiring_soon', '=', True)]"/>
+                <filter string="منتهٍ" name="expired_c" domain="[('state', '=', 'expired')]"/>
+                <filter string="ملغى" name="cancelled_c" domain="[('state', '=', 'cancelled')]"/>
+                <filter string="مجدَّد" name="renewed_c" domain="[('renewed_from_id', '!=', False)]"/>
+                <group>
+                    <filter string="المستأجر" name="group_tenant" context="{'group_by': 'tenant_id'}"/>
+                    <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_homeblend_tenant_contract" model="ir.actions.act_window">
+        <field name="name">عقود المستأجرين</field>
+        <field name="res_model">homeblend.tenant.contract</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active_c': 1}</field>
+    </record>
+    <record id="action_homeblend_tenants" model="ir.actions.act_window">
+        <field name="name">المستأجرون</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_tenant', '=', True)]</field>
+        <field name="context">{'default_is_tenant': True, 'default_is_company': True}</field>
+    </record>
+</odoo>

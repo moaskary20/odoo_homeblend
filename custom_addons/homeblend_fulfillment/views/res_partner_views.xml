@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_kpi" model="ir.ui.view">
+        <field name="name">res.partner.form.kpi</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='homeblend_tenant']" position="inside">
+                <group string="KPI المستأجر" invisible="not is_tenant">
+                    <field name="tenant_kpi_sales"/>
+                    <field name="tenant_kpi_unpaid"/>
+                    <field name="tenant_kpi_delayed"/>
+                    <field name="tenant_kpi_returns"/>
+                    <field name="tenant_kpi_complaints"/>
+                    <field name="tenant_kpi_on_time"/>
+                    <field name="tenant_kpi_speed"/>
+                    <field name="tenant_kpi_satisfaction"/>
+                    <field name="tenant_kpi_quality"/>
+                    <field name="tenant_kpi_collection_speed"/>
+                    <field name="tenant_kpi_contract_ok"/>
+                    <field name="tenant_last_deal_date"/>
+                </group>
+                <field name="complaint_ids" invisible="not is_tenant">
+                    <list editable="bottom">
+                        <field name="date"/>
+                        <field name="name"/>
+                        <field name="state"/>
+                        <field name="notes"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

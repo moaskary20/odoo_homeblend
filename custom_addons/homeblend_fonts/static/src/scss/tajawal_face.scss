@@ -1,0 +1,24 @@
+// أودو يشحن ملفات Tajawal السبعة في web/static/fonts/google/Tajawal لكنه
+// يعرّف الوزن 400 وحده، فيُصطنع العريض اصطناعياً. هنا نعرّف كل الأوزان
+// من ملفات أودو نفسها حتى يظهر العريض الحقيقي في الواجهة وفي ملفات PDF.
+$o-tajawal-weights: (
+    200: "ExtraLight",
+    300: "Light",
+    400: "Regular",
+    500: "Medium",
+    700: "Bold",
+    800: "ExtraBold",
+    900: "Black",
+);
+
+@each $weight, $style-name in $o-tajawal-weights {
+    @font-face {
+        font-family: "Tajawal";
+        font-style: normal;
+        font-weight: $weight;
+        // swap إلزامي: مع block يبقى النص مخفياً حتى يُحمّل الخط،
+        // فتخرج ملفات wkhtmltopdf فارغة.
+        font-display: swap;
+        src: url("/web/static/fonts/google/Tajawal/Tajawal-#{$style-name}.ttf") format("truetype");
+    }
+}

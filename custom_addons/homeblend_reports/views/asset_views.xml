@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_homeblend_asset_list" model="ir.ui.view">
+        <field name="name">homeblend.asset.list</field>
+        <field name="model">homeblend.asset</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="purchase_value"/>
+                <field name="annual_depreciation"/>
+                <field name="residual"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_homeblend_asset_form" model="ir.ui.view">
+        <field name="name">homeblend.asset.form</field>
+        <field name="model">homeblend.asset</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" type="object" string="بدء الإهلاك" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_post_depreciation" type="object" string="ترحيل قيد الإهلاك" class="btn-primary" invisible="state != 'running'"/>
+                    <button name="action_close" type="object" string="إقفال" invisible="state != 'running'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,running,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="partner_id"/>
+                            <field name="date_start"/>
+                            <field name="method_years"/>
+                        </group>
+                        <group>
+                            <field name="purchase_value"/>
+                            <field name="salvage_value"/>
+                            <field name="annual_depreciation"/>
+                            <field name="accumulated"/>
+                            <field name="residual"/>
+                            <field name="last_depreciation_date" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="ملاحظات"/>
+                    <notebook>
+                        <page string="قيود الإهلاك">
+                            <field name="depreciation_move_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="ref"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_homeblend_asset" model="ir.actions.act_window">
+        <field name="name">الأصول والإهلاك</field>
+        <field name="res_model">homeblend.asset</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,6 @@
+# حزم خارج requirements.txt الخاص بأودو، لازمة لهذا التركيب.
+#
+# rlPyCairo: خلفية الرسم في reportlab. بدونها يفشل /report/barcode/ وكل
+# ملصقات الباركود و QR برسالة "cannot import desired renderPM backend".
+# التثبيت: ./venv/bin/pip install -r requirements-extra.txt
+rlPyCairo

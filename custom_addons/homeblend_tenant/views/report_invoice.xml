@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_homeblend_qr" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@id='qrcode']" position="after">
+            <div id="homeblend_qr" t-if="o.homeblend_qr_payload and not o.l10n_eg_qr_code" class="mt-2">
+                <strong>QR Code</strong>
+                <img t-att-src="'/report/barcode/?barcode_type=%s&amp;value=%s&amp;width=%s&amp;height=%s&amp;quiet=%s' % ('QR', o.homeblend_qr_payload, 130, 130, 0)"
+                     style="display:block;max-width:130px;"/>
+            </div>
+        </xpath>
+    </template>
+</odoo>

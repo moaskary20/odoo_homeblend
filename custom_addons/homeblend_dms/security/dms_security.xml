@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="document_comp_rule" model="ir.rule">
+        <field name="name">المستندات: الشركة</field>
+        <field name="model_id" ref="model_homeblend_document"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

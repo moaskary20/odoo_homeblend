@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_homeblend_tenant_contract" model="ir.sequence">
+        <field name="name">عقد مستأجر</field>
+        <field name="code">homeblend.tenant.contract</field>
+        <field name="prefix">TC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    <record id="product_commission_fee" model="product.template">
+        <field name="name">عمولة Home Blend</field>
+        <field name="type">service</field>
+        <field name="list_price">0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="invoice_policy">order</field>
+        <field name="default_code">HB-COMMISSION</field>
+    </record>
+    <record id="product_late_fee" model="product.template">
+        <field name="name">غرامة تأخير</field>
+        <field name="type">service</field>
+        <field name="list_price">0</field>
+        <field name="sale_ok" eval="True"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="invoice_policy">order</field>
+        <field name="default_code">HB-LATE-FEE</field>
+    </record>
+    <record id="ir_cron_tenant_contracts" model="ir.cron">
+        <field name="name">Home Blend: انتهاء العقود والتنبيه</field>
+        <field name="model_id" ref="model_homeblend_tenant_contract"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_expire_and_notify()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_late_fees" model="ir.cron">
+        <field name="name">Home Blend: غرامات تأخير الفواتير</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_homeblend_late_fees()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

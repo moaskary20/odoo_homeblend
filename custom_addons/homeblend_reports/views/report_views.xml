@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_tenant_pivot" model="ir.ui.view">
+        <field name="name">sale.order.tenant.pivot</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <pivot string="مبيعات المستأجرين">
+                <field name="tenant_id" type="row"/>
+                <field name="date_order" interval="month" type="col"/>
+                <field name="amount_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="view_sale_order_tenant_graph" model="ir.ui.view">
+        <field name="name">sale.order.tenant.graph</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <graph string="مبيعات المستأجرين" type="bar">
+                <field name="tenant_id"/>
+                <field name="amount_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="action_report_tenant_sales" model="ir.actions.act_window">
+        <field name="name">مبيعات المستأجرين</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('tenant_id', '!=', False)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_order_tenant_pivot')}),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_sale_order_tenant_graph')}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+
+    <record id="view_move_commission_pivot" model="ir.ui.view">
+        <field name="name">account.move.commission.pivot</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <pivot string="العمولات">
+                <field name="tenant_id" type="row"/>
+                <field name="invoice_date" interval="month" type="col"/>
+                <field name="commission_amount" type="measure"/>
+                <field name="amount_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_commissions" model="ir.actions.act_window">
+        <field name="name">فواتير العمولة</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('is_commission_invoice', '=', True)]</field>
+        <field name="context">{'default_move_type': 'out_invoice'}</field>
+    </record>
+
+    <record id="view_order_track_pivot" model="ir.ui.view">
+        <field name="name">homeblend.order.track.pivot</field>
+        <field name="model">homeblend.order.track</field>
+        <field name="arch" type="xml">
+            <pivot string="تتبع الطلبات">
+                <field name="state" type="row"/>
+                <field name="tenant_id" type="row"/>
+                <field name="amount_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_order_track" model="ir.actions.act_window">
+        <field name="name">تحليل تتبع الطلبات</field>
+        <field name="res_model">homeblend.order.track</field>
+        <field name="view_mode">pivot,graph,list</field>
+    </record>
+
+    <record id="view_sale_artcasa_pivot" model="ir.ui.view">
+        <field name="name">sale.order.artcasa.pivot</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <pivot string="ربح Art Casa">
+                <field name="project_id" type="row"/>
+                <field name="user_id" type="row"/>
+                <field name="amount_untaxed" type="measure"/>
+                <field name="extra_cost_total" type="measure"/>
+                <field name="margin_after_extra" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_artcasa_profit" model="ir.actions.act_window">
+        <field name="name">ربح المشاريع</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('project_id', '!=', False)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_artcasa_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+
+    <record id="view_payslip_pivot" model="ir.ui.view">
+        <field name="name">homeblend.payslip.pivot</field>
+        <field name="model">homeblend.payslip</field>
+        <field name="arch" type="xml">
+            <pivot string="الرواتب">
+                <field name="employee_id" type="row"/>
+                <field name="date_to" interval="month" type="col"/>
+                <field name="gross" type="measure"/>
+                <field name="net" type="measure"/>
+                <field name="tax_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_payslip" model="ir.actions.act_window">
+        <field name="name">تحليل الرواتب</field>
+        <field name="res_model">homeblend.payslip</field>
+        <field name="view_mode">pivot,graph,list</field>
+    </record>
+
+    <record id="view_aml_pnl_pivot" model="ir.ui.view">
+        <field name="name">account.move.line.pnl.pivot</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <pivot string="الأرباح والخسائر">
+                <field name="account_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_pnl" model="ir.actions.act_window">
+        <field name="name">الأرباح والخسائر</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', 'in', ['income', 'income_other', 'expense', 'expense_depreciation', 'expense_direct_cost'])]</field>
+        <field name="context">{'search_default_posted': 1}</field>
+    </record>
+    <record id="action_report_income" model="ir.actions.act_window">
+        <field name="name">الإيرادات</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', 'in', ['income', 'income_other'])]</field>
+    </record>
+    <record id="action_report_expense" model="ir.actions.act_window">
+        <field name="name">المصروفات</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', 'in', ['expense', 'expense_depreciation', 'expense_direct_cost'])]</field>
+    </record>
+
+    <record id="view_aml_trial_pivot" model="ir.ui.view">
+        <field name="name">account.move.line.trial.pivot</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <pivot string="ميزان المراجعة">
+                <field name="account_id" type="row"/>
+                <field name="debit" type="measure"/>
+                <field name="credit" type="measure"/>
+                <field name="balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_trial_balance" model="ir.actions.act_window">
+        <field name="name">ميزان المراجعة</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('display_type', 'not in', ['line_section', 'line_note'])]</field>
+    </record>
+
+    <record id="action_report_receivables" model="ir.actions.act_window">
+        <field name="name">الذمم المدينة</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial'])]</field>
+        <field name="context">{'search_default_out_invoice': 1}</field>
+    </record>
+    <record id="action_report_payables" model="ir.actions.act_window">
+        <field name="name">الذمم الدائنة</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,pivot,form</field>
+        <field name="domain">[('move_type', '=', 'in_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial'])]</field>
+    </record>
+    <record id="action_report_cashflow" model="ir.actions.act_window">
+        <field name="name">التدفقات النقدية</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', '=', 'asset_cash')]</field>
+    </record>
+    <record id="view_contract_report_pivot" model="ir.ui.view">
+        <field name="name">homeblend.tenant.contract.pivot</field>
+        <field name="model">homeblend.tenant.contract</field>
+        <field name="arch" type="xml">
+            <pivot string="العقود">
+                <field name="state" type="row"/>
+                <field name="tenant_id" type="row"/>
+                <field name="commission_percent" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_contracts" model="ir.actions.act_window">
+        <field name="name">تقارير العقود</field>
+        <field name="res_model">homeblend.tenant.contract</field>
+        <field name="view_mode">pivot,list,form</field>
+    </record>
+    <record id="view_sol_product_pivot" model="ir.ui.view">
+        <field name="name">sale.order.line.product.pivot</field>
+        <field name="model">sale.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="أفضل المنتجات">
+                <field name="product_id" type="row"/>
+                <field name="product_uom_qty" type="measure"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_best_products" model="ir.actions.act_window">
+        <field name="name">أفضل المنتجات</field>
+        <field name="res_model">sale.order.line</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="domain">[('display_type', 'not in', ['line_section', 'line_subsection', 'line_note'])]</field>
+    </record>
+    <record id="view_partner_tenant_kpi_list" model="ir.ui.view">
+        <field name="name">res.partner.tenant.kpi.list</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="تقييم المستأجرين">
+                <field name="name"/>
+                <field name="tenant_score"/>
+                <field name="tenant_kpi_sales"/>
+                <field name="tenant_kpi_unpaid"/>
+                <field name="tenant_kpi_on_time"/>
+                <field name="tenant_kpi_speed"/>
+                <field name="tenant_kpi_satisfaction"/>
+                <field name="tenant_kpi_quality"/>
+                <field name="tenant_kpi_collection_speed"/>
+                <field name="tenant_kpi_returns"/>
+                <field name="tenant_kpi_complaints"/>
+                <field name="tenant_kpi_contract_ok"/>
+                <field name="tenant_last_deal_date"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_report_tenant_kpi" model="ir.actions.act_window">
+        <field name="name">مقارنة تقييم المستأجرين</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_tenant', '=', True)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_partner_tenant_kpi_list')}),
+            (0, 0, {'view_mode': 'form'})]"/>
+    </record>
+
+    <record id="view_sale_order_best_tenants_graph" model="ir.ui.view">
+        <field name="name">sale.order.best.tenants.graph</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <graph string="أفضل المستأجرين" type="bar">
+                <field name="tenant_id"/>
+                <field name="amount_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="action_report_best_tenants" model="ir.actions.act_window">
+        <field name="name">أفضل المستأجرين</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">graph,pivot,list</field>
+        <field name="domain">[('tenant_id', '!=', False), ('state', 'in', ['sale', 'done'])]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'graph', 'view_id': ref('view_sale_order_best_tenants_graph')}),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_order_tenant_pivot')}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="action_report_tenant_payments" model="ir.actions.act_window">
+        <field name="name">مدفوعات المستأجرين</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('tenant_id', '!=', False), ('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('is_commission_invoice', '=', False)]</field>
+        <field name="context">{'search_default_group_payment_state': 1}</field>
+    </record>
+    <record id="action_report_tenant_overdue" model="ir.actions.act_window">
+        <field name="name">متأخرات المستأجرين</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('tenant_id', '!=', False), ('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial']), ('is_commission_invoice', '=', False)]</field>
+    </record>
+
+    <record id="action_report_contracts_expired" model="ir.actions.act_window">
+        <field name="name">العقود المنتهية</field>
+        <field name="res_model">homeblend.tenant.contract</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('state', '=', 'expired')]</field>
+    </record>
+    <record id="action_report_contracts_expiring" model="ir.actions.act_window">
+        <field name="name">عقود تنتهي قريباً</field>
+        <field name="res_model">homeblend.tenant.contract</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('expiring_soon', '=', True)]</field>
+    </record>
+    <record id="action_report_contracts_renewed" model="ir.actions.act_window">
+        <field name="name">العقود المجددة</field>
+        <field name="res_model">homeblend.tenant.contract</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('renewed_from_id', '!=', False)]</field>
+    </record>
+    <record id="action_report_contracts_cancelled" model="ir.actions.act_window">
+        <field name="name">العقود الملغاة</field>
+        <field name="res_model">homeblend.tenant.contract</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('state', '=', 'cancelled')]</field>
+    </record>
+
+    <record id="view_sale_report_warehouse_pivot" model="ir.ui.view">
+        <field name="name">sale.report.warehouse.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات حسب الفرع">
+                <field name="warehouse_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_warehouse" model="ir.actions.act_window">
+        <field name="name">المبيعات حسب الفرع</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_report_warehouse_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="view_sale_report_user_pivot" model="ir.ui.view">
+        <field name="name">sale.report.user.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات حسب الموظف">
+                <field name="user_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_user" model="ir.actions.act_window">
+        <field name="name">المبيعات حسب الموظف</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_report_user_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="view_sale_report_categ_pivot" model="ir.ui.view">
+        <field name="name">sale.report.categ.pivot</field>
+        <field name="model">sale.report</field>
+        <field name="arch" type="xml">
+            <pivot string="المبيعات حسب النشاط">
+                <field name="categ_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_sales_categ" model="ir.actions.act_window">
+        <field name="name">المبيعات حسب النشاط</field>
+        <field name="res_model">sale.report</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_sale_report_categ_pivot')}),
+            (0, 0, {'view_mode': 'graph'}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+
+    <record id="view_aml_tax_pivot" model="ir.ui.view">
+        <field name="name">account.move.line.tax.pivot</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <pivot string="الضرائب">
+                <field name="tax_line_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_report_taxes" model="ir.actions.act_window">
+        <field name="name">تقرير الضرائب</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('tax_line_id', '!=', False)]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'pivot', 'view_id': ref('view_aml_tax_pivot')}),
+            (0, 0, {'view_mode': 'list'})]"/>
+    </record>
+    <record id="action_report_balance_sheet" model="ir.actions.act_window">
+        <field name="name">الميزانية العمومية</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot,list</field>
+        <field name="domain">[('parent_state', '=', 'posted'), ('account_id.account_type', 'in', ['asset_receivable', 'asset_cash', 'asset_current', 'asset_non_current', 'asset_prepayments', 'asset_fixed', 'liability_payable', 'liability_credit_card', 'liability_current', 'liability_non_current', 'equity', 'equity_unaffected'])]</field>
+    </record>
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_template_form_artcasa_cost" model="ir.ui.view">
+        <field name="name">product.template.form.artcasa.cost</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="بيانات الصنف" name="artcasa_product">
+                    <group>
+                        <group string="التصنيف والمورد">
+                            <field name="product_group"/>
+                            <field name="brand_name"/>
+                            <field name="origin_country_id"/>
+                            <field name="main_seller_id"/>
+                            <field name="qr_payload" widget="CopyClipboardChar"/>
+                        </group>
+                        <group string="المخزون والتتبع">
+                            <field name="min_stock_qty"/>
+                            <field name="max_stock_qty"/>
+                            <field name="tracking"/>
+                            <field name="use_expiration_date"/>
+                            <field name="expiration_time" invisible="not use_expiration_date"/>
+                            <field name="alert_time" invisible="not use_expiration_date"/>
+                        </group>
+                        <group string="التكلفة والربح">
+                            <field name="extra_cost_freight"/>
+                            <field name="extra_cost_shipping"/>
+                            <field name="extra_cost_other"/>
+                            <field name="extra_cost_total"/>
+                            <field name="actual_cost"/>
+                            <field name="net_profit_unit"/>
+                            <field name="margin_percent_unit"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_product_template_list_artcasa" model="ir.ui.view">
+        <field name="name">product.template.list.artcasa</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='default_code']" position="after">
+                <field name="brand_name" optional="show"/>
+                <field name="product_group" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

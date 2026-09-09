@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_artcasa_overdue" model="ir.actions.act_window">
+        <field name="name">فواتير متأخرة عن الاستحقاق</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="domain">[('move_type', '=', 'out_invoice'), ('state', '=', 'posted'), ('payment_state', 'in', ['not_paid', 'partial']), ('invoice_date_due', '&lt;', context_today().strftime('%Y-%m-%d'))]</field>
+        <field name="context">{'search_default_group_by_partner': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">لا توجد متأخرات تحصيل</p>
+            <p>الفواتير المرحّلة التي تجاوزت تاريخ استحقاقها ولم تُسدد كاملة.</p>
+        </field>
+    </record>
+
+    <record id="action_artcasa_returns" model="ir.actions.act_window">
+        <field name="name">مرتجعات العملاء</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,form,calendar</field>
+        <field name="domain">[('return_id', '!=', False), ('picking_type_id.code', '=', 'incoming')]</field>
+        <field name="context">{'search_default_group_by_partner': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">لا توجد مرتجعات</p>
+            <p>المرتجعات تُنشأ من زر "إرجاع" داخل إذن التسليم الأصلي،
+               ويقابلها إشعار دائن من الفاتورة.</p>
+        </field>
+    </record>
+
+    <record id="view_purchase_line_compare_pivot" model="ir.ui.view">
+        <field name="name">purchase.order.line.compare.pivot</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <pivot string="مقارنة عروض الموردين">
+                <field name="product_id" type="row"/>
+                <field name="partner_id" type="col"/>
+                <field name="price_unit" type="measure"/>
+                <field name="price_subtotal" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="view_purchase_line_compare_list" model="ir.ui.view">
+        <field name="name">purchase.order.line.compare.list</field>
+        <field name="model">purchase.order.line</field>
+        <field name="arch" type="xml">
+            <list string="مقارنة عروض الموردين" create="false">
+                <field name="product_id"/>
+                <field name="partner_id"/>
+                <field name="order_id"/>
+                <field name="product_qty"/>
+                <field name="price_unit"/>
+                <field name="price_subtotal"/>
+                <field name="date_planned"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_artcasa_purchase_compare" model="ir.actions.act_window">
+        <field name="name">مقارنة عروض الموردين</field>
+        <field name="res_model">purchase.order.line</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="domain">[('state', 'in', ['draft', 'sent'])]</field>
+        <field name="context">{'search_default_group_product': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">لا توجد عروض أسعار مفتوحة للمقارنة</p>
+            <p>بنود طلبات عروض الأسعار غير المؤكدة، مجمّعة حسب المنتج لمقارنة
+               أسعار الموردين ومواعيد التسليم قبل الاعتماد.</p>
+        </field>
+    </record>
+
+    <record id="view_partner_list_supplier_eval" model="ir.ui.view">
+        <field name="name">res.partner.list.supplier.eval</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <list string="تقييم الموردين" create="false"
+                  decoration-danger="supplier_late_po_count &gt; 0"
+                  decoration-success="supplier_on_time_rate &gt;= 95">
+                <field name="name"/>
+                <field name="supplier_on_time_rate" widget="percentage" optional="show"/>
+                <field name="supplier_late_po_count"/>
+                <field name="supplier_lead_days"/>
+                <field name="supplier_quality_score"/>
+                <field name="phone" optional="hide"/>
+                <field name="email" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_artcasa_supplier_eval" model="ir.actions.act_window">
+        <field name="name">تقييم الموردين</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_partner_list_supplier_eval"/>
+        <field name="domain">[('supplier_rank', '&gt;', 0)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">لا يوجد موردون بعد</p>
+            <p>الالتزام بالمواعيد وعدد الأوامر المتأخرة يُحسبان تلقائياً من أوامر الشراء
+               واستلامات المخزون. مدة التوريد وتقييم الجودة تُدخلان يدوياً في ملف المورد.</p>
+        </field>
+    </record>
+</odoo>

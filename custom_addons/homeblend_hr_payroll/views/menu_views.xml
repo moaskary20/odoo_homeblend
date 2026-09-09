@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_homeblend_payroll_root" name="الرواتب المصرية" sequence="55"
+              web_icon="homeblend_hr_payroll,static/description/icon.svg"/>
+    <menuitem id="menu_homeblend_payslip" name="قسائم الرواتب"
+              parent="menu_homeblend_payroll_root"
+              action="action_homeblend_payslip" sequence="10"/>
+</odoo>

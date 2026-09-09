@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_tenant_stat" model="ir.ui.view">
+        <field name="name">res.partner.form.tenant.stat</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_tenant_contracts" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="not is_tenant">
+                    <field name="tenant_contract_count" widget="statinfo" string="العقود"/>
+                </button>
+                <button name="action_view_tenant_sales" type="object" class="oe_stat_button" icon="fa-usd" invisible="not is_tenant">
+                    <field name="tenant_sale_count" widget="statinfo" string="المبيعات"/>
+                </button>
+                <button name="action_view_tenant_invoices" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="not is_tenant">
+                    <field name="tenant_invoice_count" widget="statinfo" string="الفواتير"/>
+                </button>
+                <button name="action_view_tenant_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="not is_tenant">
+                    <field name="tenant_payment_count" widget="statinfo" string="التحصيلات"/>
+                </button>
+                <button name="action_view_tenant_refunds" type="object" class="oe_stat_button" icon="fa-undo" invisible="not is_tenant">
+                    <field name="tenant_refund_count" widget="statinfo" string="الإشعارات"/>
+                </button>
+                <button name="action_view_tenant_unpaid" type="object" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="not is_tenant">
+                    <field name="tenant_unpaid_count" widget="statinfo" string="المتأخرات"/>
+                </button>
+                <button name="action_view_tenant_notifications" type="object" class="oe_stat_button" icon="fa-bell-o" invisible="not is_tenant">
+                    <field name="tenant_activity_count" widget="statinfo" string="التنبيهات"/>
+                </button>
+                <button name="action_view_vendor_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="supplier_rank &lt;= 0">
+                    <field name="vendor_payment_count" widget="statinfo" string="مدفوعات المورد"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_partner_form_vendor_file" model="ir.ui.view">
+        <field name="name">res.partner.form.homeblend.vendor.file</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="homeblend_base.view_partner_form_homeblend"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='homeblend_vendor']" position="inside">
+                <group string="سجل التعامل">
+                    <group>
+                        <field name="vendor_last_purchase_date"/>
+                        <field name="vendor_last_bill_date"/>
+                    </group>
+                </group>
+                <field name="vendor_purchase_order_ids" readonly="1">
+                    <list>
+                        <field name="name"/>
+                        <field name="date_order"/>
+                        <field name="date_planned"/>
+                        <field name="amount_total"/>
+                        <field name="state" widget="badge"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

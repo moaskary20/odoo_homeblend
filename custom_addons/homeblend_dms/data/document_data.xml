@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="seq_homeblend_document" model="ir.sequence">
+        <field name="name">وثيقة HomeBlend</field>
+        <field name="code">homeblend.document</field>
+        <field name="prefix">DOC/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

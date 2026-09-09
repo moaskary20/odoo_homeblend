@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_homeblend_tenant_contract_user,homeblend.tenant.contract.user,model_homeblend_tenant_contract,homeblend_base.group_homeblend_user,1,1,1,0
+access_homeblend_tenant_contract_manager,homeblend.tenant.contract.manager,model_homeblend_tenant_contract,homeblend_base.group_homeblend_manager,1,1,1,1
+access_homeblend_tenant_contract_internal,homeblend.tenant.contract.internal,model_homeblend_tenant_contract,base.group_user,1,1,1,0

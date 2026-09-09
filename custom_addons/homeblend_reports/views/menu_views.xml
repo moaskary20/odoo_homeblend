@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_homeblend_reports_root" name="التقارير" sequence="70"
+              web_icon="homeblend_reports,static/description/icon.svg"/>
+    <menuitem id="menu_report_tenant_sales" name="مبيعات المستأجرين"
+              parent="menu_homeblend_reports_root" action="action_report_tenant_sales" sequence="10"/>
+    <menuitem id="menu_report_commissions" name="العمولات"
+              parent="menu_homeblend_reports_root" action="action_report_commissions" sequence="20"/>
+    <menuitem id="menu_report_tracks" name="تتبع الطلبات"
+              parent="menu_homeblend_reports_root" action="action_report_order_track" sequence="30"/>
+    <menuitem id="menu_report_artcasa" name="ربح المشاريع"
+              parent="menu_homeblend_reports_root" action="action_report_artcasa_profit" sequence="40"/>
+    <menuitem id="menu_report_payslip" name="الرواتب"
+              parent="menu_homeblend_reports_root" action="action_report_payslip" sequence="50"/>
+    <menuitem id="menu_report_assets" name="الأصول والإهلاك"
+              parent="menu_homeblend_reports_root" action="action_homeblend_asset" sequence="60"/>
+    <menuitem id="menu_report_pnl" name="الأرباح والخسائر"
+              parent="menu_homeblend_reports_root" action="action_report_pnl" sequence="70"/>
+    <menuitem id="menu_report_trial" name="ميزان المراجعة"
+              parent="menu_homeblend_reports_root" action="action_report_trial_balance" sequence="80"/>
+    <menuitem id="menu_report_receivables" name="الذمم المدينة"
+              parent="menu_homeblend_reports_root" action="action_report_receivables" sequence="90"/>
+    <menuitem id="menu_report_payables" name="الذمم الدائنة"
+              parent="menu_homeblend_reports_root" action="action_report_payables" sequence="91"/>
+    <menuitem id="menu_report_cashflow" name="التدفقات النقدية"
+              parent="menu_homeblend_reports_root" action="action_report_cashflow" sequence="92"/>
+    <menuitem id="menu_report_contracts" name="العقود"
+              parent="menu_homeblend_reports_root" action="action_report_contracts" sequence="25"/>
+    <menuitem id="menu_report_products" name="أفضل المنتجات"
+              parent="menu_homeblend_reports_root" action="action_report_best_products" sequence="35"/>
+    <menuitem id="menu_report_tenant_kpi" name="تقييم المستأجرين"
+              parent="menu_homeblend_reports_root" action="action_report_tenant_kpi" sequence="15"/>
+    <menuitem id="menu_report_best_tenants" name="أفضل المستأجرين"
+              parent="menu_homeblend_reports_root" action="action_report_best_tenants" sequence="16"/>
+    <menuitem id="menu_report_tenant_payments" name="مدفوعات المستأجرين"
+              parent="menu_homeblend_reports_root" action="action_report_tenant_payments" sequence="17"/>
+    <menuitem id="menu_report_tenant_overdue" name="متأخرات المستأجرين"
+              parent="menu_homeblend_reports_root" action="action_report_tenant_overdue" sequence="18"/>
+    <menuitem id="menu_report_contracts_group" name="تقارير العقود"
+              parent="menu_homeblend_reports_root" sequence="26"/>
+    <menuitem id="menu_report_contracts_expired" name="المنتهية"
+              parent="menu_report_contracts_group" action="action_report_contracts_expired" sequence="10"/>
+    <menuitem id="menu_report_contracts_expiring" name="تنتهي قريباً"
+              parent="menu_report_contracts_group" action="action_report_contracts_expiring" sequence="20"/>
+    <menuitem id="menu_report_contracts_renewed" name="المجددة"
+              parent="menu_report_contracts_group" action="action_report_contracts_renewed" sequence="30"/>
+    <menuitem id="menu_report_contracts_cancelled" name="الملغاة"
+              parent="menu_report_contracts_group" action="action_report_contracts_cancelled" sequence="40"/>
+    <menuitem id="menu_report_sales_group" name="تحليل المبيعات"
+              parent="menu_homeblend_reports_root" sequence="36"/>
+    <menuitem id="menu_report_sales_warehouse" name="حسب الفرع"
+              parent="menu_report_sales_group" action="action_report_sales_warehouse" sequence="10"/>
+    <menuitem id="menu_report_sales_user" name="حسب الموظف"
+              parent="menu_report_sales_group" action="action_report_sales_user" sequence="20"/>
+    <menuitem id="menu_report_sales_categ" name="حسب النشاط"
+              parent="menu_report_sales_group" action="action_report_sales_categ" sequence="30"/>
+    <menuitem id="menu_report_taxes" name="الضرائب"
+              parent="menu_homeblend_reports_root" action="action_report_taxes" sequence="93"/>
+    <menuitem id="menu_report_balance" name="الميزانية العمومية"
+              parent="menu_homeblend_reports_root" action="action_report_balance_sheet" sequence="94"/>
+    <menuitem id="menu_report_financial_pdf" name="قائمة مالية رسمية PDF"
+              parent="menu_homeblend_reports_root" action="action_financial_report_wizard" sequence="95"/>
+    <menuitem id="menu_report_budget" name="الميزانيات"
+              parent="menu_homeblend_reports_root" action="action_homeblend_budget" sequence="96"/>
+
+    <!-- القوائم المالية داخل تطبيق Art Casa نفسه، إضافة إلى تطبيق التقارير.
+         تُعرّف هنا لأن homeblend_reports يعتمد على artcasa_operations. -->
+    <menuitem id="menu_artcasa_financial_pdf" name="قائمة مالية رسمية PDF"
+              parent="artcasa_operations.menu_artcasa_accounting"
+              action="action_financial_report_wizard" sequence="60"/>
+    <menuitem id="menu_artcasa_assets" name="الأصول والإهلاك"
+              parent="artcasa_operations.menu_artcasa_accounting"
+              action="action_homeblend_asset" sequence="70"/>
+    <menuitem id="menu_artcasa_budgets" name="الميزانيات"
+              parent="artcasa_operations.menu_artcasa_accounting"
+              action="action_homeblend_budget" sequence="80"/>
+    <menuitem id="menu_artcasa_pnl" name="الأرباح والخسائر"
+              parent="artcasa_operations.menu_artcasa_accounting"
+              action="action_report_pnl" sequence="90"/>
+    <menuitem id="menu_artcasa_balance" name="الميزانية العمومية"
+              parent="artcasa_operations.menu_artcasa_accounting"
+              action="action_report_balance_sheet" sequence="100"/>
+    <menuitem id="menu_artcasa_cashflow" name="التدفقات النقدية"
+              parent="artcasa_operations.menu_artcasa_accounting"
+              action="action_report_cashflow" sequence="110"/>
+
+    <menuitem id="menu_artcasa_report_finance" name="التقارير المالية"
+              parent="artcasa_operations.menu_artcasa_reports" sequence="40"/>
+    <menuitem id="menu_artcasa_report_trial" name="ميزان المراجعة"
+              parent="menu_artcasa_report_finance" action="action_report_trial_balance" sequence="10"/>
+    <menuitem id="menu_artcasa_report_pnl2" name="الأرباح والخسائر"
+              parent="menu_artcasa_report_finance" action="action_report_pnl" sequence="20"/>
+    <menuitem id="menu_artcasa_report_balance2" name="الميزانية العمومية"
+              parent="menu_artcasa_report_finance" action="action_report_balance_sheet" sequence="30"/>
+    <menuitem id="menu_artcasa_report_cashflow2" name="التدفقات النقدية"
+              parent="menu_artcasa_report_finance" action="action_report_cashflow" sequence="40"/>
+    <menuitem id="menu_artcasa_report_ar" name="الذمم المدينة"
+              parent="menu_artcasa_report_finance" action="action_report_receivables" sequence="50"/>
+    <menuitem id="menu_artcasa_report_ap" name="الذمم الدائنة"
+              parent="menu_artcasa_report_finance" action="action_report_payables" sequence="60"/>
+    <menuitem id="menu_artcasa_report_pdf" name="قائمة مالية رسمية PDF"
+              parent="menu_artcasa_report_finance" action="action_financial_report_wizard" sequence="70"/>
+
+    <!-- تقارير Home Blend داخل تطبيق الشركة نفسه -->
+    <menuitem id="menu_hb_app_reports" name="التقارير"
+              parent="homeblend_tenant.menu_homeblend_root" sequence="80"/>
+    <menuitem id="menu_hb_app_report_tenants" name="تقارير المستأجرين"
+              parent="menu_hb_app_reports" sequence="10"/>
+    <menuitem id="menu_hb_app_tenant_sales" name="إجمالي المبيعات"
+              parent="menu_hb_app_report_tenants" action="action_report_tenant_sales" sequence="10"/>
+    <menuitem id="menu_hb_app_best_tenants" name="أفضل المستأجرين"
+              parent="menu_hb_app_report_tenants" action="action_report_best_tenants" sequence="20"/>
+    <menuitem id="menu_hb_app_commissions" name="العمولات المستحقة"
+              parent="menu_hb_app_report_tenants" action="action_report_commissions" sequence="30"/>
+    <menuitem id="menu_hb_app_payments" name="المدفوعات"
+              parent="menu_hb_app_report_tenants" action="action_report_tenant_payments" sequence="40"/>
+    <menuitem id="menu_hb_app_overdue" name="المتأخرات"
+              parent="menu_hb_app_report_tenants" action="action_report_tenant_overdue" sequence="50"/>
+    <menuitem id="menu_hb_app_kpi" name="التقييم"
+              parent="menu_hb_app_report_tenants" action="action_report_tenant_kpi" sequence="60"/>
+    <menuitem id="menu_hb_app_contracts" name="العقود"
+              parent="menu_hb_app_report_tenants" action="action_report_contracts" sequence="70"/>
+
+    <menuitem id="menu_hb_app_report_finance" name="التقارير المالية"
+              parent="menu_hb_app_reports" sequence="20"/>
+    <menuitem id="menu_hb_app_pnl" name="الأرباح والخسائر"
+              parent="menu_hb_app_report_finance" action="action_report_pnl" sequence="10"/>
+    <menuitem id="menu_hb_app_income" name="الإيرادات"
+              parent="menu_hb_app_report_finance" action="action_report_income" sequence="12"/>
+    <menuitem id="menu_hb_app_expense" name="المصروفات"
+              parent="menu_hb_app_report_finance" action="action_report_expense" sequence="14"/>
+    <menuitem id="menu_hb_app_balance" name="الميزانية"
+              parent="menu_hb_app_report_finance" action="action_report_balance_sheet" sequence="20"/>
+    <menuitem id="menu_hb_app_cashflow" name="التدفقات النقدية"
+              parent="menu_hb_app_report_finance" action="action_report_cashflow" sequence="30"/>
+    <menuitem id="menu_hb_app_taxes" name="الضرائب"
+              parent="menu_hb_app_report_finance" action="action_report_taxes" sequence="40"/>
+    <menuitem id="menu_hb_app_ar" name="الذمم المدينة"
+              parent="menu_hb_app_report_finance" action="action_report_receivables" sequence="50"/>
+    <menuitem id="menu_hb_app_ap" name="الذمم الدائنة"
+              parent="menu_hb_app_report_finance" action="action_report_payables" sequence="60"/>
+    <menuitem id="menu_hb_app_budget" name="الميزانية التقديرية"
+              parent="menu_hb_app_report_finance" action="action_homeblend_budget" sequence="70"/>
+
+    <menuitem id="menu_hb_app_report_sales" name="تقارير المبيعات"
+              parent="menu_hb_app_reports" sequence="30"/>
+    <menuitem id="menu_hb_app_sales_period" name="حسب الفترة"
+              parent="menu_hb_app_report_sales" action="action_report_tenant_sales" sequence="10"/>
+    <menuitem id="menu_hb_app_sales_wh" name="حسب الفرع"
+              parent="menu_hb_app_report_sales" action="action_report_sales_warehouse" sequence="20"/>
+    <menuitem id="menu_hb_app_sales_categ" name="حسب النشاط"
+              parent="menu_hb_app_report_sales" action="action_report_sales_categ" sequence="30"/>
+    <menuitem id="menu_hb_app_best_products" name="أفضل المنتجات"
+              parent="menu_hb_app_report_sales" action="action_report_best_products" sequence="40"/>
+
+    <menuitem id="menu_hb_app_report_contracts" name="تقارير العقود"
+              parent="menu_hb_app_reports" sequence="40"/>
+    <menuitem id="menu_hb_app_contracts_expired" name="المنتهية"
+              parent="menu_hb_app_report_contracts" action="action_report_contracts_expired" sequence="10"/>
+    <menuitem id="menu_hb_app_contracts_expiring" name="تنتهي قريباً"
+              parent="menu_hb_app_report_contracts" action="action_report_contracts_expiring" sequence="20"/>
+    <menuitem id="menu_hb_app_contracts_renewed" name="المجددة"
+              parent="menu_hb_app_report_contracts" action="action_report_contracts_renewed" sequence="30"/>
+    <menuitem id="menu_hb_app_contracts_cancelled" name="الملغاة"
+              parent="menu_hb_app_report_contracts" action="action_report_contracts_cancelled" sequence="40"/>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_artcasa_stock_reservation_user,artcasa.stock.reservation.user,model_artcasa_stock_reservation,base.group_user,1,1,1,0
+access_artcasa_stock_reservation_manager,artcasa.stock.reservation.manager,model_artcasa_stock_reservation,homeblend_base.group_homeblend_manager,1,1,1,1
+access_artcasa_barcode_inv_user,artcasa.barcode.inventory.user,model_artcasa_barcode_inventory,base.group_user,1,1,1,1
+access_artcasa_barcode_line_user,artcasa.barcode.inventory.line.user,model_artcasa_barcode_inventory_line,base.group_user,1,1,1,1
