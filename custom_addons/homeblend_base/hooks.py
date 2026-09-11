@@ -83,6 +83,7 @@ def ensure_ops(env):
     step("contract terms", lambda: _link_contract_payment_term(env, main))
     if art:
         step("orderpoints", lambda: _ensure_orderpoints(env, art))
+        step("opening stock", lambda: _ensure_artcasa_opening_stock(env, art))
     if "website" in env:
         step("websites", lambda: _rename_websites(env, main))
     _logger.info("HomeBlend operational setup completed")
@@ -799,6 +800,45 @@ def _ensure_orderpoints(env, art):
         "product_max_qty": 10.0,
         "company_id": art.id,
     })
+
+
+def _ensure_artcasa_opening_stock(env, art):
+    product = env["product.product"].search([("default_code", "=", "AC-FURN-01")], limit=1)
+    warehouse = env["stock.warehouse"].search([("company_id", "=", art.id), ("code", "=", "AC")], limit=1)
+    if not product or not warehouse:
+        return
+    qty = product.with_context(warehouse_id=warehouse.id).qty_available
+    if qty >= 5:
+        return
+    lot_vals = {
+        "name": "AC-OPEN-01",
+        "product_id": product.id,
+        "company_id": art.id,
+    }
+    Lot = env["stock.lot"].with_company(art)
+    lot = Lot.search([("name", "=", "AC-OPEN-01"), ("product_id", "=", product.id)], limit=1)
+    if not lot and product.tracking in ("lot", "serial"):
+        if "expiration_date" in Lot._fields:
+            lot_vals["expiration_date"] = datetime.now() + relativedelta(years=1)
+        lot = Lot.create(lot_vals)
+    Quant = env["stock.quant"].with_company(art).with_context(inventory_mode=True)
+    vals = {
+        "product_id": product.id,
+        "location_id": warehouse.lot_stock_id.id,
+        "inventory_quantity": 10.0,
+    }
+    if lot:
+        vals["lot_id"] = lot.id
+    quant = Quant.search([
+        ("product_id", "=", product.id),
+        ("location_id", "=", warehouse.lot_stock_id.id),
+        ("lot_id", "=", lot.id if lot else False),
+    ], limit=1)
+    if quant:
+        quant.inventory_quantity = 10.0
+    else:
+        quant = Quant.create(vals)
+    quant.action_apply_inventory()
 
 
 def _rename_websites(env, main):

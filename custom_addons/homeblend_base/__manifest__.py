@@ -1,6 +1,6 @@
 {
     "name": "HomeBlend Base",
-    "version": "19.0.1.4.2",
+    "version": "19.0.1.4.3",
     "category": "Hidden",
     "summary": "أساس شركتَي Home Blend و Art Casa",
     "author": "HomeBlend",
