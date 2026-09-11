@@ -1,16 +1,37 @@
+// أودو يكتب direction:ltr ثم يعتمد على rtlcss. إذا بقيت الأصول LTR
+// مع dir=rtl على الصفحة تنعكس الحروف العربية وتبقى الأعمدة من اليسار.
 html[dir="rtl"],
-body.o_rtl,
-body.o_web_client.o_rtl {
-    direction: rtl;
-}
+body.o_rtl {
+    .o_web_client,
+    .o_action_manager,
+    .o_action,
+    .o_content,
+    .o_view_controller,
+    .o_list_view,
+    .o_list_renderer,
+    .o_list_table,
+    .o_kanban_view,
+    .o_form_view,
+    .o_control_panel,
+    .o_searchview,
+    .o_navbar,
+    .o_main_navbar,
+    .o_menu_sections {
+        direction: rtl !important;
+    }
 
-html[dir="rtl"] .o_navbar,
-html[dir="rtl"] .o_main_navbar,
-html[dir="rtl"] .o_menu_sections,
-body.o_rtl .o_navbar,
-body.o_rtl .o_main_navbar,
-body.o_rtl .o_menu_sections {
-    direction: rtl;
+    .o_list_table thead > tr > th,
+    .o_list_table tbody > tr > td,
+    .o_list_table tfoot > tr > td {
+        unicode-bidi: isolate;
+    }
+
+    .o_list_number,
+    .o_list_number_th,
+    .o_force_ltr {
+        direction: ltr !important;
+        unicode-bidi: embed;
+    }
 }
 
 .o_main_navbar .o_navbar_apps_menu .dropdown-toggle {
