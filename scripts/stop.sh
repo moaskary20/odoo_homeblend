@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-ROOT="/media/mohamed/d1/odoohomeblend"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 if [[ -f "$ROOT/logs/odoo.pid" ]]; then
   PID=$(cat "$ROOT/logs/odoo.pid")
   if kill -0 "$PID" 2>/dev/null; then

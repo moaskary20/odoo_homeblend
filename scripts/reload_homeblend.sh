@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
-cd /media/mohamed/d1/odoohomeblend
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT"
 PID=$(cat logs/odoo.pid 2>/dev/null || true)
 if [ -n "$PID" ] && ps -p "$PID" >/dev/null 2>&1; then
   kill "$PID"
