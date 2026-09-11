@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="webclient_bootstrap_rtl" inherit_id="web.webclient_bootstrap">
+        <xpath expr="//t[@t-call='web.layout']" position="inside">
+            <t t-set="html_data" t-value="{
+                'lang': ((request.env.lang or request.env.user.lang or 'ar_001') or '').replace('_', '-'),
+                'dir': request.env['res.lang']._get_data(code=request.env.lang or request.env.user.lang or 'ar_001').direction or 'rtl',
+                'style': 'height: 100%;',
+            }"/>
+        </xpath>
+    </template>
+</odoo>

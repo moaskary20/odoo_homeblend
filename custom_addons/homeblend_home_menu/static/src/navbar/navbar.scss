@@ -1,3 +1,18 @@
+html[dir="rtl"],
+body.o_rtl,
+body.o_web_client.o_rtl {
+    direction: rtl;
+}
+
+html[dir="rtl"] .o_navbar,
+html[dir="rtl"] .o_main_navbar,
+html[dir="rtl"] .o_menu_sections,
+body.o_rtl .o_navbar,
+body.o_rtl .o_main_navbar,
+body.o_rtl .o_menu_sections {
+    direction: rtl;
+}
+
 .o_main_navbar .o_navbar_apps_menu .dropdown-toggle {
     background: transparent;
     border: 0;

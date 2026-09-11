@@ -1,9 +1,12 @@
 {
     "name": "HomeBlend Home Menu",
-    "version": "19.0.1.0.0",
+    "version": "19.0.1.1.0",
     "category": "Hidden",
     "summary": "قائمة تطبيقات بملء الشاشة بأسلوب Odoo Enterprise",
     "depends": ["web"],
+    "data": [
+        "views/webclient_templates.xml",
+    ],
     "assets": {
         "web.assets_backend": [
             "homeblend_home_menu/static/src/home_menu/home_menu_service.js",
