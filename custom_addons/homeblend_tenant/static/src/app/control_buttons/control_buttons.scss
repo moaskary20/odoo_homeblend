@@ -1,0 +1,20 @@
+.product-screen .control-buttons {
+    flex-wrap: wrap;
+    justify-content: flex-start !important;
+    align-items: stretch;
+}
+
+.product-screen .control-buttons > .btn,
+.product-screen .control-buttons .set-partner,
+.product-screen .control-buttons .hb-pos-action-btn {
+    flex: 0 0 auto;
+    width: auto !important;
+    max-width: none;
+    overflow: visible;
+    text-overflow: unset;
+    white-space: nowrap;
+    direction: rtl;
+    text-align: center;
+    unicode-bidi: isolate;
+    padding-inline: 0.85rem;
+}
