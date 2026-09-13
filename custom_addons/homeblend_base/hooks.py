@@ -86,6 +86,14 @@ def ensure_ops(env):
         step("opening stock", lambda: _ensure_artcasa_opening_stock(env, art))
     if "website" in env:
         step("websites", lambda: _rename_websites(env, main))
+    if "pos.config" in env:
+        step("pos configs", lambda: _ensure_pos_configs(env, main, art))
+    if art and "loyalty.program" in env:
+        step("art loyalty", lambda: _ensure_loyalty(env, art))
+        step("art loyalty points", lambda: _ensure_loyalty_points(env, art))
+        step("art coupon", lambda: _ensure_artcasa_coupon(env, art))
+    if "loyalty.program" in env and "pos_ok" in env["loyalty.program"]._fields:
+        step("loyalty pos", lambda: env["loyalty.program"].search([("pos_ok", "=", False)]).write({"pos_ok": True}))
     _logger.info("HomeBlend operational setup completed")
 
 
@@ -132,6 +140,8 @@ def _enable_feature_groups(env, admin):
         # مراكز التكلفة: بدونها تظهر القائمة ويفشل فتحها بخطأ وصول
         "analytic.group_analytic_accounting",
         "homeblend_base.group_homeblend_manager",
+        "point_of_sale.group_pos_manager",
+        "point_of_sale.group_pos_user",
     ]
     links = []
     for xid in xmlids:
@@ -195,7 +205,7 @@ def _ensure_loyalty(env, company):
     if "loyalty.program" not in env:
         return
     Program = env["loyalty.program"].with_company(company)
-    if Program.search([("name", "=", "كوبونات Home Blend")], limit=1):
+    if Program.search([("name", "=", "كوبونات Home Blend"), ("company_id", "=", company.id)], limit=1):
         return
     try:
         program = Program.create({
@@ -248,7 +258,7 @@ def _ensure_loyalty_points(env, company):
     if "loyalty.program" not in env:
         return
     Program = env["loyalty.program"].with_company(company)
-    if Program.search([("name", "=", "نقاط ولاء Home Blend")], limit=1):
+    if Program.search([("name", "=", "نقاط ولاء Home Blend"), ("company_id", "=", company.id)], limit=1):
         return
     Program.create({
         "name": "نقاط ولاء Home Blend",
@@ -847,3 +857,64 @@ def _rename_websites(env, main):
     websites = env["website"].search([("company_id", "=", main.id)])
     if websites:
         websites[:1].write({"name": "Home Blend"})
+
+
+def _ensure_pos_configs(env, main, art):
+    if "pos.config" not in env:
+        return
+    PosConfig = env["pos.config"].sudo()
+    for company in filter(None, [main, art]):
+        if PosConfig.search([("company_id", "=", company.id)], limit=1):
+            continue
+        PosConfig.with_company(company).create({
+            "name": "%s POS" % company.name,
+            "company_id": company.id,
+        })
+    if art:
+        _ensure_artcasa_contract(env, art)
+
+
+def _ensure_artcasa_contract(env, art):
+    if "homeblend.tenant.contract" not in env:
+        return
+    Partner = env["res.partner"]
+    dealer = Partner.search([("is_tenant", "=", True), ("name", "=", "وكيل Art Casa")], limit=1)
+    if not dealer:
+        dealer = Partner.create({
+            "name": "وكيل Art Casa",
+            "is_company": True,
+            "is_tenant": True,
+            "company_id": art.id,
+        })
+    Contract = env["homeblend.tenant.contract"]
+    if Contract.search([("tenant_id", "=", dealer.id), ("company_id", "=", art.id), ("state", "=", "active")], limit=1):
+        return
+    today = date.today()
+    Contract.create({
+        "tenant_id": dealer.id,
+        "company_id": art.id,
+        "date_start": today,
+        "date_end": today + relativedelta(years=1),
+        "commission_percent": 15.0,
+        "commission_base": "before_tax",
+        "state": "active",
+    })
+
+
+def _ensure_artcasa_coupon(env, art):
+    if "loyalty.program" not in env or "loyalty.card" not in env:
+        return
+    program = env["loyalty.program"].search([
+        ("name", "=", "كوبونات Home Blend"),
+        ("company_id", "=", art.id),
+    ], limit=1)
+    if not program:
+        return
+    Card = env["loyalty.card"]
+    if Card.search([("code", "=", "AC10")], limit=1):
+        return
+    Card.create({
+        "program_id": program.id,
+        "code": "AC10",
+        "points": 1,
+    })

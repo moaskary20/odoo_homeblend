@@ -16,6 +16,10 @@
               action="account.action_move_out_invoice_type" sequence="30"/>
     <menuitem id="menu_homeblend_credit_notes" name="الإشعارات الدائنة" parent="menu_homeblend_sales"
               action="account.action_move_out_refund_type" sequence="40"/>
+    <menuitem id="menu_homeblend_pos" name="نقطة البيع" parent="menu_homeblend_sales"
+              action="point_of_sale.action_pos_config_kanban" sequence="50"/>
+    <menuitem id="menu_homeblend_pos_orders" name="طلبات نقطة البيع" parent="menu_homeblend_sales"
+              action="point_of_sale.action_pos_pos_form" sequence="55"/>
 
     <record id="action_homeblend_overdue_invoices" model="ir.actions.act_window">
         <field name="name">المتأخرات</field>

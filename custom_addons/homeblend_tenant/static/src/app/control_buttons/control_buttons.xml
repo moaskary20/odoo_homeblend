@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="point_of_sale.ControlButtons" t-inherit="point_of_sale.ControlButtons" t-inherit-mode="extension">
+        <xpath expr="//SelectPartnerButton" position="after">
+            <button t-if="!props.showRemainingButtons" class="btn btn-secondary btn-lg border-0 text-truncate"
+                    t-on-click="() => this.clickContract()">
+                <t t-if="currentOrder?.tenant_contract_id">
+                    <span t-esc="currentOrder.tenant_contract_id.name"/>
+                </t>
+                <t t-else="">العقد</t>
+            </button>
+        </xpath>
+        <xpath expr="//div[hasclass('control-buttons-modal')]" position="inside">
+            <button t-att-class="buttonClass" t-on-click="() => this.clickContract()">
+                <i class="fa fa-file-text-o me-1"/>
+                <t t-if="currentOrder?.tenant_contract_id" t-esc="currentOrder.tenant_contract_id.name"/>
+                <t t-else="">العقد</t>
+            </button>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pos_pos_form_tenant" model="ir.ui.view">
+        <field name="name">pos.order.form.tenant</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="tenant_id"/>
+                <field name="tenant_contract_id"/>
+                <field name="commission_percent" readonly="1"/>
+                <field name="commission_base" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="point_of_sale.menu_point_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

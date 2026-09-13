@@ -7,7 +7,7 @@ from odoo.exceptions import ValidationError, UserError
 class HomeblendTenantContract(models.Model):
     _name = "homeblend.tenant.contract"
     _description = "عقد مستأجر Home Blend"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "pos.load.mixin"]
     _order = "date_start desc, id desc"
 
     name = fields.Char(string="المرجع", required=True, copy=False, default=lambda self: _("New"), tracking=True)
@@ -174,6 +174,30 @@ class HomeblendTenantContract(models.Model):
             "view_mode": "list,form",
             "domain": [("tenant_id", "=", self.tenant_id.id)],
         }
+
+    @api.model
+    def _load_pos_data_domain(self, data, config):
+        today = fields.Date.context_today(self)
+        return [
+            ("state", "=", "active"),
+            ("company_id", "=", config.company_id.id),
+            ("date_start", "<=", today),
+            ("date_end", ">=", today),
+        ]
+
+    @api.model
+    def _load_pos_data_fields(self, config):
+        return [
+            "name",
+            "tenant_id",
+            "company_id",
+            "commission_percent",
+            "commission_base",
+            "payment_term_id",
+            "state",
+            "date_start",
+            "date_end",
+        ]
 
     @api.model
     def get_active_for_tenant(self, tenant, company=None):

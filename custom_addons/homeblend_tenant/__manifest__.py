@@ -1,11 +1,21 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.10.0",
+    "version": "19.0.1.11.0",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
     "license": "LGPL-3",
-    "depends": ["homeblend_base", "sale_management", "sale_loyalty", "account", "purchase", "product", "mail"],
+    "depends": [
+        "homeblend_base",
+        "sale_management",
+        "sale_loyalty",
+        "account",
+        "purchase",
+        "product",
+        "mail",
+        "point_of_sale",
+        "pos_loyalty",
+    ],
     "data": [
         "security/ir.model.access.csv",
         "security/tenant_security.xml",
@@ -16,12 +26,20 @@
         "views/res_partner_views.xml",
         "views/menu_views.xml",
         "views/report_invoice.xml",
+        "views/pos_order_views.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "homeblend_tenant/static/src/views/hide_invoice_upload.js",
         ],
+        "point_of_sale._assets_pos": [
+            "homeblend_tenant/static/src/app/models/tenant_contract.js",
+            "homeblend_tenant/static/src/app/models/pos_order.js",
+            "homeblend_tenant/static/src/app/control_buttons/control_buttons.js",
+            "homeblend_tenant/static/src/app/control_buttons/control_buttons.xml",
+        ],
     },
+    "post_init_hook": "post_init_hook",
     "installable": True,
     "application": True,
 }
