@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.9.0",
+    "version": "19.0.1.10.0",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
@@ -17,6 +17,11 @@
         "views/menu_views.xml",
         "views/report_invoice.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "homeblend_tenant/static/src/views/hide_invoice_upload.js",
+        ],
+    },
     "installable": True,
     "application": True,
 }
