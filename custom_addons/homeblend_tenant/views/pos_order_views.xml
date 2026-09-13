@@ -8,8 +8,17 @@
             <xpath expr="//field[@name='partner_id']" position="after">
                 <field name="tenant_id"/>
                 <field name="tenant_contract_id"/>
+                <field name="payment_term_id" readonly="1"/>
                 <field name="commission_percent" readonly="1"/>
                 <field name="commission_base" readonly="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="paper_invoice" string="الفاتورة الورقية">
+                    <group>
+                        <field name="paper_invoice" filename="paper_invoice_filename"/>
+                        <field name="paper_invoice_filename" invisible="1"/>
+                    </group>
+                </page>
             </xpath>
         </field>
     </record>

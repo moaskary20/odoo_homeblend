@@ -6,8 +6,16 @@
                     t-on-click="() => this.clickContract()">
                 <t t-if="currentOrder?.tenant_contract_id">
                     <span t-esc="currentOrder.tenant_contract_id.name"/>
+                    <t t-if="currentOrder.tenant_contract_id.payment_term_id">
+                        <small class="d-block" t-esc="currentOrder.tenant_contract_id.payment_term_id.name"/>
+                    </t>
                 </t>
                 <t t-else="">العقد</t>
+            </button>
+            <button t-if="!props.showRemainingButtons" class="btn btn-secondary btn-lg border-0 text-truncate"
+                    t-on-click="() => this.clickPaperInvoice()">
+                <t t-if="currentOrder?.paper_invoice_filename" t-esc="currentOrder.paper_invoice_filename"/>
+                <t t-else="">فاتورة ورقية</t>
             </button>
         </xpath>
         <xpath expr="//div[hasclass('control-buttons-modal')]" position="inside">
@@ -15,6 +23,11 @@
                 <i class="fa fa-file-text-o me-1"/>
                 <t t-if="currentOrder?.tenant_contract_id" t-esc="currentOrder.tenant_contract_id.name"/>
                 <t t-else="">العقد</t>
+            </button>
+            <button t-att-class="buttonClass" t-on-click="() => this.clickPaperInvoice()">
+                <i class="fa fa-upload me-1"/>
+                <t t-if="currentOrder?.paper_invoice_filename" t-esc="currentOrder.paper_invoice_filename"/>
+                <t t-else="">فاتورة ورقية</t>
             </button>
         </xpath>
     </t>

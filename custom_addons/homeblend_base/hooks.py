@@ -80,7 +80,7 @@ def ensure_ops(env):
     step("payment terms", lambda: _ensure_payment_terms(env, main, art))
     step("collection methods", lambda: _ensure_collection_methods(env, main, art))
     step("purchase approval", lambda: _ensure_purchase_approval(env, main, art))
-    step("contract terms", lambda: _link_contract_payment_term(env, main))
+    step("contract terms", lambda: _link_contract_payment_term(env, main, art))
     if art:
         step("orderpoints", lambda: _ensure_orderpoints(env, art))
         step("opening stock", lambda: _ensure_artcasa_opening_stock(env, art))
@@ -778,19 +778,21 @@ def _ensure_master_data(env, main, art):
                 existing.write(updates)
 
 
-def _link_contract_payment_term(env, main):
+def _link_contract_payment_term(env, main, art=None):
     if "homeblend.tenant.contract" not in env:
         return
-    term = env["account.payment.term"].search([
-        ("name", "=", "أقساط 3 أشهر"),
-        ("company_id", "=", main.id),
-    ], limit=1)
-    if not term:
-        return
-    env["homeblend.tenant.contract"].search([
-        ("company_id", "=", main.id),
-        ("payment_term_id", "=", False),
-    ]).write({"payment_term_id": term.id, "late_fee_percent": 2.0})
+    companies = main | art if art else main
+    for company in companies:
+        term = env["account.payment.term"].search([
+            ("name", "=", "أقساط 3 أشهر"),
+            ("company_id", "=", company.id),
+        ], limit=1)
+        if not term:
+            continue
+        env["homeblend.tenant.contract"].search([
+            ("company_id", "=", company.id),
+            ("payment_term_id", "=", False),
+        ]).write({"payment_term_id": term.id, "late_fee_percent": 2.0})
 
 
 def _ensure_orderpoints(env, art):
@@ -872,6 +874,37 @@ def _ensure_pos_configs(env, main, art):
         })
     if art:
         _ensure_artcasa_contract(env, art)
+    _ensure_pos_invoice_followup(env, main, art)
+
+
+def _ensure_pos_invoice_followup(env, main, art):
+    """كل جلسة POS تصدر فاتورة عميل يمكن متابعتها، مع وسيلة أقساط من العقد."""
+    if "pos.config" not in env:
+        return
+    PosConfig = env["pos.config"].sudo()
+    Method = env["pos.payment.method"].sudo()
+    Journal = env["account.journal"]
+    for config in PosConfig.search([]):
+        company = config.company_id
+        if not config.invoice_journal_id:
+            sale_journal = Journal.search([
+                ("type", "=", "sale"),
+                ("company_id", "=", company.id),
+            ], limit=1)
+            if sale_journal:
+                config.invoice_journal_id = sale_journal.id
+        method = Method.search([
+            ("company_id", "=", company.id),
+            ("name", "=", "أقساط / آجل"),
+        ], limit=1)
+        if not method:
+            method = Method.with_company(company).create({
+                "name": "أقساط / آجل",
+                "company_id": company.id,
+                "split_transactions": True,
+            })
+        if method.id not in config.payment_method_ids.ids:
+            config.write({"payment_method_ids": [Command.link(method.id)]})
 
 
 def _ensure_artcasa_contract(env, art):

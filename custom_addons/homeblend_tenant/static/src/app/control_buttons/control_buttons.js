@@ -19,12 +19,16 @@ patch(ControlButtons.prototype, {
         const preferred = partner?.is_tenant
             ? filtered.filter((contract) => contract.tenant_id?.id === partner.id)
             : filtered;
-        const list = (preferred.length ? preferred : filtered).map((contract) => ({
-            id: contract.id,
-            label: `${contract.name} — ${contract.tenant_id?.name || ""} (${contract.commission_percent || 0}%)`,
-            isSelected: current && current.id === contract.id,
-            item: contract,
-        }));
+        const list = (preferred.length ? preferred : filtered).map((contract) => {
+            const term = contract.payment_term_id?.name || "";
+            const termPart = term ? ` — ${term}` : "";
+            return {
+                id: contract.id,
+                label: `${contract.name} — ${contract.tenant_id?.name || ""} (${contract.commission_percent || 0}%)${termPart}`,
+                isSelected: current && current.id === contract.id,
+                item: contract,
+            };
+        });
         list.unshift({
             id: -1,
             label: _t("بدون عقد"),
@@ -42,5 +46,32 @@ patch(ControlButtons.prototype, {
             return;
         }
         this.currentOrder.setContract(selected || false);
+    },
+    async clickPaperInvoice() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*,.pdf,application/pdf";
+        input.onchange = async () => {
+            const file = input.files?.[0];
+            if (!file || !this.currentOrder) {
+                return;
+            }
+            const data = await this._readFileAsBase64(file);
+            this.currentOrder.setPaperInvoice(data, file.name);
+            this.notification.add(_t("تم إرفاق الفاتورة الورقية. ستُحفظ داخل فاتورة العميل بعد الدفع."));
+        };
+        input.click();
+    },
+    _readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const result = reader.result || "";
+                const base64 = String(result).split(",")[1] || "";
+                resolve(base64);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     },
 });
