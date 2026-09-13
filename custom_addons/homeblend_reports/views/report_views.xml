@@ -73,12 +73,11 @@
         <field name="name">sale.order.artcasa.pivot</field>
         <field name="model">sale.order</field>
         <field name="arch" type="xml">
-            <pivot string="ربح Art Casa">
+            <pivot string="ربح المشاريع">
                 <field name="project_id" type="row"/>
                 <field name="user_id" type="row"/>
                 <field name="amount_untaxed" type="measure"/>
-                <field name="extra_cost_total" type="measure"/>
-                <field name="margin_after_extra" type="measure"/>
+                <field name="amount_total" type="measure"/>
             </pivot>
         </field>
     </record>

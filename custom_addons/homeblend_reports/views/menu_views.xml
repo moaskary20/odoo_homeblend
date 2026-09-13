@@ -63,44 +63,6 @@
     <menuitem id="menu_report_budget" name="الميزانيات"
               parent="menu_homeblend_reports_root" action="action_homeblend_budget" sequence="96"/>
 
-    <!-- القوائم المالية داخل تطبيق Art Casa نفسه، إضافة إلى تطبيق التقارير.
-         تُعرّف هنا لأن homeblend_reports يعتمد على artcasa_operations. -->
-    <menuitem id="menu_artcasa_financial_pdf" name="قائمة مالية رسمية PDF"
-              parent="artcasa_operations.menu_artcasa_accounting"
-              action="action_financial_report_wizard" sequence="60"/>
-    <menuitem id="menu_artcasa_assets" name="الأصول والإهلاك"
-              parent="artcasa_operations.menu_artcasa_accounting"
-              action="action_homeblend_asset" sequence="70"/>
-    <menuitem id="menu_artcasa_budgets" name="الميزانيات"
-              parent="artcasa_operations.menu_artcasa_accounting"
-              action="action_homeblend_budget" sequence="80"/>
-    <menuitem id="menu_artcasa_pnl" name="الأرباح والخسائر"
-              parent="artcasa_operations.menu_artcasa_accounting"
-              action="action_report_pnl" sequence="90"/>
-    <menuitem id="menu_artcasa_balance" name="الميزانية العمومية"
-              parent="artcasa_operations.menu_artcasa_accounting"
-              action="action_report_balance_sheet" sequence="100"/>
-    <menuitem id="menu_artcasa_cashflow" name="التدفقات النقدية"
-              parent="artcasa_operations.menu_artcasa_accounting"
-              action="action_report_cashflow" sequence="110"/>
-
-    <menuitem id="menu_artcasa_report_finance" name="التقارير المالية"
-              parent="artcasa_operations.menu_artcasa_reports" sequence="40"/>
-    <menuitem id="menu_artcasa_report_trial" name="ميزان المراجعة"
-              parent="menu_artcasa_report_finance" action="action_report_trial_balance" sequence="10"/>
-    <menuitem id="menu_artcasa_report_pnl2" name="الأرباح والخسائر"
-              parent="menu_artcasa_report_finance" action="action_report_pnl" sequence="20"/>
-    <menuitem id="menu_artcasa_report_balance2" name="الميزانية العمومية"
-              parent="menu_artcasa_report_finance" action="action_report_balance_sheet" sequence="30"/>
-    <menuitem id="menu_artcasa_report_cashflow2" name="التدفقات النقدية"
-              parent="menu_artcasa_report_finance" action="action_report_cashflow" sequence="40"/>
-    <menuitem id="menu_artcasa_report_ar" name="الذمم المدينة"
-              parent="menu_artcasa_report_finance" action="action_report_receivables" sequence="50"/>
-    <menuitem id="menu_artcasa_report_ap" name="الذمم الدائنة"
-              parent="menu_artcasa_report_finance" action="action_report_payables" sequence="60"/>
-    <menuitem id="menu_artcasa_report_pdf" name="قائمة مالية رسمية PDF"
-              parent="menu_artcasa_report_finance" action="action_financial_report_wizard" sequence="70"/>
-
     <!-- تقارير Home Blend داخل تطبيق الشركة نفسه -->
     <menuitem id="menu_hb_app_reports" name="التقارير"
               parent="homeblend_tenant.menu_homeblend_root" sequence="80"/>

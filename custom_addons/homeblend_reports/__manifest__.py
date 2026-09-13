@@ -1,6 +1,6 @@
 {
     "name": "HomeBlend Reports",
-    "version": "19.0.1.10.0",
+    "version": "19.0.1.11.0",
     "category": "Productivity",
     "summary": "تقارير المستأجرين والعمولات والمبيعات والمشاريع",
     "author": "HomeBlend",
@@ -8,7 +8,6 @@
     "depends": [
         "homeblend_tenant",
         "homeblend_fulfillment",
-        "artcasa_operations",
         "homeblend_hr_payroll",
         "sale_stock",
         "account",
