@@ -1,11 +1,11 @@
 {
     "name": "HomeBlend Documents",
-    "version": "19.0.1.2.0",
+    "version": "19.0.1.3.0",
     "category": "Productivity",
     "summary": "وثائق ومرفقات وتوقيع إلكتروني مبسط",
     "author": "HomeBlend",
     "license": "LGPL-3",
-    "depends": ["homeblend_base", "mail"],
+    "depends": ["homeblend_base", "account", "mail"],
     "data": [
         "security/ir.model.access.csv",
         "security/dms_security.xml",

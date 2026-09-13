@@ -12,6 +12,40 @@
                 <field name="commission_invoice_id" readonly="1"/>
                 <field name="homeblend_qr_payload" invisible="state != 'posted'" widget="CopyClipboardChar"/>
             </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_open_paper_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o"
+                        invisible="move_type not in ('out_invoice', 'out_refund') or not has_paper_invoice">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">فاتورة ورقية</span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="paper_invoice" string="الفاتورة الورقية"
+                      invisible="move_type not in ('out_invoice', 'out_refund')">
+                    <group>
+                        <group string="المسح / الملف الورقي">
+                            <field name="paper_invoice" filename="paper_invoice_filename"/>
+                            <field name="paper_invoice_filename" invisible="1"/>
+                            <field name="has_paper_invoice" invisible="1"/>
+                        </group>
+                    </group>
+                    <p class="text-muted">
+                        ارفع صورة أو ملف PDF للفاتورة الورقية ليبقى محفوظاً داخل فاتورة العميل هذه.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_invoice_tree_paper" model="ir.ui.view">
+        <field name="name">account.invoice.list.paper</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='status_in_payment']" position="after">
+                <field name="has_paper_invoice" optional="show" string="ورقية"
+                       column_invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund', 'out_receipt')"/>
+            </xpath>
         </field>
     </record>
 </odoo>

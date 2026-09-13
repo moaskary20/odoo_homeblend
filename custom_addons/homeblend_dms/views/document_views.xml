@@ -8,6 +8,7 @@
                 <field name="reference"/>
                 <field name="name"/>
                 <field name="document_type"/>
+                <field name="invoice_id" optional="show"/>
                 <field name="partner_id"/>
                 <field name="sign_state" widget="badge"/>
                 <field name="signed_date"/>
@@ -31,6 +32,7 @@
                             <field name="reference"/>
                             <field name="name"/>
                             <field name="document_type"/>
+                            <field name="invoice_id"/>
                             <field name="partner_id"/>
                         </group>
                         <group>

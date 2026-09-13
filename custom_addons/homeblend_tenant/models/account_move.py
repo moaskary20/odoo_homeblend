@@ -21,6 +21,18 @@ class AccountMove(models.Model):
     is_late_fee_invoice = fields.Boolean(string="فاتورة غرامة تأخير", copy=False)
     late_fee_invoice_id = fields.Many2one("account.move", string="فاتورة الغرامة", copy=False)
     homeblend_qr_payload = fields.Char(string="QR الفاتورة", compute="_compute_homeblend_qr_payload")
+    paper_invoice = fields.Binary(string="الفاتورة الورقية", attachment=True, copy=False)
+    paper_invoice_filename = fields.Char(string="اسم ملف الفاتورة الورقية", copy=False)
+    has_paper_invoice = fields.Boolean(
+        string="يوجد فاتورة ورقية",
+        compute="_compute_has_paper_invoice",
+        store=True,
+    )
+
+    @api.depends("paper_invoice")
+    def _compute_has_paper_invoice(self):
+        for move in self:
+            move.has_paper_invoice = bool(move.paper_invoice)
 
     def _post(self, soft=True):
         posted = super()._post(soft=soft)
@@ -158,6 +170,45 @@ class AccountMove(models.Model):
     def action_generate_late_fees(self):
         return self._cron_homeblend_late_fees()
 
+    def action_open_paper_invoice(self):
+        self.ensure_one()
+        return True
+
+    def _sync_paper_invoice_document(self):
+        if self.env.context.get("skip_paper_doc_sync") or "homeblend.document" not in self.env:
+            return True
+        Document = self.env["homeblend.document"].sudo().with_context(skip_paper_invoice_push=True)
+        for move in self:
+            if move.move_type not in ("out_invoice", "out_refund"):
+                continue
+            domain = [
+                ("res_model", "=", "account.move"),
+                ("res_id", "=", move.id),
+                ("document_type", "=", "invoice"),
+            ]
+            doc = Document.search(domain, limit=1)
+            if "invoice_id" in Document._fields:
+                doc = doc or Document.search([("invoice_id", "=", move.id)], limit=1)
+            if not move.paper_invoice:
+                continue
+            vals = {
+                "name": move.paper_invoice_filename or _("فاتورة ورقية %s") % (move.name or move.id),
+                "datas": move.paper_invoice,
+                "datas_fname": move.paper_invoice_filename,
+                "document_type": "invoice",
+                "partner_id": move.partner_id.id,
+                "company_id": move.company_id.id,
+                "res_model": "account.move",
+                "res_id": move.id,
+            }
+            if "invoice_id" in Document._fields:
+                vals["invoice_id"] = move.id
+            if doc:
+                doc.write(vals)
+            else:
+                Document.create(vals)
+        return True
+
     @api.model_create_multi
     def create(self, vals_list):
         moves = super().create(vals_list)
@@ -167,4 +218,11 @@ class AccountMove(models.Model):
                 if so and so.tenant_id:
                     move.tenant_id = so.tenant_id
                     move.homeblend_contract_id = so.tenant_contract_id
+        moves.filtered("paper_invoice")._sync_paper_invoice_document()
         return moves
+
+    def write(self, vals):
+        res = super().write(vals)
+        if "paper_invoice" in vals or "paper_invoice_filename" in vals:
+            self._sync_paper_invoice_document()
+        return res
