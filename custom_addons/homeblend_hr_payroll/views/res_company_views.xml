@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_form_payroll" model="ir.ui.view">
+        <field name="name">res.company.form.homeblend.payroll</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="payroll_journal_id"/>
+                <field name="payroll_expense_account_id"/>
+                <field name="payroll_payable_account_id"/>
+                <field name="payroll_insurance_account_id"/>
+                <field name="payroll_tax_account_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

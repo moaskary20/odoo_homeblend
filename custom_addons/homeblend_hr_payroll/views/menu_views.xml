@@ -5,4 +5,7 @@
     <menuitem id="menu_homeblend_payslip" name="قسائم الرواتب"
               parent="menu_homeblend_payroll_root"
               action="action_homeblend_payslip" sequence="10"/>
+    <menuitem id="menu_homeblend_employee_advance" name="سلف الموظفين"
+              parent="menu_homeblend_payroll_root"
+              action="action_homeblend_employee_advance" sequence="20"/>
 </odoo>

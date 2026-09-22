@@ -10,6 +10,8 @@
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="gross"/>
+                <field name="time_deduction" optional="show"/>
+                <field name="advance_deduction" optional="show"/>
                 <field name="net"/>
                 <field name="state" widget="badge"/>
                 <field name="company_id" groups="base.group_multi_company"/>
@@ -22,6 +24,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="action_recompute_attendance" type="object" string="إعادة حساب الحضور"
+                            invisible="state != 'draft'"/>
                     <button name="action_confirm" type="object" string="اعتماد" class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_mark_paid" type="object" string="مدفوعة" invisible="state != 'confirmed'"/>
                     <button name="action_cancel" type="object" string="إلغاء" invisible="state in ('paid','cancelled')"/>
@@ -40,10 +44,24 @@
                             <field name="wage"/>
                             <field name="allowances"/>
                             <field name="other_earnings"/>
+                            <field name="extra_deduction"/>
                             <field name="insurance_base"/>
                             <field name="insurance_employee_rate"/>
                             <field name="insurance_employer_rate"/>
                             <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="الحضور والإجازة">
+                        <group>
+                            <field name="expected_hours"/>
+                            <field name="attendance_hours"/>
+                            <field name="shortage_hours"/>
+                        </group>
+                        <group>
+                            <field name="paid_leave_days"/>
+                            <field name="unpaid_leave_days"/>
+                            <field name="time_deduction"/>
+                            <field name="advance_deduction"/>
                         </group>
                     </group>
                     <group string="النتيجة">
@@ -58,6 +76,14 @@
                             <field name="move_id" readonly="1"/>
                         </group>
                     </group>
+                    <field name="advance_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="amount"/>
+                            <field name="state"/>
+                        </list>
+                    </field>
                     <field name="notes" placeholder="ملاحظات"/>
                 </sheet>
                 <chatter/>

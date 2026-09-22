@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_homeblend_employee_advance_list" model="ir.ui.view">
+        <field name="name">homeblend.employee.advance.list</field>
+        <field name="model">homeblend.employee.advance</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="amount"/>
+                <field name="state" widget="badge"/>
+                <field name="payslip_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_homeblend_employee_advance_form" model="ir.ui.view">
+        <field name="name">homeblend.employee.advance.form</field>
+        <field name="model">homeblend.employee.advance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="تأكيد" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_cancel" type="object" string="إلغاء" invisible="state not in ('draft', 'confirmed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,deducted"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="employee_id"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="payslip_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="ملاحظات"/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_homeblend_employee_advance" model="ir.actions.act_window">
+        <field name="name">سلف الموظفين</field>
+        <field name="res_model">homeblend.employee.advance</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
