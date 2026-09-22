@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_delivery_lines" model="ir.ui.view">
+        <field name="name">account.move.form.homeblend.delivery</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='invoice_tab']//field[@name='invoice_line_ids']/list/field[@name='quantity']" position="after">
+                <field name="hb_delivery_date" string="تاريخ التسليم" width="110px"
+                       column_invisible="parent.move_type not in ('out_invoice', 'out_refund') or parent.is_commission_invoice"
+                       required="parent.move_type in ('out_invoice', 'out_refund') and not parent.is_commission_invoice and display_type == 'product'"/>
+                <field name="hb_delivered" string="تم التسليم" width="90px"
+                       column_invisible="parent.move_type not in ('out_invoice', 'out_refund') or parent.is_commission_invoice"/>
+            </xpath>
+            <xpath expr="//page[@name='invoice_tab']//field[@name='invoice_line_ids']/form//field[@name='quantity']" position="after">
+                <field name="hb_delivery_date" string="تاريخ التسليم"
+                       invisible="parent.move_type not in ('out_invoice', 'out_refund') or parent.is_commission_invoice"
+                       required="parent.move_type in ('out_invoice', 'out_refund') and not parent.is_commission_invoice and display_type == 'product'"/>
+                <field name="hb_delivered" string="تم التسليم"
+                       invisible="parent.move_type not in ('out_invoice', 'out_refund') or parent.is_commission_invoice"/>
+            </xpath>
+            <xpath expr="//page[@name='invoice_tab']" position="after">
+                <page name="hb_delivery" string="تسليم المنتجات"
+                      invisible="move_type not in ('out_invoice', 'out_refund') or is_commission_invoice">
+                    <field name="invoice_line_ids" readonly="0" nolabel="1">
+                        <list string="تسليم المنتجات" editable="bottom" create="false" delete="false">
+                            <field name="display_type" column_invisible="1"/>
+                            <field name="product_id" string="المنتج" readonly="1"/>
+                            <field name="name" string="الوصف" readonly="1" optional="hide"/>
+                            <field name="quantity" string="الكمية" readonly="1"/>
+                            <field name="hb_delivery_date" string="تاريخ التسليم"
+                                   required="display_type == 'product'"/>
+                            <field name="hb_delivered" string="تم التسليم"/>
+                        </list>
+                    </field>
+                    <p class="text-muted">
+                        عند إنشاء الفاتورة حدّد لكل منتج تاريخ التسليم وهل تم تسليمه. تظهر نفس البيانات داخل تتبع الطلب.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

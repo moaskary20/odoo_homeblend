@@ -14,6 +14,8 @@
                 <field name="user_id" string="المسؤول"/>
                 <field name="progress" widget="progressbar" string="نسبة الإنجاز"/>
                 <field name="state" widget="badge" string="الحالة"/>
+                <field name="delivered_product_count" string="مسلّم"/>
+                <field name="product_line_count" string="المنتجات"/>
             </list>
         </field>
     </record>
@@ -48,19 +50,38 @@
                             <field name="progress" widget="progressbar" string="نسبة الإنجاز"/>
                             <field name="payment_state" string="حالة الدفع"/>
                             <field name="delivery_state" string="حالة التسليم"/>
+                            <field name="delivered_product_count" string="منتجات مسلّمة"/>
+                            <field name="product_line_count" string="عدد المنتجات"/>
                         </group>
                     </group>
-                    <group string="الفواتير">
-                        <field name="invoice_ids" nolabel="1" colspan="2" readonly="1">
-                            <list string="الفواتير">
-                                <field name="name" string="رقم الفاتورة"/>
-                                <field name="invoice_date" string="تاريخ الفاتورة"/>
-                                <field name="amount_total" string="الإجمالي"/>
-                                <field name="payment_state" string="حالة الدفع"/>
-                                <field name="state" string="حالة الفاتورة"/>
-                            </list>
-                        </field>
-                    </group>
+                    <notebook>
+                        <page string="المنتجات وتواريخ التسليم" name="hb_delivery_products">
+                            <p class="text-muted">
+                                المنتجات أدناه من فاتورة العميل. أدخل تاريخ التسليم وهل تم التسليم عند إنشاء الفاتورة (سطور الفاتورة أو تبويب تسليم المنتجات).
+                            </p>
+                            <field name="delivery_line_ids" nolabel="1" readonly="1">
+                                <list string="المنتجات" editable="bottom" create="false" delete="false">
+                                    <field name="move_id" string="الفاتورة" readonly="1"/>
+                                    <field name="product_id" string="المنتج" readonly="1"/>
+                                    <field name="name" string="الوصف" optional="hide" readonly="1"/>
+                                    <field name="quantity" string="الكمية" readonly="1"/>
+                                    <field name="hb_delivery_date" string="تاريخ التسليم"/>
+                                    <field name="hb_delivered" string="تم التسليم"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="الفواتير" name="hb_invoices">
+                            <field name="invoice_ids" nolabel="1" readonly="1">
+                                <list string="الفواتير">
+                                    <field name="name" string="رقم الفاتورة"/>
+                                    <field name="invoice_date" string="تاريخ الفاتورة"/>
+                                    <field name="amount_total" string="الإجمالي"/>
+                                    <field name="payment_state" string="حالة الدفع"/>
+                                    <field name="state" string="حالة الفاتورة"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                     <field name="notes" placeholder="ملاحظات" string="ملاحظات"/>
                     <field name="attachment_ids" widget="many2many_binary" string="المرفقات"/>
                 </sheet>

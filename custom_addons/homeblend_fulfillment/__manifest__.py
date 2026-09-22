@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Order Tracking",
-    "version": "19.0.1.7.2",
+    "version": "19.0.1.8.0",
     "category": "Sales",
     "summary": "تتبع الطلبات والتنبيهات وKPI المستأجر",
     "author": "HomeBlend",
@@ -11,6 +11,7 @@
         "security/fulfillment_security.xml",
         "data/fulfillment_data.xml",
         "views/order_track_views.xml",
+        "views/account_move_views.xml",
         "views/sale_order_views.xml",
         "views/res_partner_views.xml",
         "views/complaint_views.xml",

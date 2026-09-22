@@ -57,6 +57,13 @@ class HomeblendOrderTrack(models.Model):
         string="حالة الدفع",
         compute="_compute_payment_state",
     )
+    delivery_line_ids = fields.Many2many(
+        "account.move.line",
+        string="منتجات التسليم",
+        compute="_compute_delivery_line_ids",
+    )
+    delivered_product_count = fields.Integer(string="منتجات مسلّمة", compute="_compute_delivery_line_ids")
+    product_line_count = fields.Integer(string="عدد المنتجات", compute="_compute_delivery_line_ids")
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -99,6 +106,23 @@ class HomeblendOrderTrack(models.Model):
                 rec.payment_state = "partial"
             else:
                 rec.payment_state = invoices[:1].payment_state or "not_paid"
+
+    @api.depends(
+        "sale_order_id.invoice_ids.invoice_line_ids.hb_delivered",
+        "sale_order_id.invoice_ids.invoice_line_ids.hb_delivery_date",
+        "sale_order_id.invoice_ids.invoice_line_ids.product_id",
+        "sale_order_id.invoice_ids.move_type",
+        "sale_order_id.invoice_ids.is_commission_invoice",
+    )
+    def _compute_delivery_line_ids(self):
+        for rec in self:
+            invoices = rec.sale_order_id.invoice_ids.filtered(
+                lambda m: m.move_type == "out_invoice" and not m.is_commission_invoice
+            )
+            lines = invoices.invoice_line_ids.filtered(lambda l: l.display_type == "product")
+            rec.delivery_line_ids = lines
+            rec.product_line_count = len(lines)
+            rec.delivered_product_count = len(lines.filtered("hb_delivered"))
 
     def action_set_state(self):
         state = self.env.context.get("next_state")
