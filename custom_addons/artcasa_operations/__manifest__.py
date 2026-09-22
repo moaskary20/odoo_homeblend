@@ -1,12 +1,13 @@
 {
     "name": "Art Casa Operations",
-    "version": "19.0.1.13.0",
+    "version": "19.0.1.14.0",
     "category": "Sales",
     "summary": "تقسيم الفاتورة، الربح بعد التكاليف الإضافية، وحجز مخزون المندوب",
     "author": "HomeBlend",
     "license": "LGPL-3",
     "depends": [
         "homeblend_base",
+        "homeblend_fulfillment",
         "sale_management",
         "sale_project",
         "sale_margin",

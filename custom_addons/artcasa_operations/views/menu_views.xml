@@ -22,6 +22,15 @@
     <menuitem id="menu_artcasa_customers" name="العملاء"
               parent="menu_artcasa_sales" action="account.res_partner_action_customer" sequence="30"/>
 
+    <!-- تتبع الطلبات -->
+    <menuitem id="menu_artcasa_tracking" name="تتبع الطلبات" parent="menu_artcasa_root" sequence="9"/>
+    <menuitem id="menu_artcasa_tracks" name="دورة الطلب"
+              parent="menu_artcasa_tracking"
+              action="homeblend_fulfillment.action_homeblend_order_track" sequence="10"/>
+    <menuitem id="menu_artcasa_complaints" name="الشكاوى"
+              parent="menu_artcasa_tracking"
+              action="homeblend_fulfillment.action_homeblend_complaint" sequence="20"/>
+
     <!-- 2. التحصيل -->
     <menuitem id="menu_artcasa_collection" name="التحصيل" parent="menu_artcasa_root" sequence="10"/>
     <menuitem id="menu_artcasa_customer_invoices" name="فواتير العملاء"
