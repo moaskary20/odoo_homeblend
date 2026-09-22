@@ -21,7 +21,7 @@
         <field name="name">homeblend.order.track.form</field>
         <field name="model">homeblend.order.track</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="تتبع الطلب">
                 <header>
                     <button name="action_processing" type="object" string="قيد التجهيز" invisible="state != 'confirmed'"/>
                     <button name="action_ready" type="object" string="جاهز" class="btn-primary" invisible="state != 'processing'"/>
@@ -34,35 +34,35 @@
                 </header>
                 <sheet>
                     <group>
-                        <group>
-                            <field name="name"/>
-                            <field name="sale_order_id"/>
-                            <field name="partner_id"/>
-                            <field name="tenant_id"/>
+                        <group string="بيانات الطلب">
+                            <field name="name" string="رقم العملية"/>
+                            <field name="sale_order_id" string="أمر البيع"/>
+                            <field name="partner_id" string="العميل"/>
+                            <field name="tenant_id" string="المستأجر"/>
                         </group>
-                        <group>
-                            <field name="date_order"/>
-                            <field name="commitment_date"/>
-                            <field name="user_id"/>
-                            <field name="amount_total"/>
-                            <field name="progress" widget="progressbar"/>
-                            <field name="payment_state"/>
+                        <group string="المتابعة">
+                            <field name="date_order" string="تاريخ الطلب"/>
+                            <field name="commitment_date" string="موعد التسليم"/>
+                            <field name="user_id" string="المسؤول"/>
+                            <field name="amount_total" string="الإجمالي"/>
+                            <field name="progress" widget="progressbar" string="نسبة الإنجاز"/>
+                            <field name="payment_state" string="حالة الدفع"/>
                             <field name="delivery_state" string="حالة التسليم"/>
                         </group>
                     </group>
                     <group string="الفواتير">
                         <field name="invoice_ids" nolabel="1" colspan="2" readonly="1">
-                            <list>
-                                <field name="name"/>
-                                <field name="invoice_date"/>
-                                <field name="amount_total"/>
-                                <field name="payment_state"/>
-                                <field name="state"/>
+                            <list string="الفواتير">
+                                <field name="name" string="رقم الفاتورة"/>
+                                <field name="invoice_date" string="تاريخ الفاتورة"/>
+                                <field name="amount_total" string="الإجمالي"/>
+                                <field name="payment_state" string="حالة الدفع"/>
+                                <field name="state" string="حالة الفاتورة"/>
                             </list>
                         </field>
                     </group>
-                    <field name="notes" placeholder="ملاحظات"/>
-                    <field name="attachment_ids" widget="many2many_binary"/>
+                    <field name="notes" placeholder="ملاحظات" string="ملاحظات"/>
+                    <field name="attachment_ids" widget="many2many_binary" string="المرفقات"/>
                 </sheet>
                 <chatter/>
             </form>

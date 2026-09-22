@@ -22,20 +22,27 @@ class HomeblendOrderTrack(models.Model):
     _inherit = ["mail.thread", "mail.activity.mixin"]
     _order = "id desc"
 
-    name = fields.Char(string="رقم العملية", required=True, copy=False, default=lambda self: _("New"))
-    sale_order_id = fields.Many2one("sale.order", required=True, ondelete="cascade", index=True, tracking=True)
-    partner_id = fields.Many2one(related="sale_order_id.partner_id", store=True)
-    tenant_id = fields.Many2one("res.partner", related="sale_order_id.tenant_id", store=True)
-    invoice_ids = fields.Many2many("account.move", related="sale_order_id.invoice_ids")
-    date_order = fields.Datetime(related="sale_order_id.date_order", store=True)
-    commitment_date = fields.Datetime(related="sale_order_id.commitment_date", store=True)
-    user_id = fields.Many2one(related="sale_order_id.user_id", store=True)
-    company_id = fields.Many2one(related="sale_order_id.company_id", store=True)
-    amount_total = fields.Monetary(related="sale_order_id.amount_total", store=True)
-    currency_id = fields.Many2one(related="sale_order_id.currency_id", store=True)
+    name = fields.Char(string="رقم العملية", required=True, copy=False, default="جديد")
+    sale_order_id = fields.Many2one(
+        "sale.order",
+        string="أمر البيع",
+        required=True,
+        ondelete="cascade",
+        index=True,
+        tracking=True,
+    )
+    partner_id = fields.Many2one(related="sale_order_id.partner_id", string="العميل", store=True)
+    tenant_id = fields.Many2one("res.partner", related="sale_order_id.tenant_id", string="المستأجر", store=True)
+    invoice_ids = fields.Many2many("account.move", related="sale_order_id.invoice_ids", string="الفواتير")
+    date_order = fields.Datetime(related="sale_order_id.date_order", string="تاريخ الطلب", store=True)
+    commitment_date = fields.Datetime(related="sale_order_id.commitment_date", string="موعد التسليم", store=True)
+    user_id = fields.Many2one(related="sale_order_id.user_id", string="المسؤول", store=True)
+    company_id = fields.Many2one(related="sale_order_id.company_id", string="الشركة", store=True)
+    amount_total = fields.Monetary(related="sale_order_id.amount_total", string="الإجمالي", store=True)
+    currency_id = fields.Many2one(related="sale_order_id.currency_id", string="العملة", store=True)
     progress = fields.Float(string="نسبة الإنجاز", compute="_compute_progress", store=True)
-    state = fields.Selection(TRACK_STATES, default="draft", tracking=True, index=True, copy=False)
-    delivery_state = fields.Char(compute="_compute_delivery_state")
+    state = fields.Selection(TRACK_STATES, string="الحالة", default="draft", tracking=True, index=True, copy=False)
+    delivery_state = fields.Char(string="حالة التسليم", compute="_compute_delivery_state")
     notes = fields.Text(string="ملاحظات")
     attachment_ids = fields.Many2many("ir.attachment", string="المرفقات")
     payment_state = fields.Selection(
@@ -54,7 +61,7 @@ class HomeblendOrderTrack(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get("name", _("New")) == _("New"):
+            if vals.get("name", "جديد") in ("جديد", _("New"), "New"):
                 vals["name"] = self.env["ir.sequence"].next_by_code("homeblend.order.track") or _("New")
         return super().create(vals_list)
 

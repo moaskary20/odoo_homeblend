@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Order Tracking",
-    "version": "19.0.1.7.1",
+    "version": "19.0.1.7.2",
     "category": "Sales",
     "summary": "تتبع الطلبات والتنبيهات وKPI المستأجر",
     "author": "HomeBlend",
