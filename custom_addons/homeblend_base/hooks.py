@@ -60,6 +60,7 @@ def ensure_ops(env):
 
     step("archive companies", lambda: _archive_demo_companies(env, main, art))
     step("egyptize", lambda: _egyptize_homeblend(env, main, eg))
+    step("egp pricing", lambda: _ensure_egp_pricing(env, main, art))
     step("groups", lambda: _enable_feature_groups(env, admin))
     step("vat main", lambda: _ensure_eg_vat(env, main))
     if art:
@@ -105,6 +106,77 @@ def _archive_demo_companies(env, main, art):
         _logger.info("Archived extra companies: %s", extras.mapped("name"))
 
 
+def _ensure_egp_pricing(env, main, art=None):
+    """كل الأسعار والتعاملات بالجنيه المصري."""
+    egp = env.ref("base.EGP")
+    egp.sudo().write({
+        "active": True,
+        "symbol": "ج.م.",
+        "position": "after",
+        "currency_unit_label": "جنيه",
+        "currency_subunit_label": "قرش",
+    })
+    companies = main
+    if art:
+        companies |= art
+    Pricelist = env["product.pricelist"].sudo()
+    Partner = env["res.partner"].sudo()
+    for company in companies:
+        if company.currency_id != egp:
+            try:
+                company.write({"currency_id": egp.id})
+            except Exception:
+                _logger.exception("Could not set %s currency to EGP", company.name)
+        pricelists = Pricelist.search([("company_id", "=", company.id)])
+        if not pricelists:
+            pricelists = Pricelist.with_company(company).create({
+                "name": "قائمة أسعار %s" % company.name,
+                "company_id": company.id,
+                "currency_id": egp.id,
+            })
+        else:
+            pricelists.filtered(lambda p: p.currency_id != egp).write({"currency_id": egp.id})
+        default_pl = pricelists.filtered(lambda p: "قائمة أسعار" in (p.name or ""))[:1] or pricelists[:1]
+        if "property_product_pricelist" in Partner._fields:
+            company.partner_id.with_company(company).property_product_pricelist = default_pl.id
+            partners = Partner.search([
+                "|",
+                ("company_id", "=", company.id),
+                "&",
+                ("company_id", "=", False),
+                ("id", "child_of", company.partner_id.id),
+            ])
+            for partner in partners:
+                current = partner.with_company(company).property_product_pricelist
+                if not current or current.currency_id != egp:
+                    partner.with_company(company).property_product_pricelist = default_pl.id
+        if "pos.config" in env:
+            for config in env["pos.config"].search([("company_id", "=", company.id)]):
+                if "pricelist_id" in config._fields and default_pl:
+                    vals = {}
+                    if config.pricelist_id != default_pl:
+                        vals["pricelist_id"] = default_pl.id
+                    if "available_pricelist_ids" in config._fields and default_pl.id not in config.available_pricelist_ids.ids:
+                        vals["available_pricelist_ids"] = [Command.link(default_pl.id)]
+                    if vals:
+                        config.write(vals)
+    if "sale.order" in env:
+        drafts = env["sale.order"].sudo().search([
+            ("company_id", "in", companies.ids),
+            ("currency_id", "!=", egp.id),
+            ("state", "in", ["draft", "sent"]),
+        ])
+        for order in drafts:
+            pl = order.pricelist_id if order.pricelist_id.currency_id == egp else Pricelist.search([
+                ("company_id", "=", order.company_id.id),
+                ("currency_id", "=", egp.id),
+            ], limit=1)
+            vals = {"currency_id": egp.id}
+            if pl:
+                vals["pricelist_id"] = pl.id
+            order.write(vals)
+
+
 def _egyptize_homeblend(env, company, eg):
     try:
         if "hr.leave" in env:
@@ -121,6 +193,7 @@ def _egyptize_homeblend(env, company, eg):
         company.write({
             "country_id": eg.id,
             "account_fiscal_country_id": eg.id,
+            "currency_id": env.ref("base.EGP").id,
         })
     except Exception:
         _logger.exception("Could not set Home Blend country to Egypt")
