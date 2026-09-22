@@ -4,15 +4,15 @@ from odoo import api, fields, models, _
 
 
 TRACK_STATES = [
-    ("draft", "Draft"),
-    ("confirmed", "Confirmed"),
-    ("processing", "Processing"),
-    ("ready", "Ready"),
-    ("delivered", "Delivered"),
-    ("completed", "Completed"),
-    ("delayed", "Delayed"),
-    ("cancelled", "Cancelled"),
-    ("returned", "Returned"),
+    ("draft", "مسودة"),
+    ("confirmed", "مؤكد"),
+    ("processing", "قيد التجهيز"),
+    ("ready", "جاهز"),
+    ("delivered", "تم التسليم"),
+    ("completed", "مكتمل"),
+    ("delayed", "متأخر"),
+    ("cancelled", "ملغى"),
+    ("returned", "مرتجع"),
 ]
 
 
@@ -75,8 +75,9 @@ class HomeblendOrderTrack(models.Model):
             rec.progress = mapping.get(rec.state, 0)
 
     def _compute_delivery_state(self):
+        mapping = dict(TRACK_STATES)
         for rec in self:
-            rec.delivery_state = rec.state
+            rec.delivery_state = mapping.get(rec.state, rec.state or "")
 
     def _compute_payment_state(self):
         for rec in self:

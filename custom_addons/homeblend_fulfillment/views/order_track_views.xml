@@ -5,15 +5,15 @@
         <field name="model">homeblend.order.track</field>
         <field name="arch" type="xml">
             <list decoration-danger="state == 'delayed'" decoration-success="state == 'completed'">
-                <field name="name"/>
-                <field name="sale_order_id"/>
-                <field name="partner_id"/>
-                <field name="tenant_id"/>
-                <field name="date_order"/>
-                <field name="commitment_date"/>
-                <field name="user_id"/>
-                <field name="progress" widget="progressbar"/>
-                <field name="state" widget="badge"/>
+                <field name="name" string="رقم العملية"/>
+                <field name="sale_order_id" string="أمر البيع"/>
+                <field name="partner_id" string="العميل"/>
+                <field name="tenant_id" string="المستأجر"/>
+                <field name="date_order" string="تاريخ الطلب"/>
+                <field name="commitment_date" string="موعد التسليم"/>
+                <field name="user_id" string="المسؤول"/>
+                <field name="progress" widget="progressbar" string="نسبة الإنجاز"/>
+                <field name="state" widget="badge" string="الحالة"/>
             </list>
         </field>
     </record>
@@ -23,13 +23,13 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_processing" type="object" string="Processing" invisible="state != 'confirmed'"/>
-                    <button name="action_ready" type="object" string="Ready" class="btn-primary" invisible="state != 'processing'"/>
-                    <button name="action_delivered" type="object" string="Delivered" class="btn-primary" invisible="state != 'ready'"/>
-                    <button name="action_completed" type="object" string="Completed" class="btn-primary" invisible="state != 'delivered'"/>
-                    <button name="action_delayed" type="object" string="Delayed" invisible="state in ('completed','cancelled','returned')"/>
-                    <button name="action_returned" type="object" string="Returned" invisible="state not in ('delivered','completed')"/>
-                    <button name="action_cancelled" type="object" string="Cancelled" invisible="state in ('completed','cancelled')"/>
+                    <button name="action_processing" type="object" string="قيد التجهيز" invisible="state != 'confirmed'"/>
+                    <button name="action_ready" type="object" string="جاهز" class="btn-primary" invisible="state != 'processing'"/>
+                    <button name="action_delivered" type="object" string="تم التسليم" class="btn-primary" invisible="state != 'ready'"/>
+                    <button name="action_completed" type="object" string="مكتمل" class="btn-primary" invisible="state != 'delivered'"/>
+                    <button name="action_delayed" type="object" string="متأخر" invisible="state in ('completed','cancelled','returned')"/>
+                    <button name="action_returned" type="object" string="مرتجع" invisible="state not in ('delivered','completed')"/>
+                    <button name="action_cancelled" type="object" string="إلغاء" invisible="state in ('completed','cancelled')"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,processing,ready,delivered,completed"/>
                 </header>
                 <sheet>
@@ -66,6 +66,28 @@
                 </sheet>
                 <chatter/>
             </form>
+        </field>
+    </record>
+    <record id="view_homeblend_order_track_search" model="ir.ui.view">
+        <field name="name">homeblend.order.track.search</field>
+        <field name="model">homeblend.order.track</field>
+        <field name="arch" type="xml">
+            <search string="بحث تتبع الطلبات">
+                <field name="name" string="رقم العملية"/>
+                <field name="sale_order_id" string="أمر البيع"/>
+                <field name="partner_id" string="العميل"/>
+                <field name="tenant_id" string="المستأجر"/>
+                <filter string="قيد التنفيذ" name="in_progress" domain="[('state', 'in', ['confirmed', 'processing', 'ready'])]"/>
+                <filter string="متأخر" name="delayed" domain="[('state', '=', 'delayed')]"/>
+                <filter string="مكتمل" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="مرتجع" name="returned" domain="[('state', '=', 'returned')]"/>
+                <filter string="ملغى" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <group>
+                    <filter string="الحالة" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="المستأجر" name="group_tenant" context="{'group_by': 'tenant_id'}"/>
+                    <filter string="المسؤول" name="group_user" context="{'group_by': 'user_id'}"/>
+                </group>
+            </search>
         </field>
     </record>
     <record id="action_homeblend_order_track" model="ir.actions.act_window">
