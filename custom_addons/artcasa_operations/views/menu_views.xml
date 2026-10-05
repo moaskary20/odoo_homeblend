@@ -62,6 +62,8 @@
               parent="menu_artcasa_inventory" action="stock.stock_picking_type_action" sequence="5"/>
     <menuitem id="menu_artcasa_barcode" name="الجرد بالباركود"
               parent="menu_artcasa_inventory" action="action_artcasa_barcode_inventory" sequence="10"/>
+    <menuitem id="menu_artcasa_product_labels" name="طباعة ملصقات المنتجات"
+              parent="menu_artcasa_inventory" action="action_artcasa_product_label_wizard" sequence="12"/>
     <menuitem id="menu_artcasa_quants" name="الكميات"
               parent="menu_artcasa_inventory" action="action_report_product_qty" sequence="20"/>
     <menuitem id="menu_artcasa_receipts_inv" name="استلام الأصناف"

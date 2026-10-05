@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>دليل تشغيل Art Casa — المنتجات والمخزون والمشاريع</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #14181c;
+      --slate: #1e2a32;
+      --copper: #c4784a;
+      --cream: #f1eee8;
+      --paper: #fbf8f3;
+      --terra: #9a4a2e;
+      --muted: #5d656c;
+      --line: #ddd4c8;
+      --ok: #2c5f52;
+      --copper-soft: rgba(196, 120, 74, 0.16);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans Arabic", sans-serif;
+      background:
+        radial-gradient(1100px 480px at 0 0, rgba(196, 120, 74, 0.1), transparent 52%),
+        var(--cream);
+      color: var(--ink);
+      line-height: 1.85;
+    }
+    .wrap {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 100vh;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--slate);
+      color: #efe6db;
+      padding: 28px 18px 40px;
+      order: 1;
+    }
+    main { order: 2; padding: 40px 52px 96px; max-width: 960px; }
+    nav .brand {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      color: var(--copper);
+      margin-bottom: 6px;
+    }
+    nav h1 {
+      font-size: 1.15rem;
+      margin: 0 0 8px;
+      color: #fffaf3;
+      line-height: 1.4;
+    }
+    nav .sub {
+      font-size: 0.78rem;
+      color: #c4b8ab;
+      margin: 0 0 22px;
+      line-height: 1.6;
+    }
+    nav a {
+      display: block;
+      color: #efe6db;
+      text-decoration: none;
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: 0.86rem;
+    }
+    nav a:hover, nav a:focus { background: var(--copper-soft); color: #fff; }
+    header.hero {
+      background: linear-gradient(135deg, #152026 0%, #2a3b45 58%, #4a3a32 100%);
+      color: #fff;
+      padding: 40px 40px 36px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 16px 40px rgba(21, 32, 38, 0.24);
+    }
+    header.hero small { color: var(--copper); letter-spacing: 0.12em; font-weight: 600; }
+    header.hero h1 { margin: 10px 0 12px; font-size: 2.05rem; line-height: 1.35; }
+    header.hero p { margin: 0; color: #efe6db; max-width: 40em; }
+    .rule { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 36px; }
+    .rule span {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-right: 4px solid var(--copper);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+    }
+    h2 {
+      color: var(--slate);
+      border-bottom: 2px solid var(--copper);
+      padding-bottom: 8px;
+      margin-top: 52px;
+      scroll-margin-top: 20px;
+    }
+    h3 { color: var(--terra); margin-top: 28px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      background: var(--paper);
+    }
+    th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: right; vertical-align: top; }
+    th { background: #ebe3d6; }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-right: 5px solid var(--copper);
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+    .card.warn { border-right-color: var(--terra); }
+    .card.ok { border-right-color: var(--ok); }
+    .flow { background: #e8e2d6; padding: 16px 20px; border-radius: 12px; font-weight: 500; }
+    ol.steps, ul { padding-right: 22px; }
+    code { background: #ebe3d6; padding: 1px 7px; border-radius: 5px; }
+    .formula {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 18px 0;
+    }
+    .formula article {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px 18px;
+    }
+    .formula strong { color: var(--slate); display: block; margin-bottom: 6px; }
+    .formula em { display: block; margin-top: 10px; font-style: normal; color: var(--ok); font-weight: 700; }
+    footer {
+      margin-top: 56px;
+      color: var(--muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    footer a { color: var(--terra); }
+    @media (max-width: 900px) {
+      .wrap { grid-template-columns: 1fr; }
+      nav { position: relative; height: auto; order: 2; padding: 20px 16px 28px; }
+      nav .toc { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; }
+      main { order: 1; padding: 22px 18px 64px; }
+      .formula { grid-template-columns: 1fr; }
+    }
+    @media print {
+      nav { display: none; }
+      .wrap { display: block; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">ART CASA</div>
+    <h1>دليل التشغيل</h1>
+    <p class="sub">المنتجات، الباركود، المخزون، التسعير، الربح، المشاريع، تقسيم الفاتورة، التحصيل، المشتريات، الحسابات.</p>
+    <div class="toc">
+      <a href="#idea">الفكرة والمسار</a>
+      <a href="#products">1. إدارة المنتجات</a>
+      <a href="#barcode">2. إدارة الباركود</a>
+      <a href="#stock">3. إدارة المخزون</a>
+      <a href="#pricing">4. إدارة التسعير</a>
+      <a href="#profit">5. احتساب الأرباح</a>
+      <a href="#sales">6. المبيعات</a>
+      <a href="#delivery">تسليم المنتجات على الفاتورة</a>
+      <a href="#contracts">7. إدارة العقود</a>
+      <a href="#split">8. تقسيم الفاتورة</a>
+      <a href="#collection">9. إدارة التحصيل</a>
+      <a href="#vendors">10. إدارة الموردين</a>
+      <a href="#purchase">11. إدارة المشتريات</a>
+      <a href="#accounts">12. الحسابات</a>
+      <a href="#reports">13. التقارير</a>
+      <a href="#daily">سير العمل اليومي</a>
+      <a href="#mistakes">أخطاء شائعة</a>
+    </div>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <small>ART CASA · دليل تشغيلي داخلي</small>
+      <h1>المنتجات · المخزون · المشاريع · تقسيم الفاتورة</h1>
+      <p>
+        اعمل دائماً من أعلى الشاشة داخل شركة <strong>Art Casa</strong>.
+        Home Blend شركة منفصلة بعقود عمولة مستأجرين، ولا تُخلط مع هذا التشغيل.
+      </p>
+    </header>
+
+    <div class="rule">
+      <span>التكلفة الفعلية = التكلفة + الشحن والتكاليف الإضافية</span>
+      <span>تقسيم الفاتورة من إعداد المشروع</span>
+      <span>حجز المندوب يخصم الكمية المتاحة للبيع</span>
+    </div>
+
+    <section id="idea">
+      <h2>الفكرة الأساسية</h2>
+      <p>
+        Art Casa شركة بيع وتوريد أثاث ومشاريع. النظام يدير الصنف من الباركود حتى التسليم،
+        ويحسب الربح بعد تكاليف الشحن، ويمكنه تقسيم فاتورة البيع بين العميل والمشروع حسب نسب العقد.
+      </p>
+      <div class="flow">
+        تعريف المنتج والباركود ← تسعير وحدود مخزون ← حجز مندوب إن لزم
+        ← عرض / أمر بيع / مشروع ← تسليم ← فاتورة (وقد تُقسَم) ← تحصيل
+      </div>
+      <div class="card warn">
+        بدّل الشركة إلى <strong>Art Casa</strong> قبل أي عملية.
+        القوائم كلها داخل تطبيق <strong>Art Casa</strong> في شريط التطبيقات.
+      </div>
+    </section>
+
+    <section id="products">
+      <h2>1. إدارة المنتجات</h2>
+      <p><strong>القائمة:</strong> Art Casa → المنتجات والتسعير → المنتجات</p>
+      <p>
+        بطاقة المنتج هي مصدر بيانات الصنف: الاسم، الكود الداخلي، الباركود، الفئة،
+        بلد المنشأ، العلامة التجارية، المجموعة، المورد الرئيسي، وحدود المخزون.
+      </p>
+      <h3>تبويب بيانات الصنف</h3>
+      <table>
+        <thead><tr><th>الحقل</th><th>الاستخدام</th></tr></thead>
+        <tbody>
+          <tr><td>المجموعة / العلامة / بلد المنشأ</td><td>تصنيف كتالوج Art Casa</td></tr>
+          <tr><td>المورد</td><td>أول مورد في قائمة موردي الصنف</td></tr>
+          <tr><td>QR / باركود</td><td>يُنسخ من باركود الصنف أو الكود الداخلي</td></tr>
+          <tr><td>الحد الأدنى / الأقصى</td><td>تُزامَن مع حدود إعادة الطلب في المخزن</td></tr>
+          <tr><td>التتبع</td><td>بدون / تشغيلة / رقم تسلسلي</td></tr>
+          <tr><td>تاريخ الصلاحية</td><td>إن فُعّل: مدة الانتهاء ومدة التنبيه</td></tr>
+          <tr><td>شحن داخلي / خارجي / تكاليف أخرى</td><td>تُضاف فوق تكلفة الصنف لحساب الربح</td></tr>
+        </tbody>
+      </table>
+      <p>
+        الفئات من <strong>المنتجات والتسعير → الفئات</strong>.
+        العروض من <strong>العروض والخصومات</strong> (برامج الولاء والخصم).
+      </p>
+    </section>
+
+    <section id="barcode">
+      <h2>2. إدارة الباركود</h2>
+      <p>الباركود يُستخدم في تعريف الصنف، طباعة الملصق الفعلي، الجرد، وفوترة الماسح.</p>
+      <h3>طباعة الملصق على المنتج الفعلي</h3>
+      <p>من بطاقة المنتج زر <strong>ملصق</strong>، أو من القائمة ثم طباعة، أو من <strong>Art Casa → المخزون → طباعة ملصقات المنتجات</strong>.</p>
+      <ol class="steps">
+        <li>اختر الصنف أو عدة أصناف. يمكن أيضاً طباعة ملصق التشغيلة من التشغيلات والأرقام التسلسلية.</li>
+        <li>حدد عدد الملصقات (انسخ العدد لكل الأسطر إن لزم).</li>
+        <li>اختياري: إظهار سعر البيع على الملصق.</li>
+        <li>اطبع PDF. كل ملصق يضم الاسم، الشركة، باركود قابل للمسح، ورمز QR.</li>
+        <li>قصّ الملصق والصقه على القطعة. بعدها يقرأه الجرد والماسح.</li>
+      </ol>
+      <div class="card ok">
+        إن لم يكن للصنف باركود ولا كود داخلي، يُنشأ رقم مثل <code>AC000123</code> ويُحفظ على المنتج حتى يطابق الملصق المطبوع المسح لاحقاً.
+      </div>
+      <h3>على بطاقة المنتج</h3>
+      <ol class="steps">
+        <li>أدخل الباركود في حقل الباركود القياسي، أو اعتمد الكود الداخلي.</li>
+        <li>حقل <strong>QR / باركود</strong> ينسخ القيمة ويمكن نسخه للحافظة.</li>
+        <li>للأصناف المتتبعة اطبع ملصق التشغيلة/التسلسل والصقه على القطعة، ثم امسحه عند الجرد لا ملصق الصنف فقط.</li>
+      </ol>
+      <h3>الجرد بالباركود</h3>
+      <p><strong>القائمة:</strong> Art Casa → المخزون → الجرد بالباركود</p>
+      <ol class="steps">
+        <li>اختر موقع الجرد (افتراضياً مخزن الشركة).</li>
+        <li>امسح الباركود أو اكتبه ثم أضف.</li>
+        <li>النظام يجد المنتج أو التشغيلة، ويعرض الكمية الدفترية ويزيد المعدود مع كل مسح.</li>
+        <li>الرقم التسلسلي لا يُمسح مرتين.</li>
+        <li>اضغط اعتماد الجرد لتحديث الكميات الفعلية.</li>
+      </ol>
+      <div class="card">
+        إن كان الصنف متتبعاً بالتشغيلات ومسحت ملصق الصنف فقط، يطلب النظام مسح ملصق التشغيلة أو التسلسل.
+      </div>
+      <h3>فوترة بالماسح</h3>
+      <p><strong>القائمة:</strong> Art Casa → المبيعات → فوترة بالماسح</p>
+      <p>جلسة نقطة بيع تُمرَّر فيها الأصناف بالمسح ثم تُفوتر وتُحصَّل فوراً.</p>
+    </section>
+
+    <section id="stock">
+      <h2>3. إدارة المخزون</h2>
+      <p><strong>القائمة:</strong> Art Casa → المخزون</p>
+      <table>
+        <thead><tr><th>القائمة</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td>عمليات المخزن</td><td>أنواع الاستلام والصرف والتحويل</td></tr>
+          <tr><td>طباعة ملصقات المنتجات</td><td>PDF للقص واللصق على القطعة: باركود + QR</td></tr>
+          <tr><td>الجرد بالباركود</td><td>عدّ فعلي بالمسح ثم اعتماد الفرق</td></tr>
+          <tr><td>الكميات</td><td>الرصيد الحالي حسب الموقع</td></tr>
+          <tr><td>استلام الأصناف</td><td>وارد من المورد أو مرتجع عميل</td></tr>
+          <tr><td>صرف الأصناف</td><td>تسليم للعميل</td></tr>
+          <tr><td>تحويل بين المخازن</td><td>نقل بين الفروع</td></tr>
+          <tr><td>حركة المخزون</td><td>سجل كل حركة</td></tr>
+          <tr><td>التشغيلات والأرقام التسلسلية</td><td>تتبع القطعة أو الدفعة</td></tr>
+          <tr><td>حدود المخزون</td><td>إعادة الطلب عند الحد الأدنى</td></tr>
+          <tr><td>المخازن / الفروع ومواقع التخزين</td><td>هيكل المستودعات</td></tr>
+        </tbody>
+      </table>
+      <h3>حجز المندوب</h3>
+      <p><strong>القائمة:</strong> Art Casa → المبيعات → حجز المندوب</p>
+      <p>
+        الحجز افتراضي: لا يصرف من المخزن، لكنه يخصم الكمية من المتاح للبيع حتى نهاية المدة
+        حتى لا يحجز مندوبان نفس القطعة.
+      </p>
+      <ol class="steps">
+        <li>مسودة: مندوب، عميل، منتج، كمية، مخزن، بداية ونهاية (افتراضي 7 أيام).</li>
+        <li><strong>حجز:</strong> يفشل إن تجاوزت الكمية المخزون الفعلي ناقص الحجوزات المتداخلة.</li>
+        <li>عند تأكيد أمر بيع لنفس المندوب والمنتج والمخزن تُستهلك الحجوزات.</li>
+        <li><strong>تحرير:</strong> يعيد الكمية للمتاح. الحجوزات المنتهية تُحرَّر تلقائياً.</li>
+      </ol>
+      <p>عند انخفاض الكمية تحت الحد الأدنى يُنشأ تنبيه على المنتج.</p>
+    </section>
+
+    <section id="pricing">
+      <h2>4. إدارة التسعير</h2>
+      <p><strong>القائمة:</strong> Art Casa → المنتجات والتسعير</p>
+      <ul>
+        <li><strong>سعر البيع</strong> على بطاقة المنتج هو السعر الافتراضي.</li>
+        <li><strong>قوائم الأسعار:</strong> أسعار خاصة بعميل أو فئة أو عرض.</li>
+        <li><strong>العروض والخصومات:</strong> برامج خصم وولاء تُطبَّق على أمر البيع ونقطة البيع.</li>
+        <li>سعر التكلفة القياسي + تكاليف الشحن يظهران في تبويب بيانات الصنف كـ<strong>تكلفة فعلية</strong>.</li>
+      </ul>
+      <div class="card">
+        قارن أسعار الموردين من <strong>المشتريات → مقارنة الموردين</strong> قبل تثبيت سعر التكلفة أو اعتماد أمر الشراء.
+      </div>
+    </section>
+
+    <section id="profit">
+      <h2>5. احتساب الأرباح</h2>
+      <p>الربح في Art Casa ليس هامش أودو الخام فقط؛ يضيف تكاليف الشحن والتكاليف الأخرى.</p>
+      <div class="formula">
+        <article>
+          <strong>على المنتج</strong>
+          التكلفة الفعلية = تكلفة الصنف + شحن داخلي + شحن خارجي + تكاليف أخرى
+          <em>صافي ربح الوحدة = سعر البيع − التكلفة الفعلية</em>
+        </article>
+        <article>
+          <strong>على أمر البيع</strong>
+          التكلفة الفعلية = (تكلفة السطر × الكمية) + التكاليف الإضافية
+          <em>صافي الربح = الإيراد − التكلفة الفعلية</em>
+        </article>
+      </div>
+      <p>
+        ربح السطر = قيمة السطر بدون ضريبة − (سعر التكلفة × الكمية) − التكاليف الإضافية للسطر.
+        مجموع ذلك يظهر في الأمر: تكاليف إضافية، تكلفة فعلية، ربح بعد الإضافي، صافي الربح، نسبة الربح.
+      </p>
+      <div class="card ok">
+        من إعدادات الشركة يمكن تفعيل <strong>احتساب صافي الربح بعد الضريبة</strong>.
+        إن فُعّل يُحسب الإيراد من إجمالي الأمر شامل الضريبة، وإلا من المبلغ بدون ضريبة.
+      </div>
+      <p>تقارير الربح: Art Casa → التقارير → أرباح وتكلفة المنتج، وأفضل المنتجات مبيعاً، وأرباح ومصروفات المشروع.</p>
+    </section>
+
+    <section id="sales">
+      <h2>6. المبيعات</h2>
+      <p><strong>القائمة:</strong> Art Casa → المبيعات</p>
+      <table>
+        <thead><tr><th>الشاشة</th><th>ماذا تفعل</th></tr></thead>
+        <tbody>
+          <tr><td>عروض الأسعار</td><td>عرض تجاري قبل الالتزام. يظهر الربح بعد التكاليف الإضافية</td></tr>
+          <tr><td>حجز المندوب</td><td>يحجز كمية لعميل قبل أمر البيع</td></tr>
+          <tr><td>أوامر البيع</td><td>بعد التأكيد يستهلك الحجوزات وينشئ التسليم</td></tr>
+          <tr><td>التسليم</td><td>صرف المخزون للعميل</td></tr>
+          <tr><td>مرتجعات العملاء</td><td>من زر إرجاع داخل إذن التسليم</td></tr>
+          <tr><td>إشعارات العملاء</td><td>إشعار دائن مقابل المرتجع أو التخفيض</td></tr>
+          <tr><td>فوترة بالماسح</td><td>بيع سريع بنقطة البيع</td></tr>
+          <tr><td>العملاء</td><td>ملفات العملاء</td></tr>
+        </tbody>
+      </table>
+      <p>
+        إن رُبط أمر البيع بمشروع، تُنسخ بيانات المشروع وشروط دفع العقد إلى الفاتورة.
+        إن كان المشروع مفعّلاً لتقسيم الفاتورة تُنشأ فاتورتان عند الفوترة.
+      </p>
+      <h3>تتبع الطلب والشكاوى</h3>
+      <p>
+        Art Casa → تتبع الطلبات: دورة الطلب من أمر البيع المؤكد
+        (مسودة → مؤكد → تجهيز → جاهز → تسليم → مكتمل، مع متأخر ومرتجع وملغى)،
+        وجدول منتجات فاتورة العميل بتاريخ التسليم وحالته.
+      </p>
+    </section>
+
+    <section id="delivery">
+      <h2>تسليم المنتجات على الفاتورة</h2>
+      <div class="card ok">
+        النظام يوضّح <strong>لكل منتج داخل فاتورة العميل</strong> هل سُلّم ومتى: تاريخ التسليم وعلامة «تم التسليم».
+      </div>
+      <table>
+        <thead>
+          <tr><th>الحقل</th><th>المعنى</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>تاريخ التسليم</td>
+            <td>إلزامي عند إنشاء الفاتورة. من موعد التسليم في أمر البيع أو تاريخ الفاتورة، ويمكن تعديله</td>
+          </tr>
+          <tr>
+            <td>تم التسليم</td>
+            <td>نعم / لا لكل منتج على حدة. لا يُعلَّم تلقائياً من صرف المخزن</td>
+          </tr>
+        </tbody>
+      </table>
+      <ol class="steps">
+        <li>عند إنشاء فاتورة العميل: العمودان بجانب كمية كل منتج.</li>
+        <li>بعد الترحيل: حدّث من تبويب <strong>تسليم المنتجات</strong> (المنتج، الكمية، التاريخ، تم التسليم).</li>
+        <li>في <strong>تتبع الطلبات</strong> يظهر نفس الجدول وعدد المنتجات المسلَّمة.</li>
+      </ol>
+      <div class="card warn">
+        إن وُجد تقسيم فاتورة، التتبع يعرض سطور <strong>فاتورة العميل فقط</strong> وليس حصة المشروع.
+        طباعة PDF الفاتورة لا تضم عمودَي التسليم؛ المتابعة من الشاشة والتتبع.
+      </div>
+    </section>
+
+    <section id="contracts">
+      <h2>7. إدارة العقود</h2>
+      <p><strong>القائمة:</strong> Art Casa → المشاريع والعقود</p>
+      <p>عقد Art Casa مربوط بالمشروع، وليس عقد عمولة مستأجر Home Blend.</p>
+      <h3>تبويب العقد داخل المشروع</h3>
+      <table>
+        <thead><tr><th>الحقل</th><th>المعنى</th></tr></thead>
+        <tbody>
+          <tr><td>بداية / نهاية العقد</td><td>مدة التنفيذ. المدة باليوم تُحسب تلقائياً</td></tr>
+          <tr><td>قيمة العقد</td><td>قيمة الاتفاق</td></tr>
+          <tr><td>دفعات العقد</td><td>شروط الدفع التي تُنسخ للمستخلصات والفواتير</td></tr>
+          <tr><td>الضمان وقيمته ونهايته</td><td>تنبيه قبل نهاية الضمان بـ 30 يوماً</td></tr>
+          <tr><td>نسبة الإنجاز</td><td>نسبة المهام المغلقة</td></tr>
+          <tr><td>مشروع متأخر</td><td>انتهى العقد وما زالت مهام مفتوحة أو بلا مهام</td></tr>
+          <tr><td>التحصيل / المستحق / المستخلصات</td><td>من فواتير المشروع المرحّلة</td></tr>
+          <tr><td>التوقيع والمرفقات والشروط</td><td>اعتماد إلكتروني وحفظ في الوثائق</td></tr>
+        </tbody>
+      </table>
+      <p>
+        زر <strong>توقيع العقد</strong> بعد رسم التوقيع.
+        زر <strong>المستخلصات</strong> يفتح فواتير هذا المشروع.
+        تنبيهات يومية: عقد ينتهي خلال 30 يوماً، مشروع متأخر، ضمان ينتهي قريباً.
+      </p>
+      <p>
+        <strong>عقود الموردين</strong> منفصلة: Art Casa → الموردون → عقود الموردين.
+        هذه اتفاقيات طويلة الأجل (blanket order) بأسعار وكميات متفق عليها.
+      </p>
+    </section>
+
+    <section id="split">
+      <h2>8. تقسيم الفاتورة بين المشروع والعميل</h2>
+      <div class="card ok">
+        التقسيم يُضبط على <strong>المشروع</strong>، ثم يُطبَّق تلقائياً عند إنشاء فاتورة من أمر بيع مرتبط بهذا المشروع،
+        أو عند ربط فاتورة مسودة بالمشروع.
+      </div>
+      <h3>إعداد المشروع</h3>
+      <ol class="steps">
+        <li>افتح المشروع من Art Casa → المشاريع والعقود.</li>
+        <li>فعّل <strong>تقسيم الفاتورة مشروع / عميل</strong>.</li>
+        <li>حدد نسبة العميل ونسبة المشروع. مجموعهما يجب أن يساوي 100٪. تغيير أحدهما يحدّث الآخر.</li>
+        <li>حدد <strong>شريك فاتورة المشروع</strong> إن كانت حصة المشروع على جهة مختلفة عن العميل. وإلا تُستخدم جهة المشروع.</li>
+      </ol>
+      <h3>ماذا يحدث عند الفوترة</h3>
+      <ol class="steps">
+        <li>تُنشأ فاتورة العميل بالكميات الأصلية ثم تُخفَّض أسعار وحداتها بنسبة العميل.</li>
+        <li>تُنسخ فاتورة ثانية لشريك المشروع بأسعار بنسبة المشروع، بدون ربط سطور أمر البيع (حتى لا تُضاعف الكميات).</li>
+        <li>المرجع: «حصة العميل س٪» و«حصة المشروع س٪».</li>
+        <li>إن كانت نسبة العميل 100٪ لا تُنشأ فاتورة ثانية.</li>
+      </ol>
+      <p>مثال: أمر بـ 100,000، نسبة العميل 60٪ والمشروع 40٪:</p>
+      <table>
+        <thead><tr><th>الفاتورة</th><th>على من</th><th>القيمة التقريبية</th></tr></thead>
+        <tbody>
+          <tr><td>حصة العميل</td><td>عميل أمر البيع</td><td>60,000</td></tr>
+          <tr><td>حصة المشروع</td><td>شريك فاتورة المشروع</td><td>40,000</td></tr>
+        </tbody>
+      </table>
+      <div class="card warn">
+        تتبع التسليم يعرض سطور فاتورة العميل فقط، لأن نسخة المشروع تُفكّ من سطور أمر البيع عمداً.
+        أدخل تاريخ التسليم وحالته على فاتورة العميل.
+      </div>
+    </section>
+
+    <section id="collection">
+      <h2>9. إدارة التحصيل</h2>
+      <p><strong>القائمة:</strong> Art Casa → التحصيل</p>
+      <table>
+        <thead><tr><th>القائمة</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td>فواتير العملاء</td><td>فواتير البيع والمستخلصات بما فيها الحصص المقسومة</td></tr>
+          <tr><td>سندات القبض والمدفوعات</td><td>تحصيل جزئي أو كامل</td></tr>
+          <tr><td>المتأخرات</td><td>فواتير مرحّلة تجاوزت الاستحقاق ولم تُسدد كاملة</td></tr>
+          <tr><td>الذمم المدينة</td><td>كل غير المسدد أو الجزئي ولو لم يفت الأجل</td></tr>
+          <tr><td>شروط الدفع / الأقساط</td><td>قوالب تُربط بعقد المشروع ثم تُنسخ للفواتير</td></tr>
+        </tbody>
+      </table>
+      <p>
+        على المشروع يظهر التحصيل (المحصّل من فواتير المشروع) والمستحق والمتبقي.
+        يمكن سداد جزء من أي فاتورة فتصبح حالتها جزئي.
+      </p>
+    </section>
+
+    <section id="vendors">
+      <h2>10. إدارة الموردين</h2>
+      <p><strong>القائمة:</strong> Art Casa → الموردون</p>
+      <ul>
+        <li><strong>بيانات المورد:</strong> الملف، مدة التوريد، تقييم الجودة اليدوي، أسعار الأصناف.</li>
+        <li><strong>عقود الموردين:</strong> اتفاقية طويلة الأجل بكميات وأسعار.</li>
+        <li><strong>تقييم المورد:</strong> الالتزام بالمواعيد % وعدد الأوامر المتأخرة يُحسبان من أوامر الشراء والاستلام. الصف يصبح أحمر إن وُجد تأخير.</li>
+        <li><strong>الذمم الدائنة:</strong> فواتير مورد مرحّلة غير مسددة بالكامل.</li>
+      </ul>
+    </section>
+
+    <section id="purchase">
+      <h2>11. إدارة المشتريات</h2>
+      <p><strong>القائمة:</strong> Art Casa → المشتريات</p>
+      <ol class="steps">
+        <li><strong>طلب شراء / اتفاقية:</strong> طلب داخلي أو اتفاقية.</li>
+        <li><strong>طلب عروض أسعار:</strong> أرسل لأكثر من مورد.</li>
+        <li><strong>مقارنة الموردين:</strong> بنود العروض المفتوحة حسب المنتج: السعر، الإجمالي، موعد التسليم.</li>
+        <li><strong>أوامر الشراء:</strong> اعتماد المورد المختار.</li>
+        <li><strong>استلام الأصناف:</strong> يزيد المخزون. إن تأخر الاستلام عن الموعد يُحتسب في تقييم المورد ويظهر تنبيه تأخر المورد.</li>
+        <li><strong>فاتورة المورد:</strong> مطابقة الاستلام ثم السداد.</li>
+      </ol>
+    </section>
+
+    <section id="accounts">
+      <h2>12. الحسابات</h2>
+      <p><strong>القائمة:</strong> Art Casa → الحسابات</p>
+      <p>محاسبة أودو المصرية (ضريبة 14٪) داخل تطبيق الشركة:</p>
+      <table>
+        <thead><tr><th>القائمة</th><th>الوظيفة</th></tr></thead>
+        <tbody>
+          <tr><td>دليل الحسابات</td><td>حسابات الشركة</td></tr>
+          <tr><td>مراكز التكلفة</td><td>تحليل تحليلي للمشاريع إن فُعّل</td></tr>
+          <tr><td>القيود اليومية</td><td>قيود يدوية وتلقائية</td></tr>
+          <tr><td>الإيرادات / المصروفات</td><td>سطور مرحّلة حسب نوع الحساب</td></tr>
+          <tr><td>اليوميات والضرائب</td><td>إعداد الفوترة وضريبة مصر</td></tr>
+          <tr><td>ميزان المراجعة</td><td>سطور القيود المرحّلة</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="reports">
+      <h2>13. التقارير</h2>
+      <p><strong>القائمة:</strong> Art Casa → التقارير</p>
+      <h3>تقارير المنتجات</h3>
+      <ul>
+        <li>حركة المنتج</li>
+        <li>الكميات</li>
+        <li>أرباح وتكلفة المنتج</li>
+        <li>أفضل المنتجات مبيعاً (كمية، قيمة، ربح بعد الإضافي)</li>
+      </ul>
+      <h3>تقارير المبيعات</h3>
+      <ul>
+        <li>المبيعات اليومية</li>
+        <li>المبيعات الشهرية / العميل</li>
+        <li>حسب الفرع</li>
+        <li>حسب الموظف</li>
+      </ul>
+      <h3>تقارير المشاريع</h3>
+      <ul>
+        <li>ميزانية وتحصيل المشروع</li>
+        <li>أرباح ومصروفات المشروع</li>
+        <li>المشاريع المتأخرة</li>
+        <li>المستخلصات</li>
+      </ul>
+    </section>
+
+    <section id="daily">
+      <h2>سير العمل اليومي المقترح</h2>
+      <ol class="steps">
+        <li>بدّل الشركة إلى Art Casa.</li>
+        <li>راجع حدود المخزون والتنبيهات، واجرد بالباركود إن لزم.</li>
+        <li>حدّث أسعار الصنف وتكاليف الشحن إن تغيّرت.</li>
+        <li>احجز للمندوب إن كان العرض معلّقاً، ثم حوّل إلى أمر بيع.</li>
+        <li>للمشاريع: راجع العقد والنسب والتوقيع قبل الفوترة.</li>
+        <li>سلّم، رحّل فاتورة العميل بعد تحديد تسليم كل منتج (والتقسيم إن فُعّل)، ثم حصّل.</li>
+        <li>قارن عروض الموردين قبل اعتماد الشراء، وتابع الاستلام والذمم الدائنة.</li>
+      </ol>
+    </section>
+
+    <section id="mistakes">
+      <h2>أخطاء شائعة</h2>
+      <table>
+        <thead><tr><th>الخطأ</th><th>الصحيح</th></tr></thead>
+        <tbody>
+          <tr><td>العمل وأنت على شركة Home Blend</td><td>بدّل الشركة إلى Art Casa</td></tr>
+          <tr><td>البحث عن نسبة عمولة مستأجر</td><td>Art Casa تقسّم فاتورة مشروع/عميل من بطاقة المشروع</td></tr>
+          <tr><td>اعتماد حجز أكبر من المتاح</td><td>الحجز يرفض إن تجاوز المخزون ناقص حجوزات الآخرين</td></tr>
+          <tr><td>جرد صنف متتبع بملصق الصنف</td><td>اطبع ملصق التشغيلة والصقه ثم امسحه</td></tr>
+          <tr><td>توقع باركود مطبوعاً دون طباعة ملصق</td><td>Art Casa → المخزون → طباعة ملصقات المنتجات</td></tr>
+          <tr><td>نسب تقسيم لا تساوي 100٪</td><td>مجموع نسبة العميل والمشروع يجب أن يساوي 100</td></tr>
+          <tr><td>انتظار منتجات المشروع في تتبع التسليم</td><td>التتبع يعرض فاتورة العميل فقط بعد التقسيم</td></tr>
+          <tr><td>البحث عن تسليم كل منتج بعد الترحيل في سطور الفاتورة فقط</td><td>تبويب تسليم المنتجات على فاتورة العميل، ويظهر في تتبع الطلب</td></tr>
+          <tr><td>حساب الربح من سعر البيع وحده</td><td>أدخل الشحن والتكاليف الإضافية على الصنف</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      مرجع داخلي لتشغيل Art Casa. دليل Home Blend للمستأجرين والعمولة:
+      <a href="شرح_مستأجري_Home_Blend.html">شرح مستأجري Home Blend</a>.
+    </footer>
+  </main>
+</div>
+</body>
+</html>

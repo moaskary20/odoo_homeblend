@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_artcasa_product_label_wizard_form" model="ir.ui.view">
+        <field name="name">artcasa.product.label.wizard.form</field>
+        <field name="model">artcasa.product.label.wizard</field>
+        <field name="arch" type="xml">
+            <form string="طباعة ملصقات المنتجات">
+                <group>
+                    <group>
+                        <field name="copies"/>
+                        <button name="action_apply_copies" type="object" string="تطبيق العدد على كل الأسطر"/>
+                    </group>
+                    <group>
+                        <field name="include_price"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="lot_id" optional="show"/>
+                        <field name="barcode"/>
+                        <field name="copies"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_print" type="object" string="طباعة الملصقات" class="btn-primary"/>
+                    <button string="إغلاق" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_artcasa_product_label_wizard" model="ir.actions.act_window">
+        <field name="name">طباعة ملصقات المنتجات</field>
+        <field name="res_model">artcasa.product.label.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_artcasa_product_label_wizard_form"/>
+    </record>
+    <record id="action_artcasa_product_label_template" model="ir.actions.act_window">
+        <field name="name">طباعة ملصقات المنتجات</field>
+        <field name="res_model">artcasa.product.label.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="view_id" ref="view_artcasa_product_label_wizard_form"/>
+    </record>
+    <record id="action_artcasa_product_label_variant" model="ir.actions.act_window">
+        <field name="name">طباعة ملصقات المنتجات</field>
+        <field name="res_model">artcasa.product.label.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="product.model_product_product"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="view_id" ref="view_artcasa_product_label_wizard_form"/>
+    </record>
+    <record id="action_artcasa_product_label_lot" model="ir.actions.act_window">
+        <field name="name">طباعة ملصق التشغيلة</field>
+        <field name="res_model">artcasa.product.label.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="stock.model_stock_lot"/>
+        <field name="binding_view_types">list,form</field>
+        <field name="view_id" ref="view_artcasa_product_label_wizard_form"/>
+    </record>
+</odoo>
