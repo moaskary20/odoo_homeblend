@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="config_sales_alert_email" model="ir.config_parameter">
+        <field name="key">homeblend.sales_alert_email</field>
+        <field name="value">info@homeblendstore.com</field>
+    </record>
     <record id="seq_homeblend_order_track" model="ir.sequence">
         <field name="name">تتبع طلب</field>
         <field name="code">homeblend.order.track</field>
