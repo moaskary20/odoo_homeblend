@@ -37,6 +37,26 @@
                     <field name="purchase_document_count" widget="statinfo" string="مستندات"/>
                 </button>
             </div>
+            <xpath expr="//page[@name='products']" position="after">
+                <page string="ملفات أمر الشراء" name="hb_purchase_documents">
+                    <field name="purchase_document_ids" context="{
+                        'default_document_type': 'purchase',
+                        'default_purchase_order_id': id,
+                        'default_partner_id': partner_id,
+                        'default_company_id': company_id,
+                    }">
+                        <list editable="bottom">
+                            <field name="name"/>
+                            <field name="datas" filename="datas_fname" widget="binary"/>
+                            <field name="datas_fname" column_invisible="1"/>
+                            <field name="sign_state" widget="badge" readonly="1"/>
+                            <field name="document_type" column_invisible="1"/>
+                            <field name="partner_id" column_invisible="1"/>
+                            <field name="purchase_order_id" column_invisible="1"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
         </field>
     </record>
 </odoo>

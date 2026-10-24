@@ -135,9 +135,8 @@
     <menuitem id="menu_homeblend_payables" name="الذمم الدائنة"
               parent="homeblend_tenant.menu_homeblend_vendor_tx_group"
               action="action_artcasa_payables" sequence="40"/>
-    <menuitem id="menu_homeblend_purchase_documents" name="ملفات أوامر الشراء"
-              parent="homeblend_tenant.menu_homeblend_purchase_docs_group"
-              action="action_homeblend_purchase_documents" sequence="10"/>
+    <delete model="ir.ui.menu" id="menu_homeblend_purchase_documents"/>
+    <delete model="ir.ui.menu" id="homeblend_tenant.menu_homeblend_purchase_docs_group"/>
 
     <!-- 5. المشتريات -->
     <menuitem id="menu_artcasa_suppliers_root" name="المشتريات" parent="menu_artcasa_root" sequence="20"/>
