@@ -4,7 +4,8 @@
 
 .hb-received {
     direction: rtl;
-    width: min(440px, 100%);
+    width: 100%;
+    max-width: 440px;
     margin: 0.5rem auto 0;
     text-align: right;
 }
