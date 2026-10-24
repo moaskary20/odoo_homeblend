@@ -86,6 +86,37 @@
               parent="menu_artcasa_inventory" action="stock.action_location_form" sequence="55"
               groups="stock.group_stock_multi_locations"/>
 
+    <!-- نفس قائمة المخزون داخل تطبيق Home Blend -->
+    <menuitem id="menu_homeblend_inventory" name="المخزون"
+              parent="homeblend_tenant.menu_homeblend_root" sequence="65"/>
+    <menuitem id="menu_homeblend_picking_types" name="عمليات المخزن"
+              parent="menu_homeblend_inventory" action="stock.stock_picking_type_action" sequence="5"/>
+    <menuitem id="menu_homeblend_barcode" name="الجرد بالباركود"
+              parent="menu_homeblend_inventory" action="action_artcasa_barcode_inventory" sequence="10"/>
+    <menuitem id="menu_homeblend_product_labels" name="طباعة ملصقات المنتجات"
+              parent="menu_homeblend_inventory" action="action_artcasa_product_label_wizard" sequence="12"/>
+    <menuitem id="menu_homeblend_quants" name="الكميات"
+              parent="menu_homeblend_inventory" action="action_report_product_qty" sequence="20"/>
+    <menuitem id="menu_homeblend_receipts_inv" name="استلام الأصناف"
+              parent="menu_homeblend_inventory" action="stock.action_picking_tree_incoming" sequence="25"/>
+    <menuitem id="menu_homeblend_deliveries_inv" name="صرف الأصناف"
+              parent="menu_homeblend_inventory" action="stock.action_picking_tree_outgoing" sequence="26"/>
+    <menuitem id="menu_homeblend_internal" name="تحويل بين المخازن"
+              parent="menu_homeblend_inventory" action="stock.action_picking_tree_internal" sequence="30"/>
+    <menuitem id="menu_homeblend_moves" name="حركة المخزون"
+              parent="menu_homeblend_inventory" action="stock.stock_move_action" sequence="35"/>
+    <menuitem id="menu_homeblend_lots" name="التشغيلات والأرقام التسلسلية"
+              parent="menu_homeblend_inventory" action="stock.action_production_lot_form" sequence="40"
+              groups="stock.group_production_lot"/>
+    <menuitem id="menu_homeblend_orderpoints" name="حدود المخزون"
+              parent="menu_homeblend_inventory" action="stock.action_orderpoint" sequence="45"/>
+    <menuitem id="menu_homeblend_warehouses" name="المخازن / الفروع"
+              parent="menu_homeblend_inventory" action="stock.action_warehouse_form" sequence="50"
+              groups="stock.group_stock_multi_warehouses"/>
+    <menuitem id="menu_homeblend_locations" name="مواقع التخزين"
+              parent="menu_homeblend_inventory" action="stock.action_location_form" sequence="55"
+              groups="stock.group_stock_multi_locations"/>
+
     <!-- 5. المشتريات -->
     <menuitem id="menu_artcasa_suppliers_root" name="المشتريات" parent="menu_artcasa_root" sequence="20"/>
     <menuitem id="menu_artcasa_requisition" name="طلب شراء / اتفاقية"

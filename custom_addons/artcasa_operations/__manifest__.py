@@ -1,6 +1,6 @@
 {
     "name": "Art Casa Operations",
-    "version": "19.0.1.15.0",
+    "version": "19.0.1.16.0",
     "category": "Sales",
     "summary": "تقسيم الفاتورة، الربح بعد التكاليف الإضافية، وحجز مخزون المندوب، وملصقات الباركود",
     "author": "HomeBlend",

@@ -85,19 +85,27 @@ class ArtcasaProductLabelLine(models.TransientModel):
         product = self.product_id
         return ((product.barcode or product.default_code or "") if product else "").strip()
 
+    def _barcode_prefix(self):
+        self.ensure_one()
+        company = self.wizard_id.company_id or self.product_id.company_id or self.env.company
+        name = (company.name or "").lower()
+        if "home" in name and "blend" in name:
+            return "HB"
+        return "AC"
+
     def _ensure_barcode(self):
         for line in self:
             if line.lot_id or not line.product_id:
                 continue
             if line.product_id.barcode or line.product_id.default_code:
                 continue
-            line.product_id.sudo().write({"barcode": "AC%06d" % line.product_id.id})
+            line.product_id.sudo().write({"barcode": "%s%06d" % (line._barcode_prefix(), line.product_id.id)})
 
     def _label_payload(self):
         self.ensure_one()
         product = self.product_id
         tmpl = product.product_tmpl_id
-        code = self._code() or ("AC%06d" % product.id)
+        code = self._code() or ("%s%06d" % (self._barcode_prefix(), product.id))
         company = self.wizard_id.company_id or product.company_id or self.env.company
         return {
             "name": product.display_name,
