@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.15.2",
+    "version": "19.0.1.15.3",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
@@ -41,6 +41,9 @@
             "homeblend_tenant/static/src/app/barcode/pos_barcode.js",
             "homeblend_tenant/static/src/app/barcode/order_receipt.xml",
             "homeblend_tenant/static/src/app/barcode/order_receipt.scss",
+            "homeblend_tenant/static/src/app/payment/payment_screen.js",
+            "homeblend_tenant/static/src/app/payment/payment_screen.xml",
+            "homeblend_tenant/static/src/app/payment/payment_screen.scss",
         ],
     },
     "post_init_hook": "post_init_hook",
