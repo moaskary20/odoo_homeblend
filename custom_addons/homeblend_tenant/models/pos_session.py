@@ -97,7 +97,7 @@ class PosSession(models.Model):
   %s
 </div>
 """ % (
-            self._hb_html_table([("البند", "القيمة")], summary),
+            self._hb_html_table(("البند", "القيمة"), summary),
             self._hb_payments_table(orders),
             self._hb_products_table(orders),
             self._hb_orders_html(orders),
