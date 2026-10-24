@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="homeblend_tenant.OrderReceiptBarcode" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('pos-receipt')]" position="inside">
+            <div t-if="order.hbReceiptBarcode" class="pt-3 text-center">
+                <img t-att-src="order.hbReceiptBarcodeUrl" alt="barcode" style="width: 90%; height: 48px;"/>
+                <div t-esc="order.hbReceiptBarcode"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

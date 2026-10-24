@@ -107,6 +107,69 @@ class PosOrder(models.Model):
         return res
 
 
+class PosConfig(models.Model):
+    _inherit = "pos.config"
+
+    @api.model
+    def hb_enable_barcode_scanning(self):
+        """تفعيل مسح الباركود في نقطة البيع لكل الشركات."""
+        nomenclature = self.env.ref("barcodes.default_barcode_nomenclature", raise_if_not_found=False)
+        if not nomenclature:
+            return True
+        companies = self.env["res.company"].sudo().search([("nomenclature_id", "=", False)])
+        if companies:
+            companies.write({"nomenclature_id": nomenclature.id})
+        return True
+
+
+class PosOrder(models.Model):
+    _inherit = "pos.order"
+
+    @api.model
+    def hb_find_refund_source(self, code):
+        """إيجاد فاتورة أو إيصال لمسحه في نقطة البيع وبدء الاسترجاع."""
+        code = (code or "").strip()
+        if not code:
+            return False
+        company = self.env.company
+        move = self.env["account.move"].sudo().search([
+            ("company_id", "=", company.id),
+            ("state", "=", "posted"),
+            ("move_type", "=", "out_invoice"),
+            ("name", "=", code),
+        ], limit=1)
+        order = self.sudo().search([
+            ("company_id", "=", company.id),
+            "|",
+            ("account_move", "=", move.id if move else 0),
+            "|",
+            ("pos_reference", "=", code),
+            ("name", "=", code),
+        ], limit=1)
+        if order:
+            invoice = move or order.account_move
+            return {
+                "pos_uuid": order.uuid,
+                "invoice_name": invoice.name if invoice and invoice.name != "/" else (order.pos_reference or order.name),
+            }
+        if not move:
+            return False
+        lines = []
+        for line in move.invoice_line_ids.filtered(lambda item: item.product_id and item.display_type == "product"):
+            lines.append({
+                "product_id": line.product_id.id,
+                "qty": line.quantity,
+                "price_unit": line.price_unit,
+                "discount": line.discount,
+            })
+        return {
+            "pos_uuid": False,
+            "invoice_name": move.name,
+            "partner_id": move.partner_id.id,
+            "lines": lines,
+        }
+
+
 class PosSession(models.Model):
     _inherit = "pos.session"
 

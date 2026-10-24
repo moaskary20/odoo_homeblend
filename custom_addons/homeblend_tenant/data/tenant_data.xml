@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <function model="pos.config" name="hb_enable_barcode_scanning"/>
     <record id="seq_homeblend_tenant_contract" model="ir.sequence">
         <field name="name">عقد مستأجر</field>
         <field name="code">homeblend.tenant.contract</field>
