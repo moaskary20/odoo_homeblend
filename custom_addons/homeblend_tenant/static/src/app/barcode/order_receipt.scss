@@ -1,0 +1,36 @@
+.pos-receipt-container {
+    direction: rtl;
+}
+
+.pos-receipt {
+    direction: rtl;
+    text-align: right;
+
+    .orderlines {
+        direction: rtl;
+    }
+
+    .pos-receipt-right-align {
+        float: inline-end;
+    }
+
+    .pos-receipt-left-padding {
+        padding-left: 0;
+        padding-inline-start: 2em;
+    }
+
+    .hb-receipt-barcode {
+        direction: ltr;
+        unicode-bidi: isolate;
+    }
+}
+
+.responsive-price > .pos-receipt-right-align {
+    margin-left: 0;
+    margin-inline-start: auto;
+}
+
+.pos-receipt-print .info-list {
+    margin-left: 0 !important;
+    margin-inline-start: 1.5rem !important;
+}

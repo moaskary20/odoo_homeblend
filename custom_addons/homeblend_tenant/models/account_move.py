@@ -226,3 +226,15 @@ class AccountMove(models.Model):
         if "paper_invoice" in vals or "paper_invoice_filename" in vals:
             self._sync_paper_invoice_document()
         return res
+
+    def _hb_pos_invoice_lang(self):
+        """POS invoices print in Arabic so the PDF is right to left."""
+        self.ensure_one()
+        partner_lang = self.partner_id.lang
+        if self.move_type not in ("out_invoice", "out_refund"):
+            return partner_lang
+        if not self.env["res.lang"]._get_code("ar_001"):
+            return partner_lang
+        if self.env["pos.order"].sudo().search([("account_move", "=", self.id)], limit=1):
+            return "ar_001"
+        return partner_lang

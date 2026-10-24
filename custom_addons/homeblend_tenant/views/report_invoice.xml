@@ -15,4 +15,10 @@
             </div>
         </xpath>
     </template>
+
+    <template id="report_invoice_pos_rtl" inherit_id="account.report_invoice">
+        <xpath expr="//t[@t-set='lang']" position="attributes">
+            <attribute name="t-value">o._hb_pos_invoice_lang()</attribute>
+        </xpath>
+    </template>
 </odoo>
