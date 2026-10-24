@@ -53,14 +53,18 @@
     <menuitem id="menu_homeblend_tracking" name="تتبع الطلبات" parent="menu_homeblend_root" sequence="60"/>
 
     <menuitem id="menu_homeblend_purchase_group" name="المشتريات" parent="menu_homeblend_root" sequence="70"/>
-    <menuitem id="menu_homeblend_purchase" name="طلب عروض أسعار" parent="menu_homeblend_purchase_group"
-              action="purchase.purchase_rfq" sequence="10"/>
-    <menuitem id="menu_homeblend_purchase_orders" name="أوامر الشراء" parent="menu_homeblend_purchase_group"
-              action="purchase.purchase_form_action" sequence="15"/>
-    <menuitem id="menu_homeblend_vendor_bills" name="فواتير الموردين" parent="menu_homeblend_purchase_group"
+    <menuitem id="menu_homeblend_pr_group" name="إدارة طلبات الشراء" parent="menu_homeblend_purchase_group" sequence="10"/>
+    <menuitem id="menu_homeblend_purchase" name="طلب عروض أسعار" parent="menu_homeblend_pr_group"
+              action="purchase.purchase_rfq" sequence="20"/>
+    <menuitem id="menu_homeblend_po_group" name="أوامر الشراء" parent="menu_homeblend_purchase_group" sequence="20"/>
+    <menuitem id="menu_homeblend_purchase_orders" name="أوامر الشراء" parent="menu_homeblend_po_group"
+              action="purchase.purchase_form_action" sequence="10"/>
+    <menuitem id="menu_homeblend_vendor_tx_group" name="معاملات الموردين" parent="menu_homeblend_purchase_group" sequence="30"/>
+    <menuitem id="menu_homeblend_vendors" name="الموردون" parent="menu_homeblend_vendor_tx_group"
+              action="account.res_partner_action_supplier" sequence="10"/>
+    <menuitem id="menu_homeblend_vendor_bills" name="فواتير الموردين" parent="menu_homeblend_vendor_tx_group"
               action="account.action_move_in_invoice_type" sequence="20"/>
-    <menuitem id="menu_homeblend_vendor_payments" name="مدفوعات الموردين" parent="menu_homeblend_purchase_group"
-              action="account.action_account_payments_payable" sequence="25"/>
-    <menuitem id="menu_homeblend_vendors" name="الموردون" parent="menu_homeblend_purchase_group"
-              action="account.res_partner_action_supplier" sequence="30"/>
+    <menuitem id="menu_homeblend_vendor_payments" name="مدفوعات الموردين" parent="menu_homeblend_vendor_tx_group"
+              action="account.action_account_payments_payable" sequence="30"/>
+    <menuitem id="menu_homeblend_purchase_docs_group" name="مستندات المشتريات" parent="menu_homeblend_purchase_group" sequence="40"/>
 </odoo>

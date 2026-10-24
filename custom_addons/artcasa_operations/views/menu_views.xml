@@ -117,6 +117,28 @@
               parent="menu_homeblend_inventory" action="stock.action_location_form" sequence="55"
               groups="stock.group_stock_multi_locations"/>
 
+    <menuitem id="menu_homeblend_requisition" name="طلب شراء / اتفاقية"
+              parent="homeblend_tenant.menu_homeblend_pr_group"
+              action="purchase_requisition.action_purchase_requisition" sequence="10"/>
+    <menuitem id="menu_homeblend_purchase_compare" name="مقارنة الموردين"
+              parent="homeblend_tenant.menu_homeblend_pr_group"
+              action="action_artcasa_purchase_compare" sequence="30"/>
+    <menuitem id="menu_homeblend_po_receipts" name="استلام الأصناف"
+              parent="homeblend_tenant.menu_homeblend_po_group"
+              action="stock.action_picking_tree_incoming" sequence="20"/>
+    <menuitem id="menu_homeblend_vendor_contracts" name="عقود الموردين"
+              parent="homeblend_tenant.menu_homeblend_vendor_tx_group"
+              action="action_artcasa_vendor_contracts" sequence="15"/>
+    <menuitem id="menu_homeblend_supplier_eval" name="تقييم المورد"
+              parent="homeblend_tenant.menu_homeblend_vendor_tx_group"
+              action="action_artcasa_supplier_eval" sequence="16"/>
+    <menuitem id="menu_homeblend_payables" name="الذمم الدائنة"
+              parent="homeblend_tenant.menu_homeblend_vendor_tx_group"
+              action="action_artcasa_payables" sequence="40"/>
+    <menuitem id="menu_homeblend_purchase_documents" name="ملفات أوامر الشراء"
+              parent="homeblend_tenant.menu_homeblend_purchase_docs_group"
+              action="action_homeblend_purchase_documents" sequence="10"/>
+
     <!-- 5. المشتريات -->
     <menuitem id="menu_artcasa_suppliers_root" name="المشتريات" parent="menu_artcasa_root" sequence="20"/>
     <menuitem id="menu_artcasa_requisition" name="طلب شراء / اتفاقية"

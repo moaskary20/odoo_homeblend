@@ -9,3 +9,5 @@ from . import stock_reservation
 from . import stock_orderpoint
 from . import res_company
 from . import res_partner
+from . import purchase_order
+from . import document
