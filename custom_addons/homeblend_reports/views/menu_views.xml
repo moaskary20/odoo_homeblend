@@ -69,6 +69,10 @@
               groups="account.group_account_readonly"/>
     <menuitem id="menu_hb_app_chart" name="شجرة الحسابات"
               parent="menu_hb_app_accounting" action="action_homeblend_chart" sequence="10"/>
+    <menuitem id="menu_hb_app_add_customer" name="إضافة عميل"
+              parent="menu_hb_app_accounting" action="action_hb_add_customer" sequence="12"/>
+    <menuitem id="menu_hb_app_add_supplier" name="إضافة مورد"
+              parent="menu_hb_app_accounting" action="action_hb_add_supplier" sequence="14"/>
     <menuitem id="menu_hb_app_trial" name="ميزان المراجعة"
               parent="menu_hb_app_accounting" action="action_homeblend_trial" sequence="20"/>
     <menuitem id="menu_hb_app_income_statement" name="قائمة الدخل"

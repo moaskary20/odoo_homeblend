@@ -52,6 +52,7 @@ class AccountAccount(models.Model):
     _inherit = "account.account"
 
     hb_chart = fields.Boolean(string="ضمن شجرة هوم بليند", index=True)
+    hb_partner_id = fields.Many2one("res.partner", string="العميل أو المورد", index=True)
     hb_statement_section = fields.Selection(SECTION_SELECTION, string="بند القائمة المالية")
     hb_normal_balance = fields.Selection(
         [("debit", "مدين"), ("credit", "دائن")],

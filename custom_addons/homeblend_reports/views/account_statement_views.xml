@@ -8,6 +8,7 @@
             <xpath expr="//field[@name='account_type']" position="after">
                 <field name="hb_normal_balance"/>
                 <field name="hb_chart"/>
+                <field name="hb_partner_id"/>
                 <field name="hb_statement_section"/>
             </xpath>
         </field>
@@ -38,6 +39,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='account_type']" position="after">
                 <field name="hb_normal_balance" optional="show"/>
+                <field name="hb_partner_id" optional="show"/>
                 <field name="hb_statement_section" optional="hide"/>
             </xpath>
         </field>
@@ -50,7 +52,7 @@
         <field name="domain">[('hb_chart', '=', True)]</field>
         <field name="context">{'search_default_hb_chart': 1, 'search_default_group_hb_section': 0}</field>
         <field name="help" type="html">
-            <p>شجرة هوم بليند: الأصول والخصوم والمصروفات والإيرادات، مع طبيعة كل حساب مدين أو دائن.</p>
+            <p>شجرة هوم بليند: الأصول والخصوم والمصروفات والإيرادات. أضف العملاء تحت حساب العملاء والموردين تحت حساب الموردين من قائمة الحسابات.</p>
         </field>
     </record>
 
@@ -117,6 +119,41 @@
                 </sheet>
             </form>
         </field>
+    </record>
+
+    <record id="view_hb_partner_account_wizard" model="ir.ui.view">
+        <field name="name">homeblend.partner.account.wizard.form</field>
+        <field name="model">homeblend.partner.account.wizard</field>
+        <field name="arch" type="xml">
+            <form string="إضافة إلى الشجرة">
+                <group>
+                    <field name="kind" invisible="1"/>
+                    <field name="partner_id" placeholder="اتركه فارغاً لإنشاء شريك جديد"/>
+                    <field name="name"/>
+                    <field name="phone"/>
+                    <field name="vat"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+                <footer>
+                    <button name="action_add" type="object" string="إضافة إلى الشجرة" class="btn-primary"/>
+                    <button string="إلغاء" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_hb_add_customer" model="ir.actions.act_window">
+        <field name="name">إضافة عميل</field>
+        <field name="res_model">homeblend.partner.account.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_kind': 'customer'}</field>
+    </record>
+    <record id="action_hb_add_supplier" model="ir.actions.act_window">
+        <field name="name">إضافة مورد</field>
+        <field name="res_model">homeblend.partner.account.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_kind': 'supplier'}</field>
     </record>
 
     <record id="action_homeblend_trial" model="ir.actions.act_window">
