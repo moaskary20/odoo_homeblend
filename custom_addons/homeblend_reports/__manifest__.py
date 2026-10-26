@@ -1,6 +1,6 @@
 {
     "name": "HomeBlend Reports",
-    "version": "19.0.1.11.0",
+    "version": "19.0.1.12.0",
     "category": "Productivity",
     "summary": "تقارير المستأجرين والعمولات والمبيعات والمشاريع",
     "author": "HomeBlend",
@@ -20,7 +20,9 @@
         "views/report_views.xml",
         "views/asset_views.xml",
         "views/financial_views.xml",
+        "views/account_statement_views.xml",
         "data/asset_data.xml",
+        "data/account_chart.xml",
         "views/menu_views.xml",
     ],
     "installable": True,

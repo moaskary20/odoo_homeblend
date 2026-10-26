@@ -64,6 +64,20 @@
               parent="menu_homeblend_reports_root" action="action_homeblend_budget" sequence="96"/>
 
     <!-- تقارير Home Blend داخل تطبيق الشركة نفسه -->
+    <menuitem id="menu_hb_app_accounting" name="الحسابات"
+              parent="homeblend_tenant.menu_homeblend_root" sequence="68"
+              groups="account.group_account_readonly"/>
+    <menuitem id="menu_hb_app_chart" name="شجرة الحسابات"
+              parent="menu_hb_app_accounting" action="action_homeblend_chart" sequence="10"/>
+    <menuitem id="menu_hb_app_trial" name="ميزان المراجعة"
+              parent="menu_hb_app_accounting" action="action_homeblend_trial" sequence="20"/>
+    <menuitem id="menu_hb_app_income_statement" name="قائمة الدخل"
+              parent="menu_hb_app_accounting" action="action_homeblend_income" sequence="30"/>
+    <menuitem id="menu_hb_app_balance_statement" name="الميزانية العمومية"
+              parent="menu_hb_app_accounting" action="action_homeblend_balance" sequence="40"/>
+    <menuitem id="menu_hb_app_moves" name="القيود اليومية"
+              parent="menu_hb_app_accounting" action="account.action_move_journal_line" sequence="50"/>
+
     <menuitem id="menu_hb_app_reports" name="التقارير"
               parent="homeblend_tenant.menu_homeblend_root" sequence="80"/>
     <menuitem id="menu_hb_app_report_tenants" name="تقارير المستأجرين"

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_account_hb_tree" model="ir.ui.view">
+        <field name="name">account.account.form.homeblend.chart</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='account_type']" position="after">
+                <field name="hb_normal_balance"/>
+                <field name="hb_chart"/>
+                <field name="hb_statement_section"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_search_hb" model="ir.ui.view">
+        <field name="name">account.account.search.homeblend.chart</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter name="hb_chart" string="شجرة هوم بليند" domain="[('hb_chart', '=', True)]"/>
+                <filter name="hb_debit" string="طبيعة مدينة" domain="[('hb_normal_balance', '=', 'debit')]"/>
+                <filter name="hb_credit" string="طبيعة دائنة" domain="[('hb_normal_balance', '=', 'credit')]"/>
+                <group>
+                    <filter name="group_hb_section" string="بند القائمة" context="{'group_by': 'hb_statement_section'}"/>
+                    <filter name="group_nature" string="الطبيعة" context="{'group_by': 'hb_normal_balance'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_list_hb" model="ir.ui.view">
+        <field name="name">account.account.list.homeblend.chart</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='account_type']" position="after">
+                <field name="hb_normal_balance" optional="show"/>
+                <field name="hb_statement_section" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_homeblend_chart" model="ir.actions.act_window">
+        <field name="name">شجرة الحسابات</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True)]</field>
+        <field name="context">{'search_default_hb_chart': 1, 'search_default_group_hb_section': 0}</field>
+        <field name="help" type="html">
+            <p>شجرة هوم بليند: الأصول والخصوم والمصروفات والإيرادات، مع طبيعة كل حساب مدين أو دائن.</p>
+        </field>
+    </record>
+
+    <record id="view_hb_statement_form" model="ir.ui.view">
+        <field name="name">homeblend.account.statement.form</field>
+        <field name="model">homeblend.account.statement</field>
+        <field name="arch" type="xml">
+            <form string="قائمة حسابات">
+                <header>
+                    <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="report_type" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <group invisible="report_type != 'trial'">
+                        <field name="total_closing_debit"/>
+                        <field name="total_closing_credit"/>
+                        <field name="difference"/>
+                        <field name="is_balanced"/>
+                    </group>
+                    <group invisible="report_type != 'income'">
+                        <field name="activity_profit"/>
+                        <field name="net_profit"/>
+                        <field name="cost_ratio"/>
+                        <field name="overhead_ratio"/>
+                    </group>
+                    <group invisible="report_type != 'balance'">
+                        <field name="assets_total"/>
+                        <field name="liabilities_equity_total"/>
+                        <field name="net_profit"/>
+                        <field name="difference"/>
+                        <field name="is_balanced"/>
+                    </group>
+                    <field name="line_ids" readonly="1">
+                        <list decoration-bf="is_total" create="false" delete="false">
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="is_total" column_invisible="1"/>
+                            <field name="line_kind" column_invisible="1"/>
+                            <field name="code" optional="show"/>
+                            <field name="name"/>
+                            <field name="nature" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="opening_debit" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="opening_credit" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="period_debit" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="period_credit" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="closing_debit" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="closing_credit" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="amount" column_invisible="parent.report_type == 'trial'"/>
+                            <field name="amount_compare" column_invisible="parent.report_type == 'trial'"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_homeblend_trial" model="ir.actions.act_window">
+        <field name="name">ميزان المراجعة</field>
+        <field name="res_model">homeblend.account.statement</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'trial'}</field>
+    </record>
+    <record id="action_homeblend_income" model="ir.actions.act_window">
+        <field name="name">قائمة الدخل</field>
+        <field name="res_model">homeblend.account.statement</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'income'}</field>
+    </record>
+    <record id="action_homeblend_balance" model="ir.actions.act_window">
+        <field name="name">الميزانية العمومية</field>
+        <field name="res_model">homeblend.account.statement</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'balance'}</field>
+    </record>
+</odoo>
