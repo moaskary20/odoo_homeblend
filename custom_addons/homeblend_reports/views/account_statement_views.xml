@@ -45,6 +45,115 @@
         </field>
     </record>
 
+    <record id="action_hb_accounts_hb1" model="ir.actions.act_window">
+        <field name="name">الأصول</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB1%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb11" model="ir.actions.act_window">
+        <field name="name">الأصول الثابتة</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB11%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb12" model="ir.actions.act_window">
+        <field name="name">الأصول المتداولة</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB12%')]</field>
+    </record>
+    <record id="action_hb_accounts_customers" model="ir.actions.act_window">
+        <field name="name">العملاء</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB12010%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb13" model="ir.actions.act_window">
+        <field name="name">أصول أخرى</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB13%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb2" model="ir.actions.act_window">
+        <field name="name">الخصوم وحقوق الملكية</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB2%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb21" model="ir.actions.act_window">
+        <field name="name">حقوق الشركاء</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB21%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb22" model="ir.actions.act_window">
+        <field name="name">الخصوم المتداولة</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB22%')]</field>
+    </record>
+    <record id="action_hb_accounts_suppliers" model="ir.actions.act_window">
+        <field name="name">الموردون</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB22003%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb23" model="ir.actions.act_window">
+        <field name="name">خصوم أخرى</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB23%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb3" model="ir.actions.act_window">
+        <field name="name">المصروفات</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB3%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb31" model="ir.actions.act_window">
+        <field name="name">تكاليف ومصاريف العمليات</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB31%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb32" model="ir.actions.act_window">
+        <field name="name">مصروفات إدارية وعمومية</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB32%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb4" model="ir.actions.act_window">
+        <field name="name">الإيرادات</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB4%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb41" model="ir.actions.act_window">
+        <field name="name">إيرادات بنكية</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB41%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb42" model="ir.actions.act_window">
+        <field name="name">إيرادات المبيعات</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB42%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb43" model="ir.actions.act_window">
+        <field name="name">إيرادات الإيجار</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB43%')]</field>
+    </record>
+    <record id="action_hb_accounts_hb44" model="ir.actions.act_window">
+        <field name="name">إيرادات أخرى</field>
+        <field name="res_model">account.account</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('hb_chart', '=', True), ('code', '=like', 'HB44%')]</field>
+    </record>
+
     <record id="action_homeblend_chart" model="ir.actions.act_window">
         <field name="name">شجرة الحسابات</field>
         <field name="res_model">account.account</field>

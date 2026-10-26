@@ -65,22 +65,64 @@
 
     <!-- تقارير Home Blend داخل تطبيق الشركة نفسه -->
     <menuitem id="menu_hb_app_accounting" name="الحسابات"
-              parent="homeblend_tenant.menu_homeblend_root" sequence="68"
-              groups="account.group_account_readonly"/>
-    <menuitem id="menu_hb_app_chart" name="شجرة الحسابات"
+              parent="homeblend_tenant.menu_homeblend_root" sequence="68"/>
+    <menuitem id="menu_hb_app_chart" name="الشجرة كاملة"
               parent="menu_hb_app_accounting" action="action_homeblend_chart" sequence="10"/>
+
+    <menuitem id="menu_hb_branch_assets" name="الأصول"
+              parent="menu_hb_app_accounting" action="action_hb_accounts_hb1" sequence="20"/>
+    <menuitem id="menu_hb_branch_fixed" name="الأصول الثابتة"
+              parent="menu_hb_branch_assets" action="action_hb_accounts_hb11" sequence="10"/>
+    <menuitem id="menu_hb_branch_current" name="الأصول المتداولة"
+              parent="menu_hb_branch_assets" action="action_hb_accounts_hb12" sequence="20"/>
+    <menuitem id="menu_hb_branch_customers" name="العملاء"
+              parent="menu_hb_branch_assets" action="action_hb_accounts_customers" sequence="30"/>
     <menuitem id="menu_hb_app_add_customer" name="إضافة عميل"
-              parent="menu_hb_app_accounting" action="action_hb_add_customer" sequence="12"/>
+              parent="menu_hb_branch_assets" action="action_hb_add_customer" sequence="40"/>
+    <menuitem id="menu_hb_branch_other_assets" name="أصول أخرى"
+              parent="menu_hb_branch_assets" action="action_hb_accounts_hb13" sequence="50"/>
+
+    <menuitem id="menu_hb_branch_liabilities" name="الخصوم وحقوق الملكية"
+              parent="menu_hb_app_accounting" action="action_hb_accounts_hb2" sequence="30"/>
+    <menuitem id="menu_hb_branch_equity" name="حقوق الشركاء"
+              parent="menu_hb_branch_liabilities" action="action_hb_accounts_hb21" sequence="10"/>
+    <menuitem id="menu_hb_branch_current_liab" name="الخصوم المتداولة"
+              parent="menu_hb_branch_liabilities" action="action_hb_accounts_hb22" sequence="20"/>
+    <menuitem id="menu_hb_branch_suppliers" name="الموردون"
+              parent="menu_hb_branch_liabilities" action="action_hb_accounts_suppliers" sequence="30"/>
     <menuitem id="menu_hb_app_add_supplier" name="إضافة مورد"
-              parent="menu_hb_app_accounting" action="action_hb_add_supplier" sequence="14"/>
+              parent="menu_hb_branch_liabilities" action="action_hb_add_supplier" sequence="40"/>
+    <menuitem id="menu_hb_branch_other_liab" name="خصوم أخرى"
+              parent="menu_hb_branch_liabilities" action="action_hb_accounts_hb23" sequence="50"/>
+
+    <menuitem id="menu_hb_branch_expenses" name="المصروفات"
+              parent="menu_hb_app_accounting" action="action_hb_accounts_hb3" sequence="40"/>
+    <menuitem id="menu_hb_branch_ops" name="تكاليف ومصاريف العمليات"
+              parent="menu_hb_branch_expenses" action="action_hb_accounts_hb31" sequence="10"/>
+    <menuitem id="menu_hb_branch_admin" name="مصروفات إدارية وعمومية"
+              parent="menu_hb_branch_expenses" action="action_hb_accounts_hb32" sequence="20"/>
+
+    <menuitem id="menu_hb_branch_income" name="الإيرادات"
+              parent="menu_hb_app_accounting" action="action_hb_accounts_hb4" sequence="50"/>
+    <menuitem id="menu_hb_branch_bank_income" name="إيرادات بنكية"
+              parent="menu_hb_branch_income" action="action_hb_accounts_hb41" sequence="10"/>
+    <menuitem id="menu_hb_branch_sales_income" name="إيرادات المبيعات"
+              parent="menu_hb_branch_income" action="action_hb_accounts_hb42" sequence="20"/>
+    <menuitem id="menu_hb_branch_rent_income" name="إيرادات الإيجار"
+              parent="menu_hb_branch_income" action="action_hb_accounts_hb43" sequence="30"/>
+    <menuitem id="menu_hb_branch_other_income" name="إيرادات أخرى"
+              parent="menu_hb_branch_income" action="action_hb_accounts_hb44" sequence="40"/>
+
+    <menuitem id="menu_hb_branch_statements" name="القوائم"
+              parent="menu_hb_app_accounting" sequence="60"/>
     <menuitem id="menu_hb_app_trial" name="ميزان المراجعة"
-              parent="menu_hb_app_accounting" action="action_homeblend_trial" sequence="20"/>
+              parent="menu_hb_branch_statements" action="action_homeblend_trial" sequence="10"/>
     <menuitem id="menu_hb_app_income_statement" name="قائمة الدخل"
-              parent="menu_hb_app_accounting" action="action_homeblend_income" sequence="30"/>
+              parent="menu_hb_branch_statements" action="action_homeblend_income" sequence="20"/>
     <menuitem id="menu_hb_app_balance_statement" name="الميزانية العمومية"
-              parent="menu_hb_app_accounting" action="action_homeblend_balance" sequence="40"/>
+              parent="menu_hb_branch_statements" action="action_homeblend_balance" sequence="30"/>
     <menuitem id="menu_hb_app_moves" name="القيود اليومية"
-              parent="menu_hb_app_accounting" action="account.action_move_journal_line" sequence="50"/>
+              parent="menu_hb_branch_statements" action="account.action_move_journal_line" sequence="40"/>
 
     <menuitem id="menu_hb_app_reports" name="التقارير"
               parent="homeblend_tenant.menu_homeblend_root" sequence="80"/>
