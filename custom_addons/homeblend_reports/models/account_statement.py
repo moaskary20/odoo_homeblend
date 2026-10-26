@@ -45,6 +45,7 @@ BALANCE_BLOCKS = [
     ("total", "مجموع الأصول المتداولة", ["bs_cash", "bs_receivable", "bs_related_asset", "bs_inventory"]),
     ("accounts", "bs_fixed_net", "الأصول الثابتة والممتلكات (بالصافي)"),
     ("accounts", "bs_other_asset", "أصول أخرى"),
+    ("accounts", "bs_residual_asset", "أصول غير مبوبة"),
     ("total", "مجموع الأصول", ["__assets__"]),
     ("header", "الخصوم وحقوق الشركاء", None),
     ("header", "الخصوم المتداولة الأخرى", None),
@@ -53,12 +54,14 @@ BALANCE_BLOCKS = [
     ("accounts", "bs_advances", "دفعات محصلة من الغير"),
     ("accounts", "bs_provision", "مخصصات"),
     ("accounts", "bs_statutory", "التزامات نظامية"),
-    ("total", "مجموع الخصوم", ["bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory"]),
+    ("accounts", "bs_residual_liability", "خصوم غير مبوبة"),
+    ("total", "مجموع الخصوم", ["bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory", "bs_residual_liability"]),
     ("header", "حقوق الشركاء", None),
     ("accounts", "eq_capital", "رأس المال"),
     ("accounts", "eq_partner_buy", "جاري الشركاء شراء"),
     ("accounts", "eq_partner_sell", "جاري الشركاء بيع"),
     ("accounts", "eq_retained", "أرباح وخسائر مرحلة"),
+    ("accounts", "bs_residual_equity", "حقوق ملكية غير مبوبة"),
     ("result", "صافي أرباح أو خسائر العام", "profit"),
     ("total", "صافي حقوق الشركاء", ["__equity__"]),
     ("total", "مجموع الخصوم وحقوق الشركاء", ["__liab_equity__"]),
@@ -71,6 +74,19 @@ OVERHEAD_SECTIONS = [
 ]
 INCOME_TYPES = {"income", "income_other"}
 EXPENSE_TYPES = {"expense", "expense_other", "expense_depreciation", "expense_direct_cost"}
+ASSET_TYPES = {
+    "asset_receivable", "asset_cash", "asset_current", "asset_non_current",
+    "asset_prepayments", "asset_fixed",
+}
+LIABILITY_TYPES = {
+    "liability_payable", "liability_credit_card", "liability_current", "liability_non_current",
+}
+EQUITY_TYPES = {"equity", "equity_unaffected"}
+ASSET_SECTIONS = ["bs_cash", "bs_receivable", "bs_related_asset", "bs_inventory", "bs_fixed", "bs_other_asset"]
+LIABILITY_SECTIONS = [
+    "bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory", "bs_fixed_contra",
+]
+EQUITY_SECTIONS = ["eq_capital", "eq_retained", "eq_partner_buy", "eq_partner_sell"]
 
 
 class HomeblendAccountStatement(models.TransientModel):
@@ -388,14 +404,20 @@ class HomeblendAccountStatement(models.TransientModel):
         contra_details = [(account, -amount) for account, amount in cache["bs_fixed_contra"][1]]
         cache["bs_fixed_net"] = (fixed_net, cache["bs_fixed"][1] + contra_details)
         cache_prev["bs_fixed_net"] = (fixed_net_prev, [])
+        cache["bs_residual_asset"] = self._residual_amount(current, ASSET_TYPES, ASSET_SECTIONS)
+        cache["bs_residual_liability"] = self._residual_amount(current, LIABILITY_TYPES, LIABILITY_SECTIONS)
+        cache["bs_residual_equity"] = self._residual_amount(current, EQUITY_TYPES, EQUITY_SECTIONS)
+        cache_prev["bs_residual_asset"] = self._residual_amount(previous, ASSET_TYPES, ASSET_SECTIONS)
+        cache_prev["bs_residual_liability"] = self._residual_amount(previous, LIABILITY_TYPES, LIABILITY_SECTIONS)
+        cache_prev["bs_residual_equity"] = self._residual_amount(previous, EQUITY_TYPES, EQUITY_SECTIONS)
         current_assets = sum(cache[key][0] for key in ["bs_cash", "bs_receivable", "bs_related_asset", "bs_inventory"])
-        assets = current_assets + fixed_net + cache["bs_other_asset"][0]
-        liabilities = sum(cache[key][0] for key in ["bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory"])
-        equity = sum(cache[key][0] for key in ["eq_capital", "eq_retained", "eq_partner_buy", "eq_partner_sell"]) + profit
+        assets = current_assets + fixed_net + cache["bs_other_asset"][0] + cache["bs_residual_asset"][0]
+        liabilities = sum(cache[key][0] for key in ["bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory", "bs_residual_liability"])
+        equity = sum(cache[key][0] for key in ["eq_capital", "eq_retained", "eq_partner_buy", "eq_partner_sell", "bs_residual_equity"]) + profit
         current_assets_prev = sum(cache_prev[key][0] for key in ["bs_cash", "bs_receivable", "bs_related_asset", "bs_inventory"])
-        assets_prev = current_assets_prev + fixed_net_prev + cache_prev["bs_other_asset"][0]
-        liabilities_prev = sum(cache_prev[key][0] for key in ["bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory"])
-        equity_prev = sum(cache_prev[key][0] for key in ["eq_capital", "eq_retained", "eq_partner_buy", "eq_partner_sell"]) + profit_prev
+        assets_prev = current_assets_prev + fixed_net_prev + cache_prev["bs_other_asset"][0] + cache_prev["bs_residual_asset"][0]
+        liabilities_prev = sum(cache_prev[key][0] for key in ["bs_payable", "bs_related_liability", "bs_advances", "bs_provision", "bs_statutory", "bs_residual_liability"])
+        equity_prev = sum(cache_prev[key][0] for key in ["eq_capital", "eq_retained", "eq_partner_buy", "eq_partner_sell", "bs_residual_equity"]) + profit_prev
         totals = {
             "bs_cash": cache["bs_cash"][0],
             "bs_receivable": cache["bs_receivable"][0],
@@ -403,6 +425,9 @@ class HomeblendAccountStatement(models.TransientModel):
             "bs_inventory": cache["bs_inventory"][0],
             "bs_fixed_net": fixed_net,
             "bs_other_asset": cache["bs_other_asset"][0],
+            "bs_residual_asset": cache["bs_residual_asset"][0],
+            "bs_residual_liability": cache["bs_residual_liability"][0],
+            "bs_residual_equity": cache["bs_residual_equity"][0],
             "__assets__": assets,
             "bs_payable": cache["bs_payable"][0],
             "bs_related_liability": cache["bs_related_liability"][0],
@@ -465,6 +490,9 @@ class HomeblendAccountStatement(models.TransientModel):
                 continue
             amount = totals.get(payload, 0.0)
             amount_prev = totals_prev.get(payload, 0.0)
+            details = cache.get(payload, (0.0, []))[1]
+            if str(payload).startswith("bs_residual") and self.company_id.currency_id.is_zero(amount) and not details:
+                continue
             lines.append({
                 "sequence": sequence,
                 "line_kind": "header",
@@ -472,7 +500,6 @@ class HomeblendAccountStatement(models.TransientModel):
                 "amount": amount,
                 "amount_compare": amount_prev,
             })
-            details = cache.get(payload, (0.0, []))[1]
             for account, detail_amount in details:
                 sequence += 1
                 lines.append({
@@ -490,6 +517,26 @@ class HomeblendAccountStatement(models.TransientModel):
             "difference": difference,
             "is_balanced": self.company_id.currency_id.is_zero(difference),
         }
+
+    def _residual_amount(self, period_map, account_types, used_sections):
+        accounts = self.env["account.account"].with_company(self.company_id).search([
+            ("company_ids", "in", self.company_id.id),
+            ("account_type", "in", list(account_types)),
+            "|",
+            ("hb_statement_section", "=", False),
+            ("hb_statement_section", "not in", list(used_sections)),
+        ])
+        total = 0.0
+        details = []
+        currency = self.company_id.currency_id
+        for account in accounts.sorted("code"):
+            debit, credit = period_map.get(account.id, (0.0, 0.0))
+            amount = (credit - debit) if account.account_type in CREDIT_TYPES else (debit - credit)
+            if currency.is_zero(amount):
+                continue
+            details.append((account, amount))
+            total += amount
+        return total, details
 
     def _profit_until(self, date_to):
         period = self._sums_by_account(date_to=date_to)

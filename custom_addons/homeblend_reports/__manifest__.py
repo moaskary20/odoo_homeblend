@@ -1,6 +1,6 @@
 {
     "name": "HomeBlend Reports",
-    "version": "19.0.1.12.0",
+    "version": "19.0.1.12.1",
     "category": "Productivity",
     "summary": "تقارير المستأجرين والعمولات والمبيعات والمشاريع",
     "author": "HomeBlend",
