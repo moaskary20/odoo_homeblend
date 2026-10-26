@@ -66,6 +66,9 @@
     <!-- تقارير Home Blend داخل تطبيق الشركة نفسه -->
     <menuitem id="menu_hb_app_accounting" name="الحسابات"
               parent="homeblend_tenant.menu_homeblend_root" sequence="68"/>
+    <record id="menu_hb_app_accounting" model="ir.ui.menu">
+        <field name="group_ids" eval="[(5, 0, 0)]"/>
+    </record>
     <menuitem id="menu_hb_app_chart" name="الشجرة كاملة"
               parent="menu_hb_app_accounting" action="action_homeblend_chart" sequence="10"/>
 

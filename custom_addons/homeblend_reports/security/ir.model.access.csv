@@ -6,6 +6,6 @@ access_homeblend_fin_wiz_user,homeblend.financial.report.wizard.user,model_homeb
 access_homeblend_budget_user,homeblend.budget.user,model_homeblend_budget,account.group_account_invoice,1,1,1,0
 access_homeblend_budget_manager,homeblend.budget.manager,model_homeblend_budget,account.group_account_manager,1,1,1,1
 access_homeblend_budget_line_user,homeblend.budget.line.user,model_homeblend_budget_line,account.group_account_invoice,1,1,1,1
-access_homeblend_statement_user,homeblend.account.statement.user,model_homeblend_account_statement,account.group_account_readonly,1,1,1,1
-access_homeblend_statement_line_user,homeblend.account.statement.line.user,model_homeblend_account_statement_line,account.group_account_readonly,1,1,1,1
-access_homeblend_partner_account_wizard,homeblend.partner.account.wizard,model_homeblend_partner_account_wizard,account.group_account_readonly,1,1,1,1
+access_homeblend_statement_user,homeblend.account.statement.user,model_homeblend_account_statement,base.group_user,1,1,1,1
+access_homeblend_statement_line_user,homeblend.account.statement.line.user,model_homeblend_account_statement_line,base.group_user,1,1,1,1
+access_homeblend_partner_account_wizard,homeblend.partner.account.wizard,model_homeblend_partner_account_wizard,base.group_user,1,1,1,1
