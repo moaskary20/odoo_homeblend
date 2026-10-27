@@ -6,6 +6,8 @@
 
 شرح تشغيل Art Casa (منتجات، مخزون، مشاريع، تقسيم الفاتورة): [شرح تشغيل Art Casa](شرح_تشغيل_Art_Casa.html) — على السيرفر: `/guides/artcasa`.
 
+عنوان الدخول: [https://odoo.homeblendstore.com](https://odoo.homeblendstore.com) (HTTPS).
+
 اعمل دائماً داخل شركة **Home Blend** من أعلى الشاشة. **Art Casa** شركة منفصلة ولها تطبيق مختلف، ولا يُخلط تشغيلها مع هذا الدليل.
 
 ---
