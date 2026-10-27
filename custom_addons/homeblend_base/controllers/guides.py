@@ -8,6 +8,10 @@ GUIDES = {
         "file": "شرح_مستأجري_Home_Blend.html",
         "title": "دليل مستأجري Home Blend",
     },
+    "accounting": {
+        "file": "شرح_حسابات_Home_Blend.html",
+        "title": "دليل حسابات Home Blend",
+    },
     "artcasa": {
         "file": "شرح_تشغيل_Art_Casa.html",
         "title": "دليل تشغيل Art Casa",

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>دليل حسابات Home Blend — الشجرة والقيود والتقارير</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #1c1612;
+      --walnut: #3b2a22;
+      --brass: #c4a574;
+      --cream: #f6f0e6;
+      --paper: #fffaf3;
+      --terra: #b85c38;
+      --muted: #6d6258;
+      --line: #e6d9c6;
+      --ok: #2f6b4f;
+      --gold-soft: rgba(196, 165, 116, 0.16);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans Arabic", sans-serif;
+      background:
+        radial-gradient(1200px 500px at 100% 0, rgba(184, 92, 56, 0.08), transparent 50%),
+        var(--cream);
+      color: var(--ink);
+      line-height: 1.85;
+    }
+    .wrap {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 100vh;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--walnut);
+      color: #f3e8d8;
+      padding: 28px 18px 40px;
+      order: 1;
+    }
+    main { order: 2; padding: 40px 52px 96px; max-width: 960px; }
+    nav .brand {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      color: var(--brass);
+      margin-bottom: 6px;
+    }
+    nav h1 {
+      font-size: 1.15rem;
+      margin: 0 0 8px;
+      color: #fffaf3;
+      line-height: 1.4;
+    }
+    nav .sub {
+      font-size: 0.78rem;
+      color: #cbb8a3;
+      margin: 0 0 22px;
+      line-height: 1.6;
+    }
+    nav a {
+      display: block;
+      color: #f3e8d8;
+      text-decoration: none;
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: 0.86rem;
+    }
+    nav a:hover, nav a:focus {
+      background: var(--gold-soft);
+      color: #fff;
+    }
+    header.hero {
+      background: linear-gradient(135deg, #2d1f1a 0%, #5a3d2e 62%, #7a4e35 100%);
+      color: #fff;
+      padding: 40px 40px 36px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 16px 40px rgba(59, 42, 34, 0.22);
+    }
+    header.hero small {
+      color: var(--brass);
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    header.hero h1 {
+      margin: 10px 0 12px;
+      font-size: 2.05rem;
+      line-height: 1.35;
+    }
+    header.hero p { margin: 0; color: #f3e8d8; max-width: 40em; }
+    .rule {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 0 0 36px;
+    }
+    .rule span {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-right: 4px solid var(--brass);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+    }
+    h2 {
+      color: var(--walnut);
+      border-bottom: 2px solid var(--brass);
+      padding-bottom: 8px;
+      margin-top: 52px;
+      scroll-margin-top: 20px;
+    }
+    h3 { color: var(--terra); margin-top: 28px; }
+    p { margin: 12px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      background: var(--paper);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: right;
+      vertical-align: top;
+    }
+    th { background: #efe4d2; font-weight: 600; }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-right: 5px solid var(--brass);
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+    .card.warn { border-right-color: var(--terra); }
+    .card.ok { border-right-color: var(--ok); }
+    .flow {
+      background: #efe6d6;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+    ol.steps, ul { padding-right: 22px; }
+    code {
+      background: #efe4d2;
+      padding: 1px 7px;
+      border-radius: 5px;
+      font-size: 0.92em;
+    }
+    pre.tree {
+      background: #2d1f1a;
+      color: #f3e8d8;
+      padding: 18px 20px;
+      border-radius: 12px;
+      overflow: auto;
+      line-height: 1.65;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 920px) {
+      .wrap { grid-template-columns: 1fr; }
+      nav {
+        position: relative;
+        height: auto;
+        order: 0;
+      }
+      main { padding: 24px 18px 64px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">HOME BLEND</div>
+    <h1>دليل الحسابات</h1>
+    <p class="sub">الشجرة · القيود · القوائم · التصدير</p>
+    <a href="#intro">الفكرة</a>
+    <a href="#menu">خريطة القائمة</a>
+    <a href="#chart">شجرة الحسابات</a>
+    <a href="#create-account">إنشاء حساب جديد</a>
+    <a href="#partners">إضافة عميل / مورد</a>
+    <a href="#journal">القيود اليومية</a>
+    <a href="#opening">أرصدة أول المدة</a>
+    <a href="#trial">ميزان المراجعة</a>
+    <a href="#income">قائمة الدخل</a>
+    <a href="#balance">الميزانية العمومية</a>
+    <a href="#export">Excel و PDF</a>
+    <a href="#examples">أمثلة قيود</a>
+    <a href="#checklist">قائمة تحقق يومية</a>
+    <a href="#faq">أسئلة شائعة</a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <small>HOME BLEND ACCOUNTING</small>
+      <h1>شرح كامل للحسابات والتقارير</h1>
+      <p>
+        هذا الدليل يشرح كل ما يخص قائمة <strong>الحسابات</strong> داخل Home Blend:
+        الشجرة، إنشاء الحسابات والعملاء والموردين، القيود اليومية، وكيف تُبنى التقارير
+        (ميزان المراجعة، قائمة الدخل، الميزانية) وكيف تصدّرها.
+      </p>
+    </header>
+
+    <div class="rule">
+      <span>الدخول: https://odoo.homeblendstore.com</span>
+      <span>الشركة: Home Blend من أعلى الشاشة</span>
+      <span>القائمة: Home Blend → الحسابات</span>
+    </div>
+
+    <h2 id="intro">1) الفكرة الأساسية</h2>
+    <p>
+      نظام الحسابات في Home Blend مبني على شجرة حسابات الشركة (رموز تبدأ بـ <code>HB</code>).
+      <strong>التقارير لا تُدخل فيها أرقام يدوياً</strong>. الأرقام تأتي من القيود المرحلة
+      (قيود يومية أو فواتير) على حسابات الشجرة.
+    </p>
+    <div class="flow">
+      حساب في الشجرة → قيد مرحّل (مدين/دائن) → تحديث التقرير → Excel / PDF
+    </div>
+    <div class="card warn">
+      <strong>مهم:</strong> نص «البيان» داخل القيد للتوضيح فقط. الذي يحدّد ظهور المبلغ في قائمة الدخل أو الميزانية هو <strong>الحساب</strong> وحقل <strong>بند القائمة المالية</strong> عليه.
+    </div>
+
+    <h2 id="menu">2) خريطة قائمة الحسابات</h2>
+    <pre class="tree">Home Blend → الحسابات
+├── الشجرة كاملة
+├── الأصول
+│   ├── الأصول الثابتة
+│   ├── الأصول المتداولة
+│   ├── العملاء
+│   ├── إضافة عميل
+│   └── أصول أخرى
+├── الخصوم وحقوق الملكية
+│   ├── حقوق الشركاء
+│   ├── الخصوم المتداولة
+│   ├── الموردون
+│   ├── إضافة مورد
+│   └── خصوم أخرى
+├── المصروفات
+│   ├── تكاليف ومصاريف العمليات
+│   └── مصروفات إدارية وعمومية
+├── الإيرادات
+│   ├── إيرادات بنكية
+│   ├── إيرادات المبيعات
+│   ├── إيرادات الإيجار
+│   └── إيرادات أخرى
+└── القوائم
+    ├── ميزان المراجعة
+    ├── قائمة الدخل
+    ├── الميزانية العمومية
+    └── القيود اليومية</pre>
+
+    <h2 id="chart">3) شجرة الحسابات</h2>
+    <p>
+      من <strong>الحسابات → الشجرة كاملة</strong> ترى كل حسابات Home Blend.
+      كل حساب له: كود، اسم، نوع محاسبي، طبيعة (مدين/دائن)، وبند قائمة مالية.
+    </p>
+
+    <h3>المجموعات الرئيسية</h3>
+    <table>
+      <thead>
+        <tr><th>الكود</th><th>المجموعة</th><th>أمثلة</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HB1 / HB11–13</td><td>الأصول</td><td>تجهيز مقر، بنوك، عملاء، مخزون</td></tr>
+        <tr><td>HB2 / HB21–23</td><td>الخصوم وحقوق الملكية</td><td>رأس المال، موردون، مخصص إهلاك</td></tr>
+        <tr><td>HB3 / HB31–32</td><td>المصروفات</td><td>تكاليف عمليات، إيجارات، رواتب</td></tr>
+        <tr><td>HB4 / HB41–44</td><td>الإيرادات</td><td>مبيعات، إيجار، فوائد بنكية</td></tr>
+      </tbody>
+    </table>
+
+    <h3>حسابات مهمة محفوظة في النظام</h3>
+    <table>
+      <thead>
+        <tr><th>الكود</th><th>الاسم</th><th>الاستخدام</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HB11002</td><td>تجهيز مقر الشركة</td><td>أصل ثابت — يظهر في الميزانية تحت الأصول الثابتة</td></tr>
+        <tr><td>HB12001…HB12007</td><td>صناديق وبنوك</td><td>نقدية — ميزانية / مقابل القيود</td></tr>
+        <tr><td>HB12010</td><td>العملاء</td><td>أب حسابات العملاء الفرعية</td></tr>
+        <tr><td>HB22003</td><td>الموردون</td><td>أب حسابات الموردين الفرعية</td></tr>
+        <tr><td>HB42001</td><td>إيراد المبيعات</td><td>قائمة الدخل — إيرادات النشاط</td></tr>
+        <tr><td>HB32001</td><td>إيجارات</td><td>قائمة الدخل — مصاريف إدارية</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="create-account">4) إنشاء حساب جديد في الشجرة</h2>
+    <ol class="steps">
+      <li>افتح الفرع المناسب (مثلاً المصروفات → مصروفات إدارية وعمومية).</li>
+      <li>اضغط <strong>جديد</strong>.</li>
+      <li>أدخل <strong>الاسم</strong> والكود (يفضّل أن يبدأ بنفس بادئة المجموعة مثل <code>HB32…</code>).</li>
+      <li>اختر <strong>نوع الحساب</strong> (أصل / خصم / مصروف / إيراد…).</li>
+      <li>عيّن <strong>بند القائمة المالية</strong> ليظهر في قائمة الدخل أو الميزانية في المكان الصحيح.</li>
+      <li>فعّل <strong>شجرة هوم بليند</strong> إن وُجد الحقل، واحفظ.</li>
+    </ol>
+    <div class="card">
+      بدون تعيين «بند القائمة المالية» قد يظهر المبلغ ضمن
+      <em>بنود غير مبوبة</em> في قائمة الدخل أو كبند متبقٍ في الميزانية.
+    </div>
+
+    <h2 id="partners">5) إضافة عميل أو مورد داخل الشجرة</h2>
+    <p>المحاسب يطلب أن يكون لكل عميل حساب مدين تحت العملاء، ولكل مورد حساب دائن تحت الموردين.</p>
+
+    <h3>إضافة عميل</h3>
+    <ol class="steps">
+      <li>الحسابات → الأصول → <strong>إضافة عميل</strong>.</li>
+      <li>اكتب الاسم (والهاتف / الرقم الضريبي اختياري)، أو اختر شريكاً موجوداً.</li>
+      <li>اضغط <strong>إضافة إلى الشجرة</strong>.</li>
+      <li>يُنشأ حساب فرعي تحت <code>HB12010</code> ويُربط كحساب مدين للشريك.</li>
+    </ol>
+
+    <h3>إضافة مورد</h3>
+    <ol class="steps">
+      <li>الحسابات → الخصوم وحقوق الملكية → <strong>إضافة مورد</strong>.</li>
+      <li>أكمل البيانات ثم <strong>إضافة إلى الشجرة</strong>.</li>
+      <li>يُنشأ حساب فرعي تحت <code>HB22003</code> ويُربط كحساب دائن للشريك.</li>
+    </ol>
+    <div class="card ok">
+      بعد الربط، فواتير العميل/المورد تترحّل على حسابه الخاص في الشجرة وتظهر في الميزان والتقارير.
+    </div>
+
+    <h2 id="journal">6) القيود اليومية (إدخال الأرقام)</h2>
+    <p>المسار: <strong>الحسابات → القوائم → القيود اليومية → جديد</strong>.</p>
+    <ol class="steps">
+      <li>اختر <strong>تاريخ المحاسبة</strong> ودفتر اليومية (غالباً عمليات متنوعة).</li>
+      <li>افتح تبويب <strong>بنود اليومية</strong> (ليس «معلومات أخرى»).</li>
+      <li>أضف سطراً: الحساب + المبلغ في <strong>مدين</strong> أو <strong>دائن</strong>.</li>
+      <li>أضف السطر المقابل حتى يتساوى إجمالي المدين مع إجمالي الدائن.</li>
+      <li>اضغط <strong>ترحيل</strong>. القيد المسودة لا يدخل التقارير.</li>
+    </ol>
+    <div class="card warn">
+      إذا لم يظهر تبويب بنود اليومية: المستخدم يحتاج صلاحيات المحاسبة
+      (إظهار الخصائص المحاسبية / كامل خصائص المحاسبة). حساب Administrator تم ضبطه لذلك على السيرفر.
+    </div>
+
+    <h2 id="opening">7) أرصدة أول المدة / تعبئة ميزان المراجعة</h2>
+    <p>
+      لا توجد شاشة «إدخال ميزان مراجعة» سطراً بسطر. لإدخال أرصدة أول المدة:
+      أنشئ قيداً (أو عدة قيود) بتاريخ <strong>قبل</strong> بداية الفترة المطلوبة،
+      بكل حساب له رصيد، ثم رحّل.
+    </p>
+    <table>
+      <thead>
+        <tr><th>طبيعة الرصيد في الميزان</th><th>في القيد</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>رصيد مدين (أصل / مصروف)</td><td>مدين على الحساب</td></tr>
+        <tr><td>رصيد دائن (خصم / إيراد / رأس مال)</td><td>دائن على الحساب</td></tr>
+      </tbody>
+    </table>
+    <p>
+      الطرف المقابل غالباً حساب وسيط افتتاحي، أو رأس المال / جاري الشركاء / بنك،
+      حسب ما يقرّه المحاسب، بشرط توازن القيد.
+    </p>
+
+    <h2 id="trial">8) تقرير ميزان المراجعة</h2>
+    <p>المسار: <strong>الحسابات → القوائم → ميزان المراجعة</strong>.</p>
+    <ol class="steps">
+      <li>حدّد من تاريخ / إلى تاريخ.</li>
+      <li>اضغط <strong>تحديث</strong>.</li>
+      <li>راجع الأعمدة: أول المدة، الحركة، آخر المدة (مدين/دائن).</li>
+      <li>تأكد أن الحالة <strong>متوازن</strong>.</li>
+    </ol>
+    <div class="card">
+      أول المدة = حركة قبل تاريخ البداية.<br/>
+      الحركة = خلال الفترة.<br/>
+      آخر المدة = الناتج في نهاية الفترة.
+    </div>
+
+    <h2 id="income">9) تقرير قائمة الدخل</h2>
+    <p>المسار: <strong>الحسابات → القوائم → قائمة الدخل</strong>.</p>
+    <p>بعد <strong>تحديث</strong> تظهر بنفس ترتيب ملف الشركة تقريباً:</p>
+    <ul>
+      <li>إيرادات النشاط</li>
+      <li>يطرح: تكاليف ومصاريف النشاط (عمليات، أجور، عمومية، إهلاك)</li>
+      <li>مجمل ربح النشاط</li>
+      <li>يضاف: إيرادات أخرى / فوائد بنكية</li>
+      <li>مجمل الربح أو الخسارة</li>
+      <li>يطرح: المصروفات العمومية والإدارية</li>
+      <li>صافي أرباح أو خسائر العام</li>
+    </ul>
+    <p>أعلى الصفحة تظهر أيضاً نسبة التكلفة إلى الإيراد ونسبة المصروفات العمومية إلى الإيراد، مع عمود للسنة السابقة.</p>
+    <div class="card warn">
+      لا تكتب الأرقام داخل قائمة الدخل. لتغيير رقم بند: أضف/عدّل قيداً على الحساب المناسب ثم حدّث.
+    </div>
+
+    <h2 id="balance">10) تقرير الميزانية العمومية</h2>
+    <p>المسار: <strong>الحسابات → القوائم → الميزانية العمومية</strong>.</p>
+    <p>بعد التحديث تظهر المركز المالي في تاريخ نهاية الفترة:</p>
+    <ul>
+      <li>أصول متداولة: نقدية، مدينون، شركات شقيقة، مخازن</li>
+      <li>أصول ثابتة بالصافي (بعد مخصص الإهلاك)</li>
+      <li>خصوم متداولة ومخصصات</li>
+      <li>حقوق الشركاء: رأس المال، جاري شراء/بيع، أرباح مرحلة، صافي ربح العام</li>
+    </ul>
+    <p>الميزانية متوازنة عندما: <strong>الأصول = الخصوم + حقوق الشركاء</strong>.</p>
+
+    <h2 id="export">11) تصدير Excel وطباعة PDF</h2>
+    <p>على شاشات ميزان المراجعة وقائمة الدخل والميزانية العمومية:</p>
+    <table>
+      <thead>
+        <tr><th>الزر</th><th>الوظيفة</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>تحديث</td><td>إعادة حساب البنود من القيود المرحلة</td></tr>
+        <tr><td>تصدير Excel</td><td>تنزيل ملف <code>.xlsx</code> بالبنود والمجاميع</td></tr>
+        <tr><td>طباعة PDF</td><td>فتح تقرير PDF للطباعة أو الحفظ</td></tr>
+      </tbody>
+    </table>
+    <ol class="steps">
+      <li>افتح التقرير المطلوب.</li>
+      <li>حدّد الفترة واضغط تحديث.</li>
+      <li>اضغط تصدير Excel أو طباعة PDF.</li>
+    </ol>
+
+    <h2 id="examples">12) أمثلة قيود شائعة</h2>
+
+    <h3>أ) شراء تجهيز مقر نقداً 50,000</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>HB11002 تجهيز مقر الشركة</td><td>50,000</td><td></td></tr>
+        <tr><td>بنك / صندوق</td><td></td><td>50,000</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ب) إيراد مبيعات محصّل نقداً 10,000</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>بنك / صندوق</td><td>10,000</td><td></td></tr>
+        <tr><td>HB42001 إيراد المبيعات</td><td></td><td>10,000</td></tr>
+      </tbody>
+    </table>
+
+    <h3>ج) مصروف إيجار مدفوع 2,000</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>HB32001 إيجارات</td><td>2,000</td><td></td></tr>
+        <tr><td>بنك / صندوق</td><td></td><td>2,000</td></tr>
+      </tbody>
+    </table>
+
+    <h3>د) فاتورة عميل آجلة</h3>
+    <p>
+      الأفضل من المبيعات/الفوترة مع حساب العميل الفرعي. محاسبياً:
+      مدين حساب العميل، دائن إيراد المبيعات (والضريبة إن وجدت).
+    </p>
+
+    <h2 id="checklist">13) قائمة تحقق للمحاسب</h2>
+    <ul>
+      <li>هل الشركة النشطة أعلى الشاشة هي <strong>Home Blend</strong>؟</li>
+      <li>هل الحساب موجود في الشجرة وعليه بند القائمة المالية الصحيح؟</li>
+      <li>هل القيد <strong>مرحّل</strong> وليس مسودة؟</li>
+      <li>هل تاريخ القيد داخل فترة التقرير؟</li>
+      <li>بعد التحديث: هل الميزان / الميزانية متوازنان؟</li>
+      <li>للتوزيع: Excel أو PDF من نفس الشاشة.</li>
+    </ul>
+
+    <h2 id="faq">14) أسئلة شائعة</h2>
+    <div class="card">
+      <strong>قائمة الدخل كلها أصفار؟</strong><br/>
+      لا توجد قيود مرحّلة على حسابات الإيراد/المصروف في الفترة. أنشئ قيوداً ثم حدّث.
+    </div>
+    <div class="card">
+      <strong>ظهر كود مثل pl_admin_general؟</strong><br/>
+      كان خطأ عرض عناوين؛ تم إصلاحه. حدّث الصفحة ثم اضغط تحديث.
+    </div>
+    <div class="card">
+      <strong>هل لازم البيان يطابق اسم بند القائمة؟</strong><br/>
+      لا. المهم الحساب الصحيح.
+    </div>
+    <div class="card">
+      <strong>أين أعدّل رقم بند في الميزانية؟</strong><br/>
+      من القيود على الحساب المرتبط بالبند، وليس من شاشة الميزانية نفسها.
+    </div>
+    <div class="card">
+      <strong>تقارير أخرى تحت Home Blend → التقارير؟</strong><br/>
+      هناك تقارير مستأجرين ومبيعات وتقارير مالية إضافية (ذمم، ضرائب، تدفق نقدي، ميزانية تقديرية).
+      قوائم الشركة الرسمية المطابقة لملفات الشجرة هي تحت <strong>الحسابات → القوائم</strong>.
+    </div>
+
+    <p style="margin-top:48px;color:var(--muted);font-size:0.92rem;">
+      مرجع تشغيلي Home Blend — الحسابات والتقارير. للاستخدام الداخلي مع
+      <a href="/guides/homeblend">دليل المستأجرين</a>
+      و
+      <a href="https://odoo.homeblendstore.com">نظام Home Blend</a>.
+    </p>
+  </main>
+</div>
+</body>
+</html>
