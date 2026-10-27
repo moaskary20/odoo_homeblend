@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_hb_statement_pdf" model="ir.actions.report">
+        <field name="name">قائمة حسابات Home Blend</field>
+        <field name="model">homeblend.account.statement</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_statement</field>
+        <field name="report_file">homeblend_reports.report_hb_statement</field>
+        <field name="print_report_name">(object.name or 'قائمة حسابات')</field>
+    </record>
+
+    <template id="report_hb_statement">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" dir="rtl">
+                        <h2 t-out="o.name"/>
+                        <p>
+                            الشركة: <span t-field="o.company_id"/> —
+                            من <span t-field="o.date_from"/> إلى <span t-field="o.date_to"/>
+                        </p>
+
+                        <t t-if="o.report_type == 'trial'">
+                            <p>
+                                إجمالي آخر المدة مدين: <span t-field="o.total_closing_debit"/> —
+                                إجمالي آخر المدة دائن: <span t-field="o.total_closing_credit"/> —
+                                الفرق: <span t-field="o.difference"/> —
+                                <t t-if="o.is_balanced">متوازن</t>
+                                <t t-else="">غير متوازن</t>
+                            </p>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>البيان</th>
+                                        <th>الكود</th>
+                                        <th>الطبيعة</th>
+                                        <th class="text-end">أول المدة مدين</th>
+                                        <th class="text-end">أول المدة دائن</th>
+                                        <th class="text-end">الحركة مدين</th>
+                                        <th class="text-end">الحركة دائن</th>
+                                        <th class="text-end">آخر المدة مدين</th>
+                                        <th class="text-end">آخر المدة دائن</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.line_ids" t-as="line"
+                                        t-att-style="'font-weight: bold;' if line.is_total or line.line_kind == 'header' else None">
+                                        <td t-out="line.name"/>
+                                        <td t-out="line.code or ''"/>
+                                        <td t-out="line.nature or ''"/>
+                                        <td class="text-end" t-out="line.opening_debit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td class="text-end" t-out="line.opening_credit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td class="text-end" t-out="line.period_debit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td class="text-end" t-out="line.period_credit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td class="text-end" t-out="line.closing_debit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td class="text-end" t-out="line.closing_credit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <t t-else="">
+                            <t t-if="o.report_type == 'income'">
+                                <p>
+                                    مجمل ربح النشاط: <span t-field="o.activity_profit"/> —
+                                    صافي الربح: <span t-field="o.net_profit"/> —
+                                    نسبة التكلفة %: <span t-field="o.cost_ratio"/> —
+                                    نسبة المصروفات العمومية %: <span t-field="o.overhead_ratio"/>
+                                </p>
+                            </t>
+                            <t t-if="o.report_type == 'balance'">
+                                <p>
+                                    إجمالي الأصول: <span t-field="o.assets_total"/> —
+                                    الخصوم وحقوق الشركاء: <span t-field="o.liabilities_equity_total"/> —
+                                    صافي الربح: <span t-field="o.net_profit"/> —
+                                    الفرق: <span t-field="o.difference"/> —
+                                    <t t-if="o.is_balanced">متوازن</t>
+                                    <t t-else="">غير متوازن</t>
+                                </p>
+                            </t>
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>البيان</th>
+                                        <th>الكود</th>
+                                        <th class="text-end">السنة</th>
+                                        <th class="text-end">السنة السابقة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.line_ids" t-as="line"
+                                        t-att-style="'font-weight: bold;' if line.is_total or line.line_kind == 'header' else None">
+                                        <td t-out="line.name"/>
+                                        <td t-out="line.code or ''"/>
+                                        <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td class="text-end" t-out="line.amount_compare" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

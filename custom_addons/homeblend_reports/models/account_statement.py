@@ -1,4 +1,8 @@
+import base64
+import io
 from datetime import date, timedelta
+
+import xlsxwriter
 
 from odoo import api, fields, models
 from odoo.fields import Command
@@ -550,6 +554,117 @@ class HomeblendAccountStatement(models.TransientModel):
             debit, credit = period.get(account.id, (0.0, 0.0))
             profit += credit - debit
         return profit
+
+    def action_print_pdf(self):
+        self.ensure_one()
+        if not self.line_ids:
+            self.action_compute()
+        return self.env.ref("homeblend_reports.action_report_hb_statement_pdf").report_action(self)
+
+    def action_export_xlsx(self):
+        self.ensure_one()
+        if not self.line_ids:
+            self.action_compute()
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output, {"in_memory": True})
+        sheet = workbook.add_worksheet(self._xlsx_sheet_name())
+        sheet.right_to_left()
+        title_fmt = workbook.add_format({"bold": True, "font_size": 14, "align": "right"})
+        header_fmt = workbook.add_format({"bold": True, "bg_color": "#D9E1F2", "align": "right", "border": 1})
+        text_fmt = workbook.add_format({"align": "right", "border": 1})
+        bold_fmt = workbook.add_format({"bold": True, "align": "right", "border": 1})
+        money_fmt = workbook.add_format({"num_format": "#,##0.00", "align": "left", "border": 1})
+        money_bold_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "align": "left", "border": 1})
+        row = 0
+        sheet.write(row, 0, self.name or "", title_fmt)
+        row += 1
+        sheet.write(row, 0, "الشركة: %s" % (self.company_id.name or ""), text_fmt)
+        row += 2
+        headers = self._xlsx_headers()
+        for col, header in enumerate(headers):
+            sheet.write(row, col, header, header_fmt)
+            sheet.set_column(col, col, 18 if col else 36)
+        row += 1
+        for line in self.line_ids:
+            values = self._xlsx_row_values(line)
+            line_fmt = bold_fmt if line.is_total or line.line_kind == "header" else text_fmt
+            amount_fmt = money_bold_fmt if line.is_total else money_fmt
+            for col, value in enumerate(values):
+                if col and isinstance(value, (int, float)):
+                    sheet.write_number(row, col, value, amount_fmt)
+                else:
+                    sheet.write(row, col, value if value is not None else "", line_fmt)
+            row += 1
+        for note in self._xlsx_summary_notes():
+            row += 1
+            sheet.write(row, 0, note, text_fmt)
+        workbook.close()
+        filename = "%s.xlsx" % (self.name or "homeblend_statement").replace("/", "-")
+        attachment = self.env["ir.attachment"].create({
+            "name": filename,
+            "type": "binary",
+            "datas": base64.b64encode(output.getvalue()),
+            "mimetype": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "res_model": self._name,
+            "res_id": self.id,
+        })
+        return {
+            "type": "ir.actions.act_url",
+            "url": "/web/content/%s?download=true" % attachment.id,
+            "target": "self",
+        }
+
+    def _xlsx_sheet_name(self):
+        labels = {"trial": "ميزان المراجعة", "income": "قائمة الدخل", "balance": "الميزانية"}
+        return labels.get(self.report_type, "تقرير")[:31]
+
+    def _xlsx_headers(self):
+        if self.report_type == "trial":
+            return [
+                "البيان", "الكود", "الطبيعة",
+                "أول المدة مدين", "أول المدة دائن",
+                "الحركة مدين", "الحركة دائن",
+                "آخر المدة مدين", "آخر المدة دائن",
+            ]
+        return ["البيان", "الكود", "السنة", "السنة السابقة"]
+
+    def _xlsx_row_values(self, line):
+        if self.report_type == "trial":
+            return [
+                line.name or "",
+                line.code or "",
+                line.nature or "",
+                line.opening_debit or 0.0,
+                line.opening_credit or 0.0,
+                line.period_debit or 0.0,
+                line.period_credit or 0.0,
+                line.closing_debit or 0.0,
+                line.closing_credit or 0.0,
+            ]
+        return [
+            line.name or "",
+            line.code or "",
+            line.amount or 0.0,
+            line.amount_compare or 0.0,
+        ]
+
+    def _xlsx_summary_notes(self):
+        notes = []
+        if self.report_type == "trial":
+            notes.append("إجمالي آخر المدة مدين: %.2f" % (self.total_closing_debit or 0.0))
+            notes.append("إجمالي آخر المدة دائن: %.2f" % (self.total_closing_credit or 0.0))
+            notes.append("الفرق: %.2f — %s" % (self.difference or 0.0, "متوازن" if self.is_balanced else "غير متوازن"))
+        elif self.report_type == "income":
+            notes.append("مجمل ربح النشاط: %.2f" % (self.activity_profit or 0.0))
+            notes.append("صافي الربح أو الخسارة: %.2f" % (self.net_profit or 0.0))
+            notes.append("نسبة التكلفة إلى الإيراد %%: %.2f" % (self.cost_ratio or 0.0))
+            notes.append("نسبة المصروفات العمومية إلى الإيراد %%: %.2f" % (self.overhead_ratio or 0.0))
+        else:
+            notes.append("إجمالي الأصول: %.2f" % (self.assets_total or 0.0))
+            notes.append("إجمالي الخصوم وحقوق الشركاء: %.2f" % (self.liabilities_equity_total or 0.0))
+            notes.append("صافي الربح أو الخسارة: %.2f" % (self.net_profit or 0.0))
+            notes.append("الفرق: %.2f — %s" % (self.difference or 0.0, "متوازن" if self.is_balanced else "غير متوازن"))
+        return notes
 
 
 class HomeblendAccountStatementLine(models.TransientModel):

@@ -172,6 +172,8 @@
             <form string="قائمة حسابات">
                 <header>
                     <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
+                    <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
+                    <button name="action_print_pdf" type="object" string="طباعة PDF"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
