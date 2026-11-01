@@ -66,6 +66,8 @@
             <form string="التنبؤ بالرصيد البنكي">
                 <header>
                     <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
+                    <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
+                    <button name="action_print_pdf" type="object" string="طباعة PDF"/>
                     <button name="action_open_manual_flows" type="object" string="التدفقات المخططة"/>
                 </header>
                 <sheet>

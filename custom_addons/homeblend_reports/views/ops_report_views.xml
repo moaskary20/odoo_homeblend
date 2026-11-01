@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hb_ops_report_form" model="ir.ui.view">
+        <field name="name">homeblend.ops.report.form</field>
+        <field name="model">homeblend.ops.report</field>
+        <field name="arch" type="xml">
+            <form string="تقرير محاسبي">
+                <header>
+                    <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
+                    <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
+                    <button name="action_print_pdf" type="object" string="طباعة PDF"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="report_type" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" readonly="1">
+                        <list create="false" delete="false">
+                            <field name="currency_id" column_invisible="1"/>
+                            <field name="date"/>
+                            <field name="name"/>
+                            <field name="partner_id" optional="show"/>
+                            <field name="account_id" optional="show"/>
+                            <field name="debit"/>
+                            <field name="credit"/>
+                            <field name="balance"/>
+                            <field name="residual" optional="show"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hb_ops_receivables" model="ir.actions.act_window">
+        <field name="name">الذمم المدينة</field>
+        <field name="res_model">homeblend.ops.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'receivables'}</field>
+    </record>
+    <record id="action_hb_ops_payables" model="ir.actions.act_window">
+        <field name="name">الذمم الدائنة</field>
+        <field name="res_model">homeblend.ops.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'payables'}</field>
+    </record>
+    <record id="action_hb_ops_cashflow" model="ir.actions.act_window">
+        <field name="name">التدفقات النقدية</field>
+        <field name="res_model">homeblend.ops.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'cashflow'}</field>
+    </record>
+    <record id="action_hb_ops_taxes" model="ir.actions.act_window">
+        <field name="name">الضرائب</field>
+        <field name="res_model">homeblend.ops.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'taxes'}</field>
+    </record>
+    <record id="action_hb_ops_income" model="ir.actions.act_window">
+        <field name="name">تفصيل الإيرادات</field>
+        <field name="res_model">homeblend.ops.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'income'}</field>
+    </record>
+    <record id="action_hb_ops_expense" model="ir.actions.act_window">
+        <field name="name">تفصيل المصروفات</field>
+        <field name="res_model">homeblend.ops.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'default_report_type': 'expense'}</field>
+    </record>
+</odoo>

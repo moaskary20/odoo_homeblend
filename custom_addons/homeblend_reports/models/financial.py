@@ -3,6 +3,7 @@ from odoo import api, fields, models, _
 
 class HomeblendFinancialReportWizard(models.TransientModel):
     _name = "homeblend.financial.report.wizard"
+    _inherit = ["homeblend.xlsx.export.mixin"]
     _description = "معالج القائمة المالية"
 
     company_id = fields.Many2one("res.company", required=True, default=lambda self: self.env.company)
@@ -18,6 +19,46 @@ class HomeblendFinancialReportWizard(models.TransientModel):
     def action_print(self):
         self.ensure_one()
         return self.env.ref("homeblend_reports.action_report_financial_pdf").report_action(self)
+
+    def action_print_pdf(self):
+        return self.action_print()
+
+    def action_export_xlsx(self):
+        self.ensure_one()
+        data = self._get_report_data()
+        sheets = []
+        for section in data.get("sections") or []:
+            sheets.append({
+                "name": section.get("name") or "قسم",
+                "title": data.get("title") or self.display_name,
+                "meta": [
+                    "الشركة: %s" % (self.company_id.name or ""),
+                    "من %s إلى %s" % (self.date_from or "", self.date_to or ""),
+                    "القسم: %s" % (section.get("name") or ""),
+                ],
+                "headers": ["الكود", "الحساب", "الرصيد"],
+                "rows": [
+                    [line.get("code") or "", line.get("name") or "", line.get("balance") or 0.0]
+                    for line in section.get("lines") or []
+                ],
+                "notes": ["الإجمالي: %.2f" % (section.get("total") or 0.0)],
+            })
+        notes = []
+        if self.report_type == "pnl":
+            notes.append("صافي النتيجة: %.2f" % (data.get("net") or 0.0))
+        else:
+            notes.append("إجمالي الأصول: %.2f" % (data.get("assets_total") or 0.0))
+            notes.append("إجمالي الخصوم وحقوق الملكية: %.2f" % (data.get("liab_equity_total") or 0.0))
+            notes.append("الفرق: %.2f" % (data.get("difference") or 0.0))
+        if sheets:
+            sheets[-1]["notes"] = (sheets[-1].get("notes") or []) + notes
+        return self._hb_xlsx_download(data.get("title") or "قائمة_مالية", sheets or [{
+            "name": "تقرير",
+            "title": data.get("title") or "قائمة مالية",
+            "headers": ["الكود", "الحساب", "الرصيد"],
+            "rows": [],
+            "notes": notes,
+        }])
 
     def get_report_data(self):
         self.ensure_one()
@@ -112,7 +153,7 @@ class HomeblendFinancialReportWizard(models.TransientModel):
 class HomeblendBudget(models.Model):
     _name = "homeblend.budget"
     _description = "ميزانية"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "homeblend.xlsx.export.mixin"]
     _order = "date_from desc, id desc"
 
     name = fields.Char(string="الميزانية", required=True, tracking=True)
@@ -149,6 +190,40 @@ class HomeblendBudget(models.Model):
     def action_draft(self):
         self.write({"state": "draft"})
         return True
+
+    def action_export_xlsx(self):
+        self.ensure_one()
+        rows = [
+            [
+                line.account_id.display_name if line.account_id else "",
+                line.analytic_account_id.display_name if line.analytic_account_id else "",
+                line.planned_amount or 0.0,
+                line.actual_amount or 0.0,
+                line.variance_amount or 0.0,
+            ]
+            for line in self.line_ids
+        ]
+        return self._hb_xlsx_download(
+            self.name or "budget",
+            [{
+                "name": "الميزانية",
+                "title": self.name,
+                "meta": [
+                    "من %s إلى %s" % (self.date_from or "", self.date_to or ""),
+                    "مخطط: %.2f | فعلي: %.2f | انحراف: %.2f" % (
+                        self.planned_total or 0.0,
+                        self.actual_total or 0.0,
+                        self.variance_total or 0.0,
+                    ),
+                ],
+                "headers": ["الحساب", "مركز التكلفة", "المخطط", "الفعلي", "الانحراف"],
+                "rows": rows,
+            }],
+        )
+
+    def action_print_pdf(self):
+        self.ensure_one()
+        return self.env.ref("homeblend_reports.action_report_hb_budget_pdf").report_action(self)
 
 
 class HomeblendBudgetLine(models.Model):

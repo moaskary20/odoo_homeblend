@@ -12,6 +12,7 @@
                     <field name="date_to"/>
                 </group>
                 <footer>
+                    <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
                     <button name="action_print" type="object" string="طباعة PDF" class="btn-primary"/>
                     <button string="إغلاق" special="cancel"/>
                 </footer>
@@ -117,6 +118,8 @@
                     <button name="action_open" type="object" string="اعتماد" class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_done" type="object" string="إقفال" invisible="state != 'open'"/>
                     <button name="action_draft" type="object" string="إعادة مسودة" invisible="state == 'draft'"/>
+                    <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
+                    <button name="action_print_pdf" type="object" string="طباعة PDF"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
                 </header>
                 <sheet>

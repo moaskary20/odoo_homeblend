@@ -38,6 +38,7 @@ class HomeblendCashForecastExpected(models.Model):
 
 class HomeblendCashForecast(models.TransientModel):
     _name = "homeblend.cash.forecast"
+    _inherit = ["homeblend.xlsx.export.mixin"]
     _description = "التنبؤ بالرصيد البنكي"
 
     name = fields.Char(compute="_compute_name")
@@ -129,6 +130,63 @@ class HomeblendCashForecast(models.TransientModel):
         for forecast in self:
             forecast._rebuild()
         return True
+
+    def action_export_xlsx(self):
+        self.ensure_one()
+        if not self.line_ids:
+            self.action_compute()
+        day_rows = [
+            [
+                line.date.isoformat() if line.date else "",
+                line.inflow or 0.0,
+                line.outflow or 0.0,
+                line.balance or 0.0,
+                "تنبيه" if line.is_alert else "",
+            ]
+            for line in self.line_ids
+        ]
+        source_labels = dict(self.env["homeblend.cash.forecast.flow"]._fields["source"].selection)
+        direction_labels = dict(self.env["homeblend.cash.forecast.flow"]._fields["direction"].selection)
+        flow_rows = [
+            [
+                flow.date.isoformat() if flow.date else "",
+                flow.name or "",
+                source_labels.get(flow.source, flow.source or ""),
+                direction_labels.get(flow.direction, flow.direction or ""),
+                flow.amount or 0.0,
+                flow.partner_id.display_name if flow.partner_id else "",
+            ]
+            for flow in self.flow_ids
+        ]
+        return self._hb_xlsx_download(
+            self.name or "cash_forecast",
+            [
+                {
+                    "name": "الرصيد اليومي",
+                    "title": self.name,
+                    "meta": [
+                        "الشركة: %s" % (self.company_id.name or ""),
+                        "الرصيد الحالي: %.2f" % (self.opening_balance or 0.0),
+                        "الرصيد النهائي: %.2f" % (self.closing_balance or 0.0),
+                        "أدنى رصيد: %.2f" % (self.lowest_balance or 0.0),
+                    ],
+                    "headers": ["اليوم", "وارد", "صادر", "الرصيد المتوقع", "تنبيه"],
+                    "rows": day_rows,
+                },
+                {
+                    "name": "تفصيل التدفقات",
+                    "title": "تفصيل التدفقات",
+                    "headers": ["التاريخ", "البيان", "المصدر", "الاتجاه", "المبلغ", "الشريك"],
+                    "rows": flow_rows,
+                },
+            ],
+        )
+
+    def action_print_pdf(self):
+        self.ensure_one()
+        if not self.line_ids:
+            self.action_compute()
+        return self.env.ref("homeblend_reports.action_report_hb_cash_forecast_pdf").report_action(self)
 
     def _cash_accounts(self):
         self.ensure_one()

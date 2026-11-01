@@ -32,6 +32,7 @@ class HomeblendPaymentSettleBook(models.Model):
     """سطور كشف خارجي (بنك / بطاقة / نقد معدود) للمطابقة."""
 
     _name = "homeblend.payment.settle.book"
+    _inherit = ["homeblend.xlsx.export.mixin"]
     _description = "سطر كشف لتسوية المدفوعات"
     _order = "date desc, id desc"
 
@@ -76,9 +77,46 @@ class HomeblendPaymentSettleBook(models.Model):
         })
         return True
 
+    def action_export_xlsx(self):
+        records = self.exists() or self.search([])
+        channel_labels = dict(CHANNEL_SELECTION)
+        direction_labels = {"in": "وارد", "out": "صادر"}
+        state_labels = dict(self._fields["state"].selection)
+        rows = [
+            [
+                line.date.isoformat() if line.date else "",
+                line.name or "",
+                line.reference or "",
+                channel_labels.get(line.channel, line.channel or ""),
+                direction_labels.get(line.direction, line.direction or ""),
+                line.amount or 0.0,
+                state_labels.get(line.state, line.state or ""),
+                line.matched_payment_id.display_name if line.matched_payment_id else "",
+                line.matched_pos_payment_id.display_name if line.matched_pos_payment_id else "",
+            ]
+            for line in records
+        ]
+        return records[:1]._hb_xlsx_download(
+            "سطور_كشف_التسوية",
+            [{
+                "name": "سطور الكشف",
+                "title": "سطور كشف التسوية",
+                "headers": [
+                    "التاريخ", "البيان", "المرجع", "الوسيلة", "الاتجاه",
+                    "المبلغ", "الحالة", "دفعة مطابقة", "دفعة POS",
+                ],
+                "rows": rows,
+            }],
+        )
+
+    def action_print_pdf(self):
+        records = self.exists() or self.search([])
+        return self.env.ref("homeblend_reports.action_report_hb_settle_book_pdf").report_action(records)
+
 
 class HomeblendPaymentSettle(models.TransientModel):
     _name = "homeblend.payment.settle"
+    _inherit = ["homeblend.xlsx.export.mixin"]
     _description = "تسوية المدفوعات"
 
     name = fields.Char(compute="_compute_name")
@@ -183,6 +221,74 @@ class HomeblendPaymentSettle(models.TransientModel):
         self.ensure_one()
         self._auto_match()
         return self.action_load()
+
+    def action_export_xlsx(self):
+        self.ensure_one()
+        if not self.system_line_ids and not self.book_line_ids:
+            self._rebuild()
+        channel_labels = dict(CHANNEL_SELECTION)
+        direction_labels = {"in": "وارد", "out": "صادر"}
+        system_rows = [
+            [
+                line.date.isoformat() if line.date else "",
+                line.name or "",
+                line.reference or "",
+                channel_labels.get(line.channel, line.channel or ""),
+                direction_labels.get(line.direction, line.direction or ""),
+                line.amount or 0.0,
+                "مسوّى" if line.is_matched else "غير مسوّى",
+                line.partner_id.display_name if line.partner_id else "",
+            ]
+            for line in self.system_line_ids
+        ]
+        book_rows = [
+            [
+                line.date.isoformat() if line.date else "",
+                line.name or "",
+                line.reference or "",
+                channel_labels.get(line.channel, line.channel or ""),
+                direction_labels.get(line.direction, line.direction or ""),
+                line.amount or 0.0,
+                "مسوّى" if line.is_matched else "غير مسوّى",
+            ]
+            for line in self.book_line_ids
+        ]
+        return self._hb_xlsx_download(
+            self.name or "payment_settle",
+            [
+                {
+                    "name": "حركات النظام",
+                    "title": self.name,
+                    "meta": [
+                        "الشركة: %s" % (self.company_id.name or ""),
+                        "إجمالي النظام: %.2f" % (self.system_total or 0.0),
+                        "إجمالي الكشف: %.2f" % (self.book_total or 0.0),
+                        "الفرق: %.2f" % (self.difference or 0.0),
+                        "مطابقات: %s" % (self.matched_count or 0),
+                    ],
+                    "headers": [
+                        "التاريخ", "البيان", "المرجع", "الوسيلة", "الاتجاه",
+                        "المبلغ", "الحالة", "الشريك",
+                    ],
+                    "rows": system_rows,
+                },
+                {
+                    "name": "حركات الكشف",
+                    "title": "حركات الكشف",
+                    "headers": [
+                        "التاريخ", "البيان", "المرجع", "الوسيلة", "الاتجاه",
+                        "المبلغ", "الحالة",
+                    ],
+                    "rows": book_rows,
+                },
+            ],
+        )
+
+    def action_print_pdf(self):
+        self.ensure_one()
+        if not self.system_line_ids and not self.book_line_ids:
+            self._rebuild()
+        return self.env.ref("homeblend_reports.action_report_hb_payment_settle_pdf").report_action(self)
 
     def action_match_selected(self):
         self.ensure_one()

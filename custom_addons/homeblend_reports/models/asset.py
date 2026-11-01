@@ -6,7 +6,7 @@ from odoo.fields import Command
 class HomeblendAsset(models.Model):
     _name = "homeblend.asset"
     _description = "أصل ثابت"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "homeblend.xlsx.export.mixin"]
     _order = "date_start desc, id desc"
 
     name = fields.Char(string="الأصل", required=True, tracking=True)
@@ -65,6 +65,41 @@ class HomeblendAsset(models.Model):
     def action_close(self):
         self.write({"state": "closed"})
         return True
+
+    def action_export_xlsx(self):
+        records = self.exists() or self.search([])
+        state_labels = dict(self._fields["state"].selection)
+        rows = [
+            [
+                asset.name or "",
+                asset.date_start.isoformat() if asset.date_start else "",
+                asset.purchase_value or 0.0,
+                asset.salvage_value or 0.0,
+                asset.method_years or 0,
+                asset.annual_depreciation or 0.0,
+                asset.accumulated or 0.0,
+                asset.residual or 0.0,
+                state_labels.get(asset.state, asset.state or ""),
+            ]
+            for asset in records
+        ]
+        return records[:1]._hb_xlsx_download(
+            "الأصول_والإهلاك",
+            [{
+                "name": "الأصول",
+                "title": "الأصول والإهلاك",
+                "headers": [
+                    "الأصل", "تاريخ الشراء", "تكلفة الشراء", "قيمة الخردة",
+                    "سنوات الإهلاك", "الإهلاك السنوي", "مجمع الإهلاك",
+                    "القيمة الدفترية", "الحالة",
+                ],
+                "rows": rows,
+            }],
+        )
+
+    def action_print_pdf(self):
+        records = self.exists() or self.search([])
+        return self.env.ref("homeblend_reports.action_report_hb_asset_pdf").report_action(records)
 
     def _get_depreciation_accounts(self):
         self.ensure_one()

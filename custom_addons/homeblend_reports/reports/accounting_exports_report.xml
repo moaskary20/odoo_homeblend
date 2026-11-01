@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_hb_cash_forecast_pdf" model="ir.actions.report">
+        <field name="name">التنبؤ بالرصيد البنكي</field>
+        <field name="model">homeblend.cash.forecast</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_cash_forecast</field>
+        <field name="report_file">homeblend_reports.report_hb_cash_forecast</field>
+        <field name="print_report_name">(object.name or 'تنبؤ الرصيد')</field>
+    </record>
+    <template id="report_hb_cash_forecast">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" dir="rtl">
+                        <h2 t-out="o.name"/>
+                        <p>
+                            الشركة: <span t-field="o.company_id"/> —
+                            رصيد حالي: <span t-field="o.opening_balance"/> —
+                            نهائي: <span t-field="o.closing_balance"/> —
+                            أدنى: <span t-field="o.lowest_balance"/>
+                        </p>
+                        <h3>الرصيد اليومي</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>اليوم</th>
+                                    <th class="text-end">وارد</th>
+                                    <th class="text-end">صادر</th>
+                                    <th class="text-end">الرصيد</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td t-out="line.date"/>
+                                    <td class="text-end" t-out="line.inflow" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.outflow" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.balance" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_hb_payment_settle_pdf" model="ir.actions.report">
+        <field name="name">تسوية المدفوعات</field>
+        <field name="model">homeblend.payment.settle</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_payment_settle</field>
+        <field name="report_file">homeblend_reports.report_hb_payment_settle</field>
+        <field name="print_report_name">(object.name or 'تسوية المدفوعات')</field>
+    </record>
+    <template id="report_hb_payment_settle">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" dir="rtl">
+                        <h2 t-out="o.name"/>
+                        <p>
+                            نظام: <span t-field="o.system_total"/> —
+                            كشف: <span t-field="o.book_total"/> —
+                            فرق: <span t-field="o.difference"/> —
+                            مطابقات: <span t-field="o.matched_count"/>
+                        </p>
+                        <h3>حركات النظام</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>البيان</th>
+                                    <th>الاتجاه</th>
+                                    <th class="text-end">المبلغ</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.system_line_ids" t-as="line">
+                                    <td t-out="line.date"/>
+                                    <td t-out="line.name"/>
+                                    <td t-out="line.direction"/>
+                                    <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td><t t-if="line.is_matched">مسوّى</t><t t-else="">غير مسوّى</t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h3>حركات الكشف</h3>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>البيان</th>
+                                    <th>الاتجاه</th>
+                                    <th class="text-end">المبلغ</th>
+                                    <th>الحالة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.book_line_ids" t-as="line">
+                                    <td t-out="line.date"/>
+                                    <td t-out="line.name"/>
+                                    <td t-out="line.direction"/>
+                                    <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td><t t-if="line.is_matched">مسوّى</t><t t-else="">غير مسوّى</t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_hb_settle_book_pdf" model="ir.actions.report">
+        <field name="name">سطور كشف التسوية</field>
+        <field name="model">homeblend.payment.settle.book</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_settle_book</field>
+        <field name="report_file">homeblend_reports.report_hb_settle_book</field>
+        <field name="print_report_name">'سطور كشف التسوية'</field>
+        <field name="binding_model_id" ref="model_homeblend_payment_settle_book"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_hb_settle_book">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" dir="rtl">
+                    <h2>سطور كشف التسوية</h2>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>البيان</th>
+                                <th>الوسيلة</th>
+                                <th>الاتجاه</th>
+                                <th class="text-end">المبلغ</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="line">
+                                <td t-out="line.date"/>
+                                <td t-out="line.name"/>
+                                <td t-out="line.channel"/>
+                                <td t-out="line.direction"/>
+                                <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td t-out="line.state"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_hb_ops_pdf" model="ir.actions.report">
+        <field name="name">تقرير محاسبي</field>
+        <field name="model">homeblend.ops.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_ops</field>
+        <field name="report_file">homeblend_reports.report_hb_ops</field>
+        <field name="print_report_name">(object.name or 'تقرير محاسبي')</field>
+    </record>
+    <template id="report_hb_ops">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" dir="rtl">
+                        <h2 t-out="o.name"/>
+                        <p>
+                            الشركة: <span t-field="o.company_id"/> —
+                            الإجمالي: <span t-field="o.total_amount"/>
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>التاريخ</th>
+                                    <th>البيان</th>
+                                    <th>الشريك</th>
+                                    <th>الحساب</th>
+                                    <th class="text-end">مدين</th>
+                                    <th class="text-end">دائن</th>
+                                    <th class="text-end">الرصيد</th>
+                                    <th class="text-end">المتبقي</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td t-out="line.date"/>
+                                    <td t-out="line.name"/>
+                                    <td t-out="line.partner_id.display_name"/>
+                                    <td t-out="line.account_id.display_name"/>
+                                    <td class="text-end" t-out="line.debit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.credit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.balance" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_hb_budget_pdf" model="ir.actions.report">
+        <field name="name">الميزانية</field>
+        <field name="model">homeblend.budget</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_budget</field>
+        <field name="report_file">homeblend_reports.report_hb_budget</field>
+        <field name="print_report_name">(object.name or 'ميزانية')</field>
+        <field name="binding_model_id" ref="model_homeblend_budget"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_hb_budget">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" dir="rtl">
+                        <h2 t-out="o.name"/>
+                        <p>
+                            من <span t-field="o.date_from"/> إلى <span t-field="o.date_to"/> —
+                            مخطط: <span t-field="o.planned_total"/> —
+                            فعلي: <span t-field="o.actual_total"/> —
+                            انحراف: <span t-field="o.variance_total"/>
+                        </p>
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>الحساب</th>
+                                    <th>مركز التكلفة</th>
+                                    <th class="text-end">المخطط</th>
+                                    <th class="text-end">الفعلي</th>
+                                    <th class="text-end">الانحراف</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td t-out="line.account_id.display_name"/>
+                                    <td t-out="line.analytic_account_id.display_name"/>
+                                    <td class="text-end" t-out="line.planned_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.actual_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td class="text-end" t-out="line.variance_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_hb_asset_pdf" model="ir.actions.report">
+        <field name="name">الأصول والإهلاك</field>
+        <field name="model">homeblend.asset</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_reports.report_hb_asset</field>
+        <field name="report_file">homeblend_reports.report_hb_asset</field>
+        <field name="print_report_name">'الأصول والإهلاك'</field>
+        <field name="binding_model_id" ref="model_homeblend_asset"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_hb_asset">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page" dir="rtl">
+                    <h2>الأصول والإهلاك</h2>
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>الأصل</th>
+                                <th>تاريخ الشراء</th>
+                                <th class="text-end">التكلفة</th>
+                                <th class="text-end">الإهلاك السنوي</th>
+                                <th class="text-end">مجمع الإهلاك</th>
+                                <th class="text-end">القيمة الدفترية</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="docs" t-as="asset">
+                                <td t-out="asset.name"/>
+                                <td t-out="asset.date_start"/>
+                                <td class="text-end" t-out="asset.purchase_value" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td class="text-end" t-out="asset.annual_depreciation" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td class="text-end" t-out="asset.accumulated" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td class="text-end" t-out="asset.residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td t-out="asset.state"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -17,3 +17,5 @@ access_homeblend_payment_settle,homeblend.payment.settle,model_homeblend_payment
 access_homeblend_payment_settle_system,homeblend.payment.settle.system,model_homeblend_payment_settle_system,base.group_user,1,1,1,1
 access_homeblend_payment_settle_line,homeblend.payment.settle.line,model_homeblend_payment_settle_line,base.group_user,1,1,1,1
 access_homeblend_payment_settle_book,homeblend.payment.settle.book,model_homeblend_payment_settle_book,base.group_user,1,1,1,1
+access_homeblend_ops_report,homeblend.ops.report,model_homeblend_ops_report,base.group_user,1,1,1,1
+access_homeblend_ops_report_line,homeblend.ops.report.line,model_homeblend_ops_report_line,base.group_user,1,1,1,1

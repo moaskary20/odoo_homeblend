@@ -24,6 +24,8 @@
                     <button name="action_start" type="object" string="بدء الإهلاك" class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_post_depreciation" type="object" string="ترحيل قيد الإهلاك" class="btn-primary" invisible="state != 'running'"/>
                     <button name="action_close" type="object" string="إقفال" invisible="state != 'running'"/>
+                    <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
+                    <button name="action_print_pdf" type="object" string="طباعة PDF"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,running,closed"/>
                 </header>
                 <sheet>
@@ -66,5 +68,12 @@
         <field name="name">الأصول والإهلاك</field>
         <field name="res_model">homeblend.asset</field>
         <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_homeblend_asset_xlsx" model="ir.actions.server">
+        <field name="name">تصدير Excel</field>
+        <field name="model_id" ref="model_homeblend_asset"/>
+        <field name="binding_model_id" ref="model_homeblend_asset"/>
+        <field name="state">code</field>
+        <field name="code">action = records.action_export_xlsx()</field>
     </record>
 </odoo>
