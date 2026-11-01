@@ -13,3 +13,7 @@ access_homeblend_cash_forecast,homeblend.cash.forecast,model_homeblend_cash_fore
 access_homeblend_cash_forecast_line,homeblend.cash.forecast.line,model_homeblend_cash_forecast_line,base.group_user,1,1,1,1
 access_homeblend_cash_forecast_flow,homeblend.cash.forecast.flow,model_homeblend_cash_forecast_flow,base.group_user,1,1,1,1
 access_homeblend_cash_forecast_expected,homeblend.cash.forecast.expected,model_homeblend_cash_forecast_expected,base.group_user,1,1,1,1
+access_homeblend_payment_settle,homeblend.payment.settle,model_homeblend_payment_settle,base.group_user,1,1,1,1
+access_homeblend_payment_settle_system,homeblend.payment.settle.system,model_homeblend_payment_settle_system,base.group_user,1,1,1,1
+access_homeblend_payment_settle_line,homeblend.payment.settle.line,model_homeblend_payment_settle_line,base.group_user,1,1,1,1
+access_homeblend_payment_settle_book,homeblend.payment.settle.book,model_homeblend_payment_settle_book,base.group_user,1,1,1,1
