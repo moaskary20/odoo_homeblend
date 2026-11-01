@@ -21,10 +21,4 @@
             <attribute name="t-lang">doc._hb_report_lang()</attribute>
         </xpath>
     </template>
-
-    <template id="quote_document_layout_preview_rtl" inherit_id="sale.quote_document_layout_preview">
-        <xpath expr="//t[@t-call='sale.report_saleorder_document']" position="attributes">
-            <attribute name="t-lang">docs[:1]._hb_report_lang() if docs else (env.user.lang or 'ar_001')</attribute>
-        </xpath>
-    </template>
 </odoo>
