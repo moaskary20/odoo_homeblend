@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.15.3",
+    "version": "19.0.1.15.4",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
@@ -26,6 +26,7 @@
         "views/res_partner_views.xml",
         "views/menu_views.xml",
         "views/report_invoice.xml",
+        "views/report_saleorder.xml",
         "views/pos_order_views.xml",
     ],
     "assets": {

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- فرض العربية/RTL على PDF عرض السعر وأمر البيع -->
+    <template id="report_saleorder_document_rtl" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//t[@t-set='doc']" position="attributes">
+            <attribute name="t-value">doc.with_context(lang=doc._hb_report_lang())</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('page')]" position="attributes">
+            <attribute name="dir">rtl</attribute>
+        </xpath>
+    </template>
+
+    <template id="report_saleorder_raw_rtl" inherit_id="sale.report_saleorder_raw">
+        <xpath expr="//t[@t-call='sale.report_saleorder_document']" position="attributes">
+            <attribute name="t-lang">doc._hb_report_lang()</attribute>
+        </xpath>
+    </template>
+
+    <template id="report_saleorder_pro_forma_rtl" inherit_id="sale.report_saleorder_pro_forma">
+        <xpath expr="//t[@t-call='sale.report_saleorder_document']" position="attributes">
+            <attribute name="t-lang">doc._hb_report_lang()</attribute>
+        </xpath>
+    </template>
+
+    <template id="quote_document_layout_preview_rtl" inherit_id="sale.quote_document_layout_preview">
+        <xpath expr="//t[@t-call='sale.report_saleorder_document']" position="attributes">
+            <attribute name="t-lang">docs[:1]._hb_report_lang() if docs else (env.user.lang or 'ar_001')</attribute>
+        </xpath>
+    </template>
+</odoo>

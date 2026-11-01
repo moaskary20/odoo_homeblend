@@ -4,6 +4,17 @@ from odoo import api, fields, models
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    def _hb_report_lang(self):
+        """طباعة عروض الأسعار/أوامر البيع بالعربية حتى يكون PDF من اليمين لليسار."""
+        self.ensure_one()
+        Lang = self.env["res.lang"]
+        if Lang._get_code("ar_001"):
+            return "ar_001"
+        partner_lang = self.partner_id.lang
+        if partner_lang and Lang._get_data(code=partner_lang).direction == "rtl":
+            return partner_lang
+        return partner_lang or self.env.user.lang
+
     tenant_id = fields.Many2one(
         "res.partner",
         string="المستأجر",
