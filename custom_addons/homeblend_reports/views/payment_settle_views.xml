@@ -107,7 +107,11 @@
                         <group>
                             <field name="include_account_payments"/>
                             <field name="include_pos_payments"/>
+                            <field name="include_liquidity_moves"/>
                             <field name="include_matched_books"/>
+                            <div colspan="2" class="text-muted">
+                                غيّر من/إلى ثم اضغط <strong>تحديث</strong>. البيانات الحالية على السيرفر غالباً في أكتوبر 2026.
+                            </div>
                             <field name="system_total"/>
                             <field name="book_total"/>
                             <field name="difference"/>

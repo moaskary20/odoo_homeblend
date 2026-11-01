@@ -88,7 +88,11 @@ class HomeblendPaymentSettle(models.TransientModel):
         default=lambda self: self._default_company(),
     )
     currency_id = fields.Many2one(related="company_id.currency_id")
-    date_from = fields.Date(required=True, default=lambda self: fields.Date.context_today(self).replace(day=1))
+    date_from = fields.Date(
+        required=True,
+        default=lambda self: fields.Date.context_today(self) - timedelta(days=30),
+        help="غيّر التاريخ ثم اضغط تحديث لعرض الحركات.",
+    )
     date_to = fields.Date(required=True, default=fields.Date.context_today)
     channel = fields.Selection(CHANNEL_SELECTION, string="وسيلة الدفع", default="all", required=True)
     journal_id = fields.Many2one(
@@ -98,6 +102,11 @@ class HomeblendPaymentSettle(models.TransientModel):
     )
     include_account_payments = fields.Boolean(string="مدفوعات المحاسبة", default=True)
     include_pos_payments = fields.Boolean(string="مدفوعات نقطة البيع", default=True)
+    include_liquidity_moves = fields.Boolean(
+        string="قيود النقدية والبنوك",
+        default=True,
+        help="يعرض بنود القيود على حسابات الصندوق/البنك غير المرتبطة بدفعة محاسبة (لتفادي التكرار).",
+    )
     include_matched_books = fields.Boolean(string="إظهار المسوّى سابقاً", default=False)
     system_total = fields.Monetary(string="إجمالي النظام", readonly=True)
     book_total = fields.Monetary(string="إجمالي الكشف", readonly=True)
@@ -129,18 +138,17 @@ class HomeblendPaymentSettle(models.TransientModel):
     @api.model_create_multi
     def create(self, vals_list):
         records = super().create(vals_list)
-        records.action_load()
+        records._rebuild()
         return records
 
-    def write(self, vals):
-        res = super().write(vals)
-        watched = {
-            "date_from", "date_to", "company_id", "channel", "journal_id",
-            "include_account_payments", "include_pos_payments", "include_matched_books",
-        }
-        if watched & set(vals):
-            self.action_load()
-        return res
+    @api.onchange(
+        "date_from", "date_to", "company_id", "channel", "journal_id",
+        "include_account_payments", "include_pos_payments", "include_liquidity_moves",
+        "include_matched_books",
+    )
+    def _onchange_filters(self):
+        if self.date_from and self.date_to:
+            self._rebuild()
 
     def action_open_book_entries(self):
         self.ensure_one()
@@ -159,15 +167,22 @@ class HomeblendPaymentSettle(models.TransientModel):
         }
 
     def action_load(self):
-        for settle in self:
-            settle._rebuild()
-        return True
+        self.ensure_one()
+        self._rebuild()
+        return {
+            "type": "ir.actions.act_window",
+            "name": self.name or _("تسوية المدفوعات"),
+            "res_model": self._name,
+            "res_id": self.id,
+            "view_mode": "form",
+            "target": "current",
+            "context": dict(self.env.context),
+        }
 
     def action_auto_match(self):
-        for settle in self:
-            settle._auto_match()
-            settle._rebuild()
-        return True
+        self.ensure_one()
+        self._auto_match()
+        return self.action_load()
 
     def action_match_selected(self):
         self.ensure_one()
@@ -230,6 +245,7 @@ class HomeblendPaymentSettle(models.TransientModel):
                     "partner_id": payment.partner_id.id,
                     "payment_id": payment.id,
                     "pos_payment_id": False,
+                    "move_line_id": False,
                     "journal_id": payment.journal_id.id,
                     "is_matched": bool(
                         self.env["homeblend.payment.settle.book"].search_count([
@@ -237,6 +253,53 @@ class HomeblendPaymentSettle(models.TransientModel):
                             ("state", "=", "matched"),
                         ])
                     ),
+                })
+
+        if self.include_liquidity_moves:
+            accounts = self.env["account.account"].with_company(company).search([
+                ("account_type", "=", "asset_cash"),
+                ("company_ids", "in", company.id),
+            ])
+            if self.journal_id and self.journal_id.default_account_id:
+                accounts = accounts.filtered(lambda a: a.id == self.journal_id.default_account_id.id) or accounts
+            move_lines = self.env["account.move.line"].sudo().search([
+                ("company_id", "=", company.id),
+                ("parent_state", "=", "posted"),
+                ("account_id", "in", accounts.ids),
+                ("date", ">=", date_from),
+                ("date", "<=", date_to),
+                ("display_type", "not in", ["line_section", "line_note"]),
+                ("payment_id", "=", False),
+            ])
+            for line in move_lines:
+                journal = line.journal_id
+                channel = _channel_from_text(journal.name, journal.type)
+                if journal.type == "cash":
+                    channel = "cash"
+                elif journal.type == "bank" and channel == "other":
+                    channel = "bank"
+                if not self._channel_ok(channel):
+                    continue
+                if self.journal_id and journal != self.journal_id:
+                    continue
+                balance = line.balance
+                if float_is_zero(balance, precision_rounding=self.currency_id.rounding):
+                    continue
+                direction = "in" if balance > 0 else "out"
+                rows.append({
+                    "date": line.date,
+                    "name": line.name or line.move_id.name or _("قيد نقدية"),
+                    "reference": line.move_id.ref or line.move_id.name or "",
+                    "channel": channel,
+                    "direction": direction,
+                    "amount": abs(balance),
+                    "signed_amount": balance,
+                    "partner_id": line.partner_id.id if line.partner_id else False,
+                    "payment_id": False,
+                    "pos_payment_id": False,
+                    "move_line_id": line.id,
+                    "journal_id": journal.id,
+                    "is_matched": False,
                 })
 
         if self.include_pos_payments and "pos.payment" in self.env:
@@ -277,6 +340,7 @@ class HomeblendPaymentSettle(models.TransientModel):
                     "partner_id": pos_pay.partner_id.id if pos_pay.partner_id else False,
                     "payment_id": False,
                     "pos_payment_id": pos_pay.id,
+                    "move_line_id": False,
                     "journal_id": method.journal_id.id if method.journal_id else False,
                     "is_matched": bool(
                         self.env["homeblend.payment.settle.book"].search_count([
@@ -330,18 +394,18 @@ class HomeblendPaymentSettle(models.TransientModel):
                 "is_matched": book.state == "matched",
                 "selected": False,
             })
+        system_total = sum(row["signed_amount"] for row in system_lines)
+        book_total = sum(row["signed_amount"] for row in book_lines)
+        matched_count = len([row for row in system_lines if row["is_matched"]])
+        # تعيين مباشر يعمل مع onchange والسجلات المحفوظة دون حلقات write
         self.system_line_ids = [Command.clear()] + [Command.create(vals) for vals in system_lines]
         self.book_line_ids = [Command.clear()] + [Command.create(vals) for vals in book_lines]
-        system_total = sum(self.system_line_ids.mapped("signed_amount"))
-        book_total = sum(self.book_line_ids.mapped("signed_amount"))
-        self.write({
-            "system_total": system_total,
-            "book_total": book_total,
-            "difference": system_total - book_total,
-            "matched_count": len(self.system_line_ids.filtered("is_matched")),
-            "unmatched_system_count": len(self.system_line_ids.filtered(lambda line: not line.is_matched)),
-            "unmatched_book_count": len(self.book_line_ids.filtered(lambda line: not line.is_matched)),
-        })
+        self.system_total = system_total
+        self.book_total = book_total
+        self.difference = system_total - book_total
+        self.matched_count = matched_count
+        self.unmatched_system_count = len(system_lines) - matched_count
+        self.unmatched_book_count = len([row for row in book_lines if not row["is_matched"]])
 
     def _apply_match(self, system_line, book_line, note=""):
         book = book_line.book_id
@@ -438,6 +502,7 @@ class HomeblendPaymentSettleSystem(models.TransientModel):
     partner_id = fields.Many2one("res.partner", string="الشريك")
     payment_id = fields.Many2one("account.payment", string="الدفعة")
     pos_payment_id = fields.Many2one("pos.payment", string="دفعة POS")
+    move_line_id = fields.Many2one("account.move.line", string="بند قيد")
     journal_id = fields.Many2one("account.journal", string="الدفتر")
     is_matched = fields.Boolean(string="مسوّى")
 
