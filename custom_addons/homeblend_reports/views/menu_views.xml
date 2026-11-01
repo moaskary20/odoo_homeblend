@@ -112,20 +112,9 @@
     <menuitem id="menu_hb_branch_other_income" name="إيرادات أخرى"
               parent="menu_hb_branch_income" action="action_hb_accounts_hb44" sequence="40"/>
 
-    <menuitem id="menu_hb_branch_statements" name="القوائم"
-              parent="menu_hb_app_accounting" sequence="60"/>
-    <menuitem id="menu_hb_app_trial" name="ميزان المراجعة"
-              parent="menu_hb_branch_statements" action="action_homeblend_trial" sequence="10"/>
-    <menuitem id="menu_hb_app_income_statement" name="قائمة الدخل"
-              parent="menu_hb_branch_statements" action="action_homeblend_income" sequence="20"/>
-    <menuitem id="menu_hb_app_balance_statement" name="الميزانية العمومية"
-              parent="menu_hb_branch_statements" action="action_homeblend_balance" sequence="30"/>
-    <menuitem id="menu_hb_app_financial_formal" name="قائمة مالية رسمية"
-              parent="menu_hb_branch_statements" action="action_financial_report_wizard" sequence="35"/>
-
-    <!-- العمليات المحاسبية اليومية داخل Home Blend -->
+    <!-- العمليات اليومية قبل القوائم: إدخال ثم تقرير -->
     <menuitem id="menu_hb_branch_operations" name="العمليات"
-              parent="menu_hb_app_accounting" sequence="65"/>
+              parent="menu_hb_app_accounting" sequence="55"/>
     <menuitem id="menu_hb_app_journal_dashboard" name="لوحة اليوميات"
               parent="menu_hb_branch_operations" action="account.open_account_journal_dashboard_kanban" sequence="10"/>
     <menuitem id="menu_hb_app_moves_ops" name="القيود اليومية"
@@ -147,21 +136,31 @@
     <menuitem id="menu_hb_app_payment_settle_book" name="سطور كشف التسوية"
               parent="menu_hb_branch_operations" action="action_hb_payment_settle_book" sequence="100"/>
 
-    <!-- تقارير مالية إضافية (غير المكررة مع القوائم) -->
+    <menuitem id="menu_hb_branch_statements" name="القوائم"
+              parent="menu_hb_app_accounting" sequence="60"/>
+    <menuitem id="menu_hb_app_trial" name="ميزان المراجعة"
+              parent="menu_hb_branch_statements" action="action_homeblend_trial" sequence="10"/>
+    <menuitem id="menu_hb_app_income_statement" name="قائمة الدخل"
+              parent="menu_hb_branch_statements" action="action_homeblend_income" sequence="20"/>
+    <menuitem id="menu_hb_app_balance_statement" name="الميزانية العمومية"
+              parent="menu_hb_branch_statements" action="action_homeblend_balance" sequence="30"/>
+    <menuitem id="menu_hb_app_financial_formal" name="قائمة مالية رسمية"
+              parent="menu_hb_branch_statements" action="action_financial_report_wizard" sequence="35"/>
+
     <menuitem id="menu_hb_branch_acct_reports" name="تقارير مالية"
-              parent="menu_hb_app_accounting" sequence="68"/>
+              parent="menu_hb_app_accounting" sequence="65"/>
     <menuitem id="menu_hb_acct_income_detail" name="تفصيل الإيرادات"
-              parent="menu_hb_branch_acct_reports" action="action_hb_ops_income" sequence="40"/>
+              parent="menu_hb_branch_acct_reports" action="action_hb_ops_income" sequence="10"/>
     <menuitem id="menu_hb_acct_expense_detail" name="تفصيل المصروفات"
-              parent="menu_hb_branch_acct_reports" action="action_hb_ops_expense" sequence="45"/>
+              parent="menu_hb_branch_acct_reports" action="action_hb_ops_expense" sequence="20"/>
     <menuitem id="menu_hb_acct_cashflow" name="التدفقات النقدية"
-              parent="menu_hb_branch_acct_reports" action="action_hb_ops_cashflow" sequence="50"/>
+              parent="menu_hb_branch_acct_reports" action="action_hb_ops_cashflow" sequence="30"/>
     <menuitem id="menu_hb_acct_tax_report" name="تقرير الضرائب"
-              parent="menu_hb_branch_acct_reports" action="action_hb_ops_taxes" sequence="55"/>
+              parent="menu_hb_branch_acct_reports" action="action_hb_ops_taxes" sequence="40"/>
     <menuitem id="menu_hb_acct_ar" name="الذمم المدينة"
-              parent="menu_hb_branch_acct_reports" action="action_hb_ops_receivables" sequence="60"/>
+              parent="menu_hb_branch_acct_reports" action="action_hb_ops_receivables" sequence="50"/>
     <menuitem id="menu_hb_acct_ap" name="الذمم الدائنة"
-              parent="menu_hb_branch_acct_reports" action="action_hb_ops_payables" sequence="65"/>
+              parent="menu_hb_branch_acct_reports" action="action_hb_ops_payables" sequence="60"/>
     <menuitem id="menu_hb_acct_budget" name="الميزانية التقديرية"
               parent="menu_hb_branch_acct_reports" action="action_homeblend_budget" sequence="70"/>
     <menuitem id="menu_hb_acct_assets" name="الأصول والإهلاك"
