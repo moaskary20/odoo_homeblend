@@ -9,3 +9,7 @@ access_homeblend_budget_line_user,homeblend.budget.line.user,model_homeblend_bud
 access_homeblend_statement_user,homeblend.account.statement.user,model_homeblend_account_statement,base.group_user,1,1,1,1
 access_homeblend_statement_line_user,homeblend.account.statement.line.user,model_homeblend_account_statement_line,base.group_user,1,1,1,1
 access_homeblend_partner_account_wizard,homeblend.partner.account.wizard,model_homeblend_partner_account_wizard,base.group_user,1,1,1,1
+access_homeblend_cash_forecast,homeblend.cash.forecast,model_homeblend_cash_forecast,base.group_user,1,1,1,1
+access_homeblend_cash_forecast_line,homeblend.cash.forecast.line,model_homeblend_cash_forecast_line,base.group_user,1,1,1,1
+access_homeblend_cash_forecast_flow,homeblend.cash.forecast.flow,model_homeblend_cash_forecast_flow,base.group_user,1,1,1,1
+access_homeblend_cash_forecast_expected,homeblend.cash.forecast.expected,model_homeblend_cash_forecast_expected,base.group_user,1,1,1,1

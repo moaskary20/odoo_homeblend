@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hb_cash_forecast_expected_list" model="ir.ui.view">
+        <field name="name">homeblend.cash.forecast.expected.list</field>
+        <field name="model">homeblend.cash.forecast.expected</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="direction"/>
+                <field name="amount"/>
+                <field name="account_id" optional="show"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_hb_cash_forecast_expected_form" model="ir.ui.view">
+        <field name="name">homeblend.cash.forecast.expected.form</field>
+        <field name="model">homeblend.cash.forecast.expected</field>
+        <field name="arch" type="xml">
+            <form string="تدفق نقدي متوقع">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="date"/>
+                            <field name="direction"/>
+                            <field name="amount"/>
+                        </group>
+                        <group>
+                            <field name="account_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="state"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_hb_cash_forecast_expected" model="ir.actions.act_window">
+        <field name="name">تدفقات نقدية مخططة</field>
+        <field name="res_model">homeblend.cash.forecast.expected</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_planned': 1}</field>
+    </record>
+    <record id="view_hb_cash_forecast_expected_search" model="ir.ui.view">
+        <field name="name">homeblend.cash.forecast.expected.search</field>
+        <field name="model">homeblend.cash.forecast.expected</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="planned" string="مخطط" domain="[('state', '=', 'planned')]"/>
+                <filter name="incoming" string="وارد" domain="[('direction', '=', 'in')]"/>
+                <filter name="outgoing" string="صادر" domain="[('direction', '=', 'out')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_hb_cash_forecast_form" model="ir.ui.view">
+        <field name="name">homeblend.cash.forecast.form</field>
+        <field name="model">homeblend.cash.forecast</field>
+        <field name="arch" type="xml">
+            <form string="التنبؤ بالرصيد البنكي">
+                <header>
+                    <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
+                    <button name="action_open_manual_flows" type="object" string="التدفقات المخططة"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="account_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="date_from"/>
+                            <field name="horizon_days"/>
+                            <field name="min_balance"/>
+                        </group>
+                        <group>
+                            <field name="include_receivables"/>
+                            <field name="include_payables"/>
+                            <field name="include_manual"/>
+                            <field name="opening_balance"/>
+                            <field name="total_inflow"/>
+                            <field name="total_outflow"/>
+                            <field name="closing_balance"/>
+                            <field name="lowest_balance"/>
+                            <field name="alert_days"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="الرصيد اليومي المتوقع" name="days">
+                            <field name="line_ids" readonly="1">
+                                <list decoration-danger="is_alert" create="false" delete="false">
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="is_alert" column_invisible="1"/>
+                                    <field name="date"/>
+                                    <field name="inflow"/>
+                                    <field name="outflow"/>
+                                    <field name="balance"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="تفصيل التدفقات" name="flows">
+                            <field name="flow_ids" readonly="1">
+                                <list create="false" delete="false">
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="date"/>
+                                    <field name="name"/>
+                                    <field name="source"/>
+                                    <field name="direction"/>
+                                    <field name="amount"/>
+                                    <field name="partner_id" optional="show"/>
+                                    <field name="move_id" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_hb_cash_forecast" model="ir.actions.act_window">
+        <field name="name">التنبؤ بالرصيد البنكي</field>
+        <field name="res_model">homeblend.cash.forecast</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

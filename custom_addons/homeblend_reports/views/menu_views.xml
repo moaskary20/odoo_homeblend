@@ -142,6 +142,10 @@
               parent="menu_hb_branch_operations" action="account.action_account_payments_payable" sequence="50"/>
     <menuitem id="menu_hb_app_payments_transfer" name="تحويلات نقدية"
               parent="menu_hb_branch_operations" action="account.action_account_payments_transfer" sequence="60"/>
+    <menuitem id="menu_hb_app_cash_forecast" name="التنبؤ بالرصيد البنكي"
+              parent="menu_hb_branch_operations" action="action_hb_cash_forecast" sequence="70"/>
+    <menuitem id="menu_hb_app_cash_forecast_manual" name="تدفقات نقدية مخططة"
+              parent="menu_hb_branch_operations" action="action_hb_cash_forecast_expected" sequence="80"/>
 
     <!-- التهيئة المحاسبية داخل Home Blend (دفاتر بنك/نقد، ضرائب، …) -->
     <menuitem id="menu_hb_branch_config" name="التهيئة"
