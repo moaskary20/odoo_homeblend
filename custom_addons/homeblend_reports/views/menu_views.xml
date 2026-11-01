@@ -80,8 +80,6 @@
               parent="menu_hb_branch_assets" action="action_hb_accounts_hb12" sequence="20"/>
     <menuitem id="menu_hb_branch_customers" name="العملاء"
               parent="menu_hb_branch_assets" action="action_hb_accounts_customers" sequence="30"/>
-    <menuitem id="menu_hb_app_add_customer" name="إضافة عميل"
-              parent="menu_hb_branch_assets" action="action_hb_add_customer" sequence="40"/>
     <menuitem id="menu_hb_branch_other_assets" name="أصول أخرى"
               parent="menu_hb_branch_assets" action="action_hb_accounts_hb13" sequence="50"/>
 
@@ -93,8 +91,6 @@
               parent="menu_hb_branch_liabilities" action="action_hb_accounts_hb22" sequence="20"/>
     <menuitem id="menu_hb_branch_suppliers" name="الموردون"
               parent="menu_hb_branch_liabilities" action="action_hb_accounts_suppliers" sequence="30"/>
-    <menuitem id="menu_hb_app_add_supplier" name="إضافة مورد"
-              parent="menu_hb_branch_liabilities" action="action_hb_add_supplier" sequence="40"/>
     <menuitem id="menu_hb_branch_other_liab" name="خصوم أخرى"
               parent="menu_hb_branch_liabilities" action="action_hb_accounts_hb23" sequence="50"/>
 
@@ -126,8 +122,6 @@
               parent="menu_hb_branch_statements" action="action_homeblend_balance" sequence="30"/>
     <menuitem id="menu_hb_app_financial_formal" name="قائمة مالية رسمية"
               parent="menu_hb_branch_statements" action="action_financial_report_wizard" sequence="35"/>
-    <menuitem id="menu_hb_app_moves" name="القيود اليومية"
-              parent="menu_hb_branch_statements" action="account.action_move_journal_line" sequence="40"/>
 
     <!-- العمليات المحاسبية اليومية داخل Home Blend -->
     <menuitem id="menu_hb_branch_operations" name="العمليات"
@@ -153,17 +147,9 @@
     <menuitem id="menu_hb_app_payment_settle_book" name="سطور كشف التسوية"
               parent="menu_hb_branch_operations" action="action_hb_payment_settle_book" sequence="100"/>
 
-    <!-- تقارير مالية داخل الحسابات مع Excel/PDF -->
+    <!-- تقارير مالية إضافية (غير المكررة مع القوائم) -->
     <menuitem id="menu_hb_branch_acct_reports" name="تقارير مالية"
               parent="menu_hb_app_accounting" sequence="68"/>
-    <menuitem id="menu_hb_acct_trial" name="ميزان المراجعة"
-              parent="menu_hb_branch_acct_reports" action="action_homeblend_trial" sequence="10"/>
-    <menuitem id="menu_hb_acct_income" name="قائمة الدخل"
-              parent="menu_hb_branch_acct_reports" action="action_homeblend_income" sequence="20"/>
-    <menuitem id="menu_hb_acct_balance" name="الميزانية العمومية"
-              parent="menu_hb_branch_acct_reports" action="action_homeblend_balance" sequence="30"/>
-    <menuitem id="menu_hb_acct_financial" name="قائمة مالية رسمية"
-              parent="menu_hb_branch_acct_reports" action="action_financial_report_wizard" sequence="35"/>
     <menuitem id="menu_hb_acct_income_detail" name="تفصيل الإيرادات"
               parent="menu_hb_branch_acct_reports" action="action_hb_ops_income" sequence="40"/>
     <menuitem id="menu_hb_acct_expense_detail" name="تفصيل المصروفات"
@@ -180,6 +166,29 @@
               parent="menu_hb_branch_acct_reports" action="action_homeblend_budget" sequence="70"/>
     <menuitem id="menu_hb_acct_assets" name="الأصول والإهلاك"
               parent="menu_hb_branch_acct_reports" action="action_homeblend_asset" sequence="80"/>
+
+    <!-- إخفاء قوائم كانت مكررة داخل الحسابات (تبقى في مكانها الأصلي فقط) -->
+    <record id="menu_hb_app_add_customer" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_hb_app_add_supplier" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_hb_app_moves" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_hb_acct_trial" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_hb_acct_income" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_hb_acct_balance" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
+    <record id="menu_hb_acct_financial" model="ir.ui.menu" forcecreate="0">
+        <field name="active" eval="False"/>
+    </record>
 
     <!-- التهيئة المحاسبية داخل Home Blend (دفاتر بنك/نقد، ضرائب، …) -->
     <menuitem id="menu_hb_branch_config" name="التهيئة"
