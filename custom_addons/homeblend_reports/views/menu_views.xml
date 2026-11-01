@@ -127,6 +127,41 @@
     <menuitem id="menu_hb_app_moves" name="القيود اليومية"
               parent="menu_hb_branch_statements" action="account.action_move_journal_line" sequence="40"/>
 
+    <!-- العمليات المحاسبية اليومية داخل Home Blend -->
+    <menuitem id="menu_hb_branch_operations" name="العمليات"
+              parent="menu_hb_app_accounting" sequence="65"/>
+    <menuitem id="menu_hb_app_journal_dashboard" name="لوحة اليوميات"
+              parent="menu_hb_branch_operations" action="account.open_account_journal_dashboard_kanban" sequence="10"/>
+    <menuitem id="menu_hb_app_moves_ops" name="القيود اليومية"
+              parent="menu_hb_branch_operations" action="account.action_move_journal_line" sequence="20"/>
+    <menuitem id="menu_hb_app_move_lines" name="بنود القيود"
+              parent="menu_hb_branch_operations" action="account.action_account_moves_all" sequence="30"/>
+    <menuitem id="menu_hb_app_payments_in" name="مدفوعات العملاء"
+              parent="menu_hb_branch_operations" action="account.action_account_payments" sequence="40"/>
+    <menuitem id="menu_hb_app_payments_out" name="مدفوعات الموردين"
+              parent="menu_hb_branch_operations" action="account.action_account_payments_payable" sequence="50"/>
+    <menuitem id="menu_hb_app_payments_transfer" name="تحويلات نقدية"
+              parent="menu_hb_branch_operations" action="account.action_account_payments_transfer" sequence="60"/>
+
+    <!-- التهيئة المحاسبية داخل Home Blend (دفاتر بنك/نقد، ضرائب، …) -->
+    <menuitem id="menu_hb_branch_config" name="التهيئة"
+              parent="menu_hb_app_accounting" sequence="70"/>
+    <menuitem id="menu_hb_app_journals" name="دفاتر اليومية"
+              parent="menu_hb_branch_config" action="account.action_account_journal_form" sequence="10"/>
+    <menuitem id="menu_hb_app_bank_accounts" name="الحسابات البنكية"
+              parent="menu_hb_branch_config" action="base.action_res_partner_bank_account_form" sequence="20"/>
+    <menuitem id="menu_hb_app_coa_odoo" name="دليل الحسابات"
+              parent="menu_hb_branch_config" action="account.action_account_form" sequence="30"/>
+    <menuitem id="menu_hb_app_taxes" name="الضرائب"
+              parent="menu_hb_branch_config" action="account.action_tax_form" sequence="40"/>
+    <menuitem id="menu_hb_app_payment_terms" name="شروط الدفع"
+              parent="menu_hb_branch_config" action="account.action_payment_term_form" sequence="50"/>
+    <menuitem id="menu_hb_app_fiscal_position" name="الأوضاع المالية"
+              parent="menu_hb_branch_config" action="account.action_account_fiscal_position_form" sequence="60"/>
+    <menuitem id="menu_hb_app_analytic" name="مراكز التكلفة"
+              parent="menu_hb_branch_config" action="analytic.action_account_analytic_account_form" sequence="70"
+              groups="analytic.group_analytic_accounting"/>
+
     <menuitem id="menu_hb_app_reports" name="التقارير"
               parent="homeblend_tenant.menu_homeblend_root" sequence="80"/>
     <menuitem id="menu_hb_app_report_tenants" name="تقارير المستأجرين"
