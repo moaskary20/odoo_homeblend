@@ -8,6 +8,10 @@
               action="action_homeblend_tenant_contract" sequence="20"/>
 
     <menuitem id="menu_homeblend_sales" name="المبيعات" parent="menu_homeblend_root" sequence="30"/>
+    <menuitem id="menu_homeblend_products" name="المنتجات" parent="menu_homeblend_sales"
+              action="sale.product_template_action" sequence="5"/>
+    <menuitem id="menu_homeblend_product_categories" name="فئات المنتجات" parent="menu_homeblend_sales"
+              action="product.product_category_action_form" sequence="6"/>
     <menuitem id="menu_homeblend_quotations" name="عروض الأسعار" parent="menu_homeblend_sales"
               action="sale.action_quotations" sequence="10"/>
     <menuitem id="menu_homeblend_orders" name="أوامر البيع" parent="menu_homeblend_sales"

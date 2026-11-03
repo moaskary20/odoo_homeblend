@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.15.4",
+    "version": "19.0.1.15.5",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
