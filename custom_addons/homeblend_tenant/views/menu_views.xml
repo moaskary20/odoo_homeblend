@@ -12,6 +12,9 @@
               action="sale.product_template_action" sequence="5"/>
     <menuitem id="menu_homeblend_product_categories" name="فئات المنتجات" parent="menu_homeblend_sales"
               action="product.product_category_action_form" sequence="6"/>
+    <menuitem id="menu_homeblend_generate_barcodes" name="توليد باركودات المنتجات"
+              parent="menu_homeblend_sales"
+              action="action_homeblend_product_barcode_wizard" sequence="7"/>
     <menuitem id="menu_homeblend_quotations" name="عروض الأسعار" parent="menu_homeblend_sales"
               action="sale.action_quotations" sequence="10"/>
     <menuitem id="menu_homeblend_orders" name="أوامر البيع" parent="menu_homeblend_sales"

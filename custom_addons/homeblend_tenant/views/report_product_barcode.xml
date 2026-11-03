@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_hb_product_barcode" model="report.paperformat">
+        <field name="name">باركود منتج Home Blend</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">50</field>
+        <field name="page_width">70</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">3</field>
+        <field name="margin_bottom">3</field>
+        <field name="margin_left">3</field>
+        <field name="margin_right">3</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">96</field>
+    </record>
+
+    <record id="action_report_hb_product_barcode" model="ir.actions.report">
+        <field name="name">باركود المنتج</field>
+        <field name="model">product.template</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">homeblend_tenant.report_hb_product_barcode</field>
+        <field name="report_file">homeblend_tenant.report_hb_product_barcode</field>
+        <field name="print_report_name">'باركود - %s' % (object.display_name)</field>
+        <field name="paperformat_id" ref="paperformat_hb_product_barcode"/>
+        <field name="binding_model_id" ref="product.model_product_template"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_hb_product_barcode">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <div class="page" style="text-align:center; font-family: DejaVu Sans, sans-serif;">
+                        <div style="font-size:11px; margin-bottom:4px;" t-esc="doc.display_name"/>
+                        <img t-if="doc.hb_barcode_image"
+                             t-att-src="'data:image/png;base64,%s' % doc.hb_barcode_image"
+                             style="max-width:100%; height:28mm;" alt="barcode"/>
+                        <div style="font-size:12px; letter-spacing:1px; margin-top:2px;"
+                             t-esc="doc.barcode or doc.default_code"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
