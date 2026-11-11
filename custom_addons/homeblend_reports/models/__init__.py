@@ -7,3 +7,4 @@ from . import partner_account
 from . import cash_forecast
 from . import payment_settle
 from . import ops_report
+from . import ir_ui_menu

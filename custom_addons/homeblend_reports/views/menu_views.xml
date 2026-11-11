@@ -167,27 +167,7 @@
               parent="menu_hb_branch_acct_reports" action="action_homeblend_asset" sequence="80"/>
 
     <!-- إخفاء قوائم كانت مكررة داخل الحسابات (تبقى في مكانها الأصلي فقط) -->
-    <record id="menu_hb_app_add_customer" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
-    <record id="menu_hb_app_add_supplier" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
-    <record id="menu_hb_app_moves" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
-    <record id="menu_hb_acct_trial" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
-    <record id="menu_hb_acct_income" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
-    <record id="menu_hb_acct_balance" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
-    <record id="menu_hb_acct_financial" model="ir.ui.menu" forcecreate="0">
-        <field name="active" eval="False"/>
-    </record>
+    <function model="ir.ui.menu" name="hb_deactivate_duplicate_accounting_menus"/>
 
     <!-- التهيئة المحاسبية داخل Home Blend (دفاتر بنك/نقد، ضرائب، …) -->
     <menuitem id="menu_hb_branch_config" name="التهيئة"

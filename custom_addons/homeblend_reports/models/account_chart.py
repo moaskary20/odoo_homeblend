@@ -186,9 +186,9 @@ class AccountAccount(models.Model):
         Category = self.env["product.category"].with_company(company).sudo()
         categories = Category.search([])
         for categ in categories:
+            # غيّر طريقة التكلفة فقط عند الحاجة؛ تغييرها يطلق إعادة تقييم كل المنتجات
             vals = {
                 "property_valuation": "real_time",
-                "property_cost_method": "average",
                 "property_stock_valuation_account_id": stock_account.id,
                 "property_stock_journal": journal.id,
                 "property_account_income_categ_id": income_account.id,
@@ -196,7 +196,9 @@ class AccountAccount(models.Model):
             }
             if "property_price_difference_account_id" in categ._fields:
                 vals["property_price_difference_account_id"] = price_diff_account.id
-            categ.write(vals)
+            if categ.property_cost_method != "average":
+                vals["property_cost_method"] = "average"
+            categ.with_context(tracking_disable=True).write(vals)
 
         # الإعداد الافتراضي للفئات الجديدة
         IrDefault = self.env["ir.default"].sudo()
