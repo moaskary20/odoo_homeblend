@@ -73,6 +73,7 @@ class AccountAccount(models.Model):
         for company in companies:
             self._hb_load_company_chart(company)
             self._hb_configure_inventory_accounting(company)
+            self._hb_configure_treasury_and_payments(company)
         return True
 
     @api.model
@@ -82,6 +83,15 @@ class AccountAccount(models.Model):
         for company in companies:
             self._hb_load_company_chart(company)
             self._hb_configure_inventory_accounting(company)
+        return True
+
+    @api.model
+    def hb_configure_treasury_and_payments(self):
+        """خزينة/بنك + طرق التحصيل والسداد بحسابات Home Blend."""
+        companies = self.env["res.company"].search([("name", "ilike", "home"), ("name", "ilike", "blend")])
+        for company in companies:
+            self._hb_load_company_chart(company)
+            self._hb_configure_treasury_and_payments(company)
         return True
 
     def _hb_load_company_chart(self, company):
@@ -230,4 +240,91 @@ class AccountAccount(models.Model):
                 # at_confirm يحجز إن وُجد رصيد، وإلا يُسمح بالتحقق لاحقاً حتى لو سالب
                 if picking_type.reservation_method == "manual":
                     picking_type.reservation_method = "at_confirm"
+        return True
+
+    def _hb_ensure_journal(self, company, *, code, name, journal_type, account):
+        Journal = self.env["account.journal"].with_company(company).sudo()
+        journal = Journal.search([("company_id", "=", company.id), ("code", "=", code)], limit=1)
+        vals = {
+            "name": name,
+            "type": journal_type,
+            "code": code,
+            "company_id": company.id,
+        }
+        if account and "default_account_id" in Journal._fields:
+            vals["default_account_id"] = account.id
+        if journal:
+            journal.write({k: v for k, v in vals.items() if k != "code"})
+            return journal
+        return Journal.create(vals)
+
+    def _hb_ensure_payment_method_lines(self, journal, names, payment_type):
+        """إضافة سطور طرق دفع مسمّاة على اليومية."""
+        Method = self.env["account.payment.method"].sudo()
+        method = Method.search([
+            ("code", "=", "manual"),
+            ("payment_type", "=", payment_type),
+        ], limit=1)
+        if not method or not journal:
+            return
+        Line = self.env["account.payment.method.line"].with_company(journal.company_id).sudo()
+        existing = set(Line.search([
+            ("journal_id", "=", journal.id),
+            ("payment_method_id", "=", method.id),
+        ]).mapped("name"))
+        for name in names:
+            if name in existing:
+                continue
+            Line.create({
+                "name": name,
+                "payment_method_id": method.id,
+                "journal_id": journal.id,
+            })
+
+    def _hb_configure_treasury_and_payments(self, company):
+        """دورة التحصيل والسداد: خزينة رئيسية + بنك رئيسي بحسابات HB."""
+        cash_account = self._hb_account(company, "HB12001")
+        bank_account = self._hb_account(company, "HB12005")
+        receivable = self._hb_account(company, "HB12010")
+        payable = self._hb_account(company, "HB22003")
+        if not (cash_account and bank_account):
+            return False
+
+        cash_journal = self._hb_ensure_journal(
+            company,
+            code="HBCSH",
+            name="الخزينة الرئيسية",
+            journal_type="cash",
+            account=cash_account,
+        )
+        bank_journal = self._hb_ensure_journal(
+            company,
+            code="HBBNK",
+            name="البنك – الحساب الرئيسي",
+            journal_type="bank",
+            account=bank_account,
+        )
+
+        # تحصيل العملاء
+        self._hb_ensure_payment_method_lines(cash_journal, ["نقدي"], "inbound")
+        self._hb_ensure_payment_method_lines(
+            bank_journal,
+            ["تحويل بنكي", "بطاقة بنكية", "وسائل دفع أخرى"],
+            "inbound",
+        )
+        # سداد الموردين
+        self._hb_ensure_payment_method_lines(cash_journal, ["نقدي"], "outbound")
+        self._hb_ensure_payment_method_lines(
+            bank_journal,
+            ["تحويل بنكي", "بطاقة بنكية", "وسائل دفع أخرى"],
+            "outbound",
+        )
+
+        # افتراضيات العملاء/الموردين على مستوى الشركة
+        IrDefault = self.env["ir.default"].sudo()
+        if receivable:
+            IrDefault.set("res.partner", "property_account_receivable_id", receivable.id, company_id=company.id)
+        if payable:
+            IrDefault.set("res.partner", "property_account_payable_id", payable.id, company_id=company.id)
+
         return True

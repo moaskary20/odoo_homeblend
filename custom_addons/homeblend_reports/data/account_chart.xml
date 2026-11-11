@@ -2,4 +2,5 @@
 <odoo>
     <function model="account.account" name="hb_load_homeblend_chart"/>
     <function model="account.account" name="hb_configure_inventory_accounting"/>
+    <function model="account.account" name="hb_configure_treasury_and_payments"/>
 </odoo>

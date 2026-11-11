@@ -36,7 +36,7 @@
         <field name="context">{'default_move_type': 'out_invoice'}</field>
     </record>
     <menuitem id="menu_homeblend_collection" name="التحصيل" parent="menu_homeblend_root" sequence="40"/>
-    <menuitem id="menu_homeblend_payments" name="المدفوعات" parent="menu_homeblend_collection"
+    <menuitem id="menu_homeblend_payments" name="مدفوعات العملاء / إيصالات التحصيل" parent="menu_homeblend_collection"
               action="account.action_account_payments" sequence="10"/>
     <menuitem id="menu_homeblend_overdue" name="المتأخرات" parent="menu_homeblend_collection"
               action="action_homeblend_overdue_invoices" sequence="20"/>
