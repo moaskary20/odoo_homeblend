@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.15.7",
+    "version": "19.0.1.16.0",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
@@ -15,6 +15,7 @@
         "mail",
         "point_of_sale",
         "pos_loyalty",
+        "barcodes",
     ],
     "data": [
         "security/ir.model.access.csv",

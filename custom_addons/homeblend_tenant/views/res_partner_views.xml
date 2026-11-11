@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <record id="view_partner_form_hb_bearing" model="ir.ui.view">
+        <field name="name">res.partner.form.hb.bearing</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="homeblend_base.view_partner_form_homeblend"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='homeblend_tenant']/group" position="inside">
+                <group string="تحمل الفاتورة (شركة / Home Blend)" invisible="parent_id">
+                    <field name="hb_bearing_split"/>
+                    <field name="hb_company_bearing_percent" invisible="not hb_bearing_split"/>
+                    <field name="hb_homeblend_bearing_percent" invisible="not hb_bearing_split"/>
+                    <field name="hb_is_bearing_contact" invisible="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
     <record id="view_partner_form_tenant_stat" model="ir.ui.view">
         <field name="name">res.partner.form.tenant.stat</field>
         <field name="model">res.partner</field>

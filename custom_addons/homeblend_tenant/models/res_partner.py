@@ -1,4 +1,5 @@
-from odoo import fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import ValidationError
 
 
 class ResPartner(models.Model):
@@ -6,6 +7,39 @@ class ResPartner(models.Model):
 
     tenant_contract_ids = fields.One2many("homeblend.tenant.contract", "tenant_id", string="عقود المستأجر")
     tenant_contract_count = fields.Integer(compute="_compute_tenant_contract_count")
+
+    hb_bearing_split = fields.Boolean(
+        string="تقسيم تحمل الفاتورة",
+        help="تقسيم مسؤولية قيمة الفاتورة بين الشركة وHome Blend (وليس مشاركة أرباح).",
+    )
+    hb_company_bearing_percent = fields.Float(string="نسبة تحمل الشركة %", default=80.0)
+    hb_homeblend_bearing_percent = fields.Float(string="نسبة تحمل Home Blend %", default=20.0)
+    hb_is_bearing_contact = fields.Boolean(string="جهة تحمل Home Blend", copy=False)
+
+    @api.constrains("hb_bearing_split", "hb_company_bearing_percent", "hb_homeblend_bearing_percent")
+    def _check_hb_bearing_percents(self):
+        for partner in self:
+            if not partner.hb_bearing_split:
+                continue
+            total = (partner.hb_company_bearing_percent or 0.0) + (partner.hb_homeblend_bearing_percent or 0.0)
+            if abs(total - 100.0) > 0.01:
+                raise ValidationError(_("مجموع نسب التحمل يجب أن يساوي 100%% (حالياً %.2f).") % total)
+
+    def hb_get_bearing_contact(self):
+        """جهة اتصال تمثل حصة تحمل Home Blend تحت الشركة."""
+        self.ensure_one()
+        company = self.commercial_partner_id
+        contact = company.child_ids.filtered(lambda p: p.hb_is_bearing_contact)[:1]
+        if contact:
+            return contact
+        return self.env["res.partner"].sudo().create({
+            "name": _("تحمل Home Blend - %s") % (company.name or company.id),
+            "parent_id": company.id,
+            "type": "other",
+            "hb_is_bearing_contact": True,
+            "company_id": company.company_id.id if company.company_id else False,
+            "customer_rank": 1,
+        })
 
     tenant_invoice_count = fields.Integer(compute="_compute_tenant_stats")
     tenant_sale_count = fields.Integer(compute="_compute_tenant_stats")

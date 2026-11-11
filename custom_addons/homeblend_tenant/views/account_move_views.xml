@@ -11,6 +11,8 @@
                 <field name="commission_amount" invisible="not is_commission_invoice"/>
                 <field name="commission_invoice_id" readonly="1"/>
                 <field name="homeblend_qr_payload" invisible="state != 'posted'" widget="CopyClipboardChar"/>
+                <field name="hb_bearing_role" invisible="not hb_bearing_role" readonly="1"/>
+                <field name="hb_bearing_source_id" invisible="not hb_bearing_source_id" readonly="1"/>
             </xpath>
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_open_paper_invoice" type="object" class="oe_stat_button" icon="fa-file-text-o"

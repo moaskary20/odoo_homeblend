@@ -28,6 +28,12 @@ class AccountMove(models.Model):
         compute="_compute_has_paper_invoice",
         store=True,
     )
+    hb_bearing_role = fields.Selection(
+        [("company", "حصة الشركة"), ("homeblend", "تحمل Home Blend")],
+        string="دور تحمل الفاتورة",
+        copy=False,
+    )
+    hb_bearing_source_id = fields.Many2one("account.move", string="فاتورة التحمل المصدر", copy=False)
 
     @api.depends("paper_invoice")
     def _compute_has_paper_invoice(self):
@@ -35,9 +41,60 @@ class AccountMove(models.Model):
             move.has_paper_invoice = bool(move.paper_invoice)
 
     def _post(self, soft=True):
+        # تقسيم التحمل قبل الترحيل إن كانت الفاتورة ما زالت مسودة المصدر
+        self.filtered(lambda m: m.state == "draft")._hb_split_bearing_invoice()
         posted = super()._post(soft=soft)
         posted._homeblend_generate_commission()
         return posted
+
+    def _hb_split_bearing_invoice(self):
+        """تقسيم مسؤولية الفاتورة 80/20 (أو حسب النسب) — ليست مشاركة أرباح."""
+        for move in self:
+            if (
+                move.hb_bearing_role
+                or move.state != "draft"
+                or move.move_type != "out_invoice"
+                or move.is_commission_invoice
+                or move.is_late_fee_invoice
+            ):
+                continue
+            commercial = move.partner_id.commercial_partner_id
+            if not commercial.hb_bearing_split:
+                continue
+            company_pct = (commercial.hb_company_bearing_percent or 0.0) / 100.0
+            hb_pct = (commercial.hb_homeblend_bearing_percent or 0.0) / 100.0
+            if abs(company_pct + hb_pct - 1.0) > 0.0001 or hb_pct <= 0:
+                continue
+            product_lines = move.invoice_line_ids.filtered(lambda l: l.display_type == "product")
+            if not product_lines:
+                continue
+            orig_prices = [(line, line.price_unit) for line in product_lines]
+            bearing_partner = commercial.hb_get_bearing_contact()
+            hb_move = move.with_context(hb_skip_bearing_split=True).copy({
+                "partner_id": bearing_partner.id,
+                "hb_bearing_role": "homeblend",
+                "hb_bearing_source_id": move.id,
+                "ref": _("تحمل Home Blend %s%%") % commercial.hb_homeblend_bearing_percent,
+            })
+            hb_move.invoice_line_ids.filtered(lambda l: l.display_type == "product").write({
+                "sale_line_ids": [Command.clear()],
+            })
+            hb_lines = hb_move.invoice_line_ids.filtered(lambda l: l.display_type == "product")
+            for line, price in orig_prices:
+                line.with_context(check_move_validity=False).write({"price_unit": price * company_pct})
+            for hb_line, (_line, price) in zip(hb_lines, orig_prices):
+                hb_line.with_context(check_move_validity=False).write({"price_unit": price * hb_pct})
+            move.with_context(hb_skip_bearing_split=True).write({
+                "hb_bearing_role": "company",
+                "ref": _("حصة الشركة %s%%") % commercial.hb_company_bearing_percent,
+            })
+            move.message_post(body=_(
+                "تم تقسيم تحمل الفاتورة: الشركة %.0f%% وHome Blend %.0f%% (فاتورة %s)."
+            ) % (
+                commercial.hb_company_bearing_percent,
+                commercial.hb_homeblend_bearing_percent,
+                hb_move.name or hb_move.id,
+            ))
 
     def _compute_homeblend_qr_payload(self):
         for move in self:
@@ -64,6 +121,7 @@ class AccountMove(models.Model):
                 move.move_type != "out_invoice"
                 or move.is_commission_invoice
                 or move.commission_invoice_id
+                or move.hb_bearing_role == "homeblend"
                 or not move.tenant_id
             ):
                 continue

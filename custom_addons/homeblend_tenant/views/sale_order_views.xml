@@ -11,6 +11,16 @@
                 <field name="commission_percent" readonly="1"/>
                 <field name="commission_base" readonly="1"/>
             </xpath>
+            <xpath expr="//page[@name='order_lines']" position="before">
+                <group string="مسح الصنف (QR / باركود)" invisible="state not in ('draft', 'sent')">
+                    <field name="_barcode_scanned" widget="barcode_handler" invisible="1"/>
+                    <label for="hb_barcode_input"/>
+                    <div class="o_row">
+                        <field name="hb_barcode_input" placeholder="امسح أو اكتب باركود/كود الصنف"/>
+                        <button name="action_hb_scan_product" type="object" string="إضافة" class="btn-secondary"/>
+                    </div>
+                </group>
+            </xpath>
         </field>
     </record>
 </odoo>

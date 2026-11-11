@@ -1,8 +1,11 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class SaleOrder(models.Model):
-    _inherit = "sale.order"
+    _inherit = ["sale.order", "barcodes.barcode_events_mixin"]
+
+    hb_barcode_input = fields.Char(string="مسح QR / باركود الصنف")
 
     def _hb_report_lang(self):
         """طباعة عروض الأسعار/أوامر البيع بالعربية حتى يكون PDF من اليمين لليسار."""
@@ -61,3 +64,45 @@ class SaleOrder(models.Model):
         vals["tenant_id"] = self.tenant_id.id
         vals["homeblend_contract_id"] = self.tenant_contract_id.id
         return vals
+
+    def _create_invoices(self, grouped=False, final=False, date=None):
+        moves = super()._create_invoices(grouped=grouped, final=final, date=date)
+        moves._hb_split_bearing_invoice()
+        return moves
+
+    def on_barcode_scanned(self, barcode):
+        self._hb_add_product_by_code(barcode)
+        return True
+
+    def action_hb_scan_product(self):
+        self.ensure_one()
+        if not self.hb_barcode_input:
+            raise UserError(_("أدخل أو امسح كود الصنف أولاً."))
+        self._hb_add_product_by_code(self.hb_barcode_input)
+        self.hb_barcode_input = False
+        return True
+
+    def _hb_add_product_by_code(self, code):
+        self.ensure_one()
+        if self.state not in ("draft", "sent"):
+            raise UserError(_("يمكن مسح الأصناف في أمر البيع قبل التأكيد فقط."))
+        value = (code or "").strip()
+        if not value:
+            return
+        Product = self.env["product.product"]
+        product = Product.search([
+            "|",
+            ("barcode", "=", value),
+            ("default_code", "=", value),
+        ], limit=1)
+        if not product:
+            raise UserError(_("لا يوجد صنف بهذا الكود/الباركود: %s") % value)
+        line = self.order_line.filtered(lambda l: l.product_id == product and not l.display_type)[:1]
+        if line:
+            line.product_uom_qty += 1
+        else:
+            self.env["sale.order.line"].create({
+                "order_id": self.id,
+                "product_id": product.id,
+                "product_uom_qty": 1,
+            })
