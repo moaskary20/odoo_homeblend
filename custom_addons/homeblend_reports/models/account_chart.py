@@ -32,6 +32,7 @@ SECTION_SELECTION = [
     ("eq_partner_buy", "الميزانية: جاري الشركاء شراء"),
     ("eq_partner_sell", "الميزانية: جاري الشركاء بيع"),
     ("pl_revenue_activity", "قائمة الدخل: إيرادات النشاط"),
+    ("pl_cogs", "قائمة الدخل: تكلفة البضاعة المباعة"),
     ("pl_cost_indirect", "قائمة الدخل: تكاليف عمليات غير مباشرة"),
     ("pl_cost_wages", "قائمة الدخل: أجور ومرتبات العمليات"),
     ("pl_cost_overhead", "قائمة الدخل: مصروفات عمومية للعمليات"),
@@ -71,6 +72,16 @@ class AccountAccount(models.Model):
         companies = self.env["res.company"].search([("name", "ilike", "home"), ("name", "ilike", "blend")])
         for company in companies:
             self._hb_load_company_chart(company)
+            self._hb_configure_inventory_accounting(company)
+        return True
+
+    @api.model
+    def hb_configure_inventory_accounting(self):
+        """تفعيل دورة البيع بمخزون سالب مع قيود التكلفة والتسوية."""
+        companies = self.env["res.company"].search([("name", "ilike", "home"), ("name", "ilike", "blend")])
+        for company in companies:
+            self._hb_load_company_chart(company)
+            self._hb_configure_inventory_accounting(company)
         return True
 
     def _hb_load_company_chart(self, company):
@@ -111,4 +122,110 @@ class AccountAccount(models.Model):
                 "reconcile": reconcile,
                 "company_ids": [Command.set([company.id])],
             })
+        return True
+
+    def _hb_account(self, company, code):
+        return self.env["account.account"].with_company(company).sudo().search(
+            [("code", "=", code), ("company_ids", "in", company.id)],
+            limit=1,
+        )
+
+    def _hb_stock_journal(self, company):
+        Journal = self.env["account.journal"].with_company(company).sudo()
+        journal = Journal.search([
+            ("company_id", "=", company.id),
+            ("code", "=", "STJ"),
+        ], limit=1)
+        if journal:
+            return journal
+        journal = Journal.search([
+            ("company_id", "=", company.id),
+            ("type", "=", "general"),
+            ("name", "ilike", "مخزون"),
+        ], limit=1)
+        if journal:
+            return journal
+        return Journal.create({
+            "name": "قيود المخزون",
+            "code": "STJ",
+            "type": "general",
+            "company_id": company.id,
+        })
+
+    def _hb_configure_inventory_accounting(self, company):
+        """تقييم دائم + Anglo-Saxon وربط فئات المنتجات بحسابات HB."""
+        if "inventory_valuation" not in company._fields:
+            return False
+
+        stock_account = self._hb_account(company, "HB12012")
+        income_account = self._hb_account(company, "HB42001")
+        cogs_account = self._hb_account(company, "HB31000")
+        price_diff_account = self._hb_account(company, "HB31019")
+        variation_account = self._hb_account(company, "HB31020")
+        if not (stock_account and income_account and cogs_account and price_diff_account):
+            return False
+
+        journal = self._hb_stock_journal(company)
+        company.sudo().write({
+            "anglo_saxon_accounting": True,
+            "inventory_valuation": "real_time",
+            "cost_method": "average",
+            "inventory_period": "manual",
+            "account_stock_valuation_id": stock_account.id,
+            "account_stock_journal_id": journal.id,
+        })
+
+        stock_vals = {}
+        if "account_stock_expense_id" in stock_account._fields:
+            stock_vals["account_stock_expense_id"] = cogs_account.id
+        if "account_stock_variation_id" in stock_account._fields and variation_account:
+            stock_vals["account_stock_variation_id"] = variation_account.id
+        if stock_vals:
+            stock_account.sudo().write(stock_vals)
+
+        Category = self.env["product.category"].with_company(company).sudo()
+        categories = Category.search([])
+        for categ in categories:
+            vals = {
+                "property_valuation": "real_time",
+                "property_cost_method": "average",
+                "property_stock_valuation_account_id": stock_account.id,
+                "property_stock_journal": journal.id,
+                "property_account_income_categ_id": income_account.id,
+                "property_account_expense_categ_id": cogs_account.id,
+            }
+            if "property_price_difference_account_id" in categ._fields:
+                vals["property_price_difference_account_id"] = price_diff_account.id
+            categ.write(vals)
+
+        # الإعداد الافتراضي للفئات الجديدة
+        IrDefault = self.env["ir.default"].sudo()
+        defaults = {
+            "property_valuation": "real_time",
+            "property_cost_method": "average",
+            "property_stock_valuation_account_id": stock_account.id,
+            "property_stock_journal": journal.id,
+            "property_account_income_categ_id": income_account.id,
+            "property_account_expense_categ_id": cogs_account.id,
+            "property_price_difference_account_id": price_diff_account.id,
+        }
+        for field_name, value in defaults.items():
+            if field_name not in Category._fields:
+                continue
+            IrDefault.set("product.category", field_name, value, company_id=company.id)
+
+        # السماح بالبيع/التسليم حتى مع رصيد صفر (مخزون سالب)
+        self._hb_allow_negative_stock(company)
+        return True
+
+    def _hb_allow_negative_stock(self, company):
+        """لا يمنع Odoo القياسي التسليم السالب؛ نؤكد إعدادات المستودع إن وُجدت."""
+        Warehouse = self.env["stock.warehouse"].with_company(company).sudo()
+        warehouses = Warehouse.search([("company_id", "=", company.id)])
+        for warehouse in warehouses:
+            picking_type = warehouse.out_type_id
+            if picking_type and "reservation_method" in picking_type._fields:
+                # at_confirm يحجز إن وُجد رصيد، وإلا يُسمح بالتحقق لاحقاً حتى لو سالب
+                if picking_type.reservation_method == "manual":
+                    picking_type.reservation_method = "at_confirm"
         return True

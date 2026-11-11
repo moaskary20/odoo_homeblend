@@ -15,11 +15,12 @@ INCOME_BLOCKS = [
     ("accounts", "إيرادات النشاط", "pl_revenue_activity"),
     ("total", "إجمالي إيرادات النشاط", ["pl_revenue_activity"]),
     ("header", "يطرح: تكاليف ومصاريف النشاط", None),
+    ("accounts", "تكلفة البضاعة المباعة", "pl_cogs"),
     ("accounts", "تكاليف العمليات غير المباشرة", "pl_cost_indirect"),
     ("accounts", "أجور ومرتبات", "pl_cost_wages"),
     ("accounts", "مصروفات عمومية للعمليات", "pl_cost_overhead"),
     ("accounts", "إهلاكات", "pl_cost_depr"),
-    ("total", "إجمالي تكاليف النشاط", ["pl_cost_indirect", "pl_cost_wages", "pl_cost_overhead", "pl_cost_depr"]),
+    ("total", "إجمالي تكاليف النشاط", ["pl_cogs", "pl_cost_indirect", "pl_cost_wages", "pl_cost_overhead", "pl_cost_depr"]),
     ("result", "مجمل ربح النشاط", "activity"),
     ("header", "يضاف: إيرادات أخرى", None),
     ("accounts", "إيرادات متنوعة", "pl_other_income"),
@@ -72,7 +73,7 @@ BALANCE_BLOCKS = [
     ("total", "مجموع الخصوم وحقوق الشركاء", ["__liab_equity__"]),
 ]
 
-COST_SECTIONS = ["pl_cost_indirect", "pl_cost_wages", "pl_cost_overhead", "pl_cost_depr"]
+COST_SECTIONS = ["pl_cogs", "pl_cost_indirect", "pl_cost_wages", "pl_cost_overhead", "pl_cost_depr"]
 OVERHEAD_SECTIONS = [
     "pl_marketing", "pl_fx", "pl_admin_wages", "pl_admin_leave",
     "pl_admin_depr", "pl_admin_general", "pl_admin_fees",
