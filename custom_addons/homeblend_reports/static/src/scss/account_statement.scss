@@ -1,0 +1,81 @@
+/* ألوان صفوف قوائم الحسابات (ميزان / دخل / ميزانية) */
+.hb-statement-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    border: 1px solid #dee2e6;
+
+    .hb-legend-item {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.15rem 0.55rem;
+        border-radius: 0.25rem;
+        font-weight: 600;
+    }
+
+    .hb-legend-header {
+        background: #d6eaf8;
+        color: #1a5276;
+    }
+
+    .hb-legend-total {
+        background: #fcf3cf;
+        color: #7d6608;
+    }
+
+    .hb-legend-result-ok {
+        background: #d5f5e3;
+        color: #196f3d;
+    }
+
+    .hb-legend-result-bad {
+        background: #fadbd8;
+        color: #922b21;
+    }
+}
+
+.o_form_view .hb-statement-lines .o_list_table {
+    tbody tr.o_data_row {
+        &.text-info,
+        &.table-info {
+            background-color: #d6eaf8 !important;
+
+            td {
+                background-color: transparent !important;
+                font-weight: 600;
+            }
+        }
+
+        &.text-warning,
+        &.table-warning {
+            background-color: #fcf3cf !important;
+
+            td {
+                background-color: transparent !important;
+                font-weight: 700;
+            }
+        }
+
+        &.text-success,
+        &.table-success {
+            background-color: #d5f5e3 !important;
+
+            td {
+                background-color: transparent !important;
+                font-weight: 700;
+            }
+        }
+
+        &.text-danger,
+        &.table-danger {
+            background-color: #fadbd8 !important;
+
+            td {
+                background-color: transparent !important;
+                font-weight: 700;
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 {
     "name": "HomeBlend Reports",
-    "version": "19.0.1.13.2",
+    "version": "19.0.1.14.0",
     "category": "Productivity",
     "summary": "تقارير المستأجرين والعمولات والمبيعات والمشاريع",
     "author": "HomeBlend",
@@ -32,6 +32,11 @@
         "data/account_chart.xml",
         "views/menu_views.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "homeblend_reports/static/src/scss/account_statement.scss",
+        ],
+    },
     "installable": True,
     "application": True,
 }

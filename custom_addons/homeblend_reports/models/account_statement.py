@@ -95,6 +95,24 @@ LIABILITY_SECTIONS = [
 EQUITY_SECTIONS = ["eq_capital", "eq_retained", "eq_partner_buy", "eq_partner_sell"]
 
 
+def _hb_line_label(kind, title):
+    """أسماء مع أسهم RTL لتوضيح الإجمالي والنتيجة."""
+    title = title or ""
+    if kind == "total":
+        return "⟸ إجمالي · %s" % title
+    if kind == "result":
+        return "⟸ نتيجة · %s" % title
+    return title
+
+
+def _hb_line_flags(kind, amount=0.0):
+    return {
+        "is_total": kind in ("total", "result"),
+        "is_result": kind == "result",
+        "is_negative": bool(amount is not None and amount < 0),
+    }
+
+
 class HomeblendAccountStatement(models.TransientModel):
     _name = "homeblend.account.statement"
     _description = "قائمة حسابات هوم بليند"
@@ -229,20 +247,22 @@ class HomeblendAccountStatement(models.TransientModel):
             })
         difference = total_debit - total_credit
         sequence += 10
+        balanced = self.company_id.currency_id.is_zero(difference)
+        kind = "result" if balanced else "total"
         lines.append({
             "sequence": sequence,
-            "line_kind": "total",
-            "is_total": True,
-            "name": "الإجمالي",
+            "line_kind": kind,
+            "name": _hb_line_label(kind, "الإجمالي — متوازن" if balanced else "الإجمالي — غير متوازن"),
             "closing_debit": total_debit,
             "closing_credit": total_credit,
             "amount": difference,
+            **_hb_line_flags(kind, difference),
         })
         return lines, {
             "total_closing_debit": total_debit,
             "total_closing_credit": total_credit,
             "difference": difference,
-            "is_balanced": self.company_id.currency_id.is_zero(difference),
+            "is_balanced": balanced,
         }
 
     def _section_amount(self, period_map, sections, sign=1):
@@ -322,6 +342,7 @@ class HomeblendAccountStatement(models.TransientModel):
                     "name": title,
                     "amount": total,
                     "amount_compare": prev_total,
+                    **_hb_line_flags("header", total),
                 })
                 for account, amount in details:
                     sequence += 1
@@ -331,44 +352,46 @@ class HomeblendAccountStatement(models.TransientModel):
                         "code": account.code or "",
                         "name": account.name,
                         "amount": amount,
+                        **_hb_line_flags("account", amount),
                     })
             elif kind == "total":
+                amount = money(payload, cache)
                 lines.append({
                     "sequence": sequence,
                     "line_kind": "total",
-                    "is_total": True,
-                    "name": title,
-                    "amount": money(payload, cache),
+                    "name": _hb_line_label("total", title),
+                    "amount": amount,
                     "amount_compare": money(payload, cache_prev),
+                    **_hb_line_flags("total", amount),
                 })
             else:
                 amount, amount_prev = results[payload]
                 lines.append({
                     "sequence": sequence,
-                    "line_kind": "total",
-                    "is_total": True,
-                    "name": title,
+                    "line_kind": "result",
+                    "name": _hb_line_label("result", title),
                     "amount": amount,
                     "amount_compare": amount_prev,
+                    **_hb_line_flags("result", amount),
                 })
         if uncategorized or uncategorized_prev:
             sequence += 10
             lines.append({
                 "sequence": sequence,
                 "line_kind": "total",
-                "is_total": True,
-                "name": "بنود إيراد ومصروف غير مبوبة في الشجرة",
+                "name": _hb_line_label("total", "بنود إيراد ومصروف غير مبوبة في الشجرة"),
                 "amount": uncategorized,
                 "amount_compare": uncategorized_prev,
+                **_hb_line_flags("total", uncategorized),
             })
             results["net"] = (results["net"][0] + uncategorized, results["net"][1] + uncategorized_prev)
             lines.append({
                 "sequence": sequence + 1,
-                "line_kind": "total",
-                "is_total": True,
-                "name": "صافي الربح بعد البنود غير المبوبة",
+                "line_kind": "result",
+                "name": _hb_line_label("result", "صافي الربح بعد البنود غير المبوبة"),
                 "amount": results["net"][0],
                 "amount_compare": results["net"][1],
+                **_hb_line_flags("result", results["net"][0]),
             })
         revenue = activity or 0.0
         return lines, {
@@ -465,11 +488,11 @@ class HomeblendAccountStatement(models.TransientModel):
             if kind == "result":
                 lines.append({
                     "sequence": sequence,
-                    "line_kind": "total",
-                    "is_total": True,
-                    "name": title,
+                    "line_kind": "result",
+                    "name": _hb_line_label("result", title),
                     "amount": profit,
                     "amount_compare": profit_prev,
+                    **_hb_line_flags("result", profit),
                 })
                 continue
             if kind == "total":
@@ -488,10 +511,10 @@ class HomeblendAccountStatement(models.TransientModel):
                 lines.append({
                     "sequence": sequence,
                     "line_kind": "total",
-                    "is_total": True,
-                    "name": title,
+                    "name": _hb_line_label("total", title),
                     "amount": amount,
                     "amount_compare": amount_prev,
+                    **_hb_line_flags("total", amount),
                 })
                 continue
             amount = totals.get(payload, 0.0)
@@ -505,6 +528,7 @@ class HomeblendAccountStatement(models.TransientModel):
                 "name": title,
                 "amount": amount,
                 "amount_compare": amount_prev,
+                **_hb_line_flags("header", amount),
             })
             for account, detail_amount in details:
                 sequence += 1
@@ -514,6 +538,7 @@ class HomeblendAccountStatement(models.TransientModel):
                     "code": account.code or "",
                     "name": account.name,
                     "amount": detail_amount,
+                    **_hb_line_flags("account", detail_amount),
                 })
         difference = assets - (liabilities + equity)
         return lines, {
@@ -571,25 +596,42 @@ class HomeblendAccountStatement(models.TransientModel):
         sheet = workbook.add_worksheet(self._xlsx_sheet_name())
         sheet.right_to_left()
         title_fmt = workbook.add_format({"bold": True, "font_size": 14, "align": "right"})
-        header_fmt = workbook.add_format({"bold": True, "bg_color": "#D9E1F2", "align": "right", "border": 1})
+        col_header_fmt = workbook.add_format({"bold": True, "bg_color": "#D9E1F2", "align": "right", "border": 1})
         text_fmt = workbook.add_format({"align": "right", "border": 1})
-        bold_fmt = workbook.add_format({"bold": True, "align": "right", "border": 1})
+        header_row_fmt = workbook.add_format({"bold": True, "bg_color": "#D6EAF8", "align": "right", "border": 1})
+        total_row_fmt = workbook.add_format({"bold": True, "bg_color": "#FCF3CF", "align": "right", "border": 1})
+        result_ok_fmt = workbook.add_format({"bold": True, "bg_color": "#D5F5E3", "align": "right", "border": 1})
+        result_bad_fmt = workbook.add_format({"bold": True, "bg_color": "#FADBD8", "align": "right", "border": 1})
         money_fmt = workbook.add_format({"num_format": "#,##0.00", "align": "left", "border": 1})
-        money_bold_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "align": "left", "border": 1})
+        money_header_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#D6EAF8", "align": "left", "border": 1})
+        money_total_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#FCF3CF", "align": "left", "border": 1})
+        money_ok_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#D5F5E3", "align": "left", "border": 1})
+        money_bad_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#FADBD8", "align": "left", "border": 1})
         row = 0
         sheet.write(row, 0, self.name or "", title_fmt)
         row += 1
         sheet.write(row, 0, "الشركة: %s" % (self.company_id.name or ""), text_fmt)
+        row += 1
+        sheet.write(row, 0, "أزرق=عنوان · كهرماني=إجمالي · أخضر/أحمر=نتيجة (ربح/خسارة) · الأسهم ⟸ باتجاه الإجمالي", text_fmt)
         row += 2
         headers = self._xlsx_headers()
         for col, header in enumerate(headers):
-            sheet.write(row, col, header, header_fmt)
-            sheet.set_column(col, col, 18 if col else 36)
+            sheet.write(row, col, header, col_header_fmt)
+            sheet.set_column(col, col, 18 if col else 42)
         row += 1
         for line in self.line_ids:
             values = self._xlsx_row_values(line)
-            line_fmt = bold_fmt if line.is_total or line.line_kind == "header" else text_fmt
-            amount_fmt = money_bold_fmt if line.is_total else money_fmt
+            if line.line_kind == "header":
+                line_fmt, amount_fmt = header_row_fmt, money_header_fmt
+            elif line.line_kind == "result":
+                if line.is_negative:
+                    line_fmt, amount_fmt = result_bad_fmt, money_bad_fmt
+                else:
+                    line_fmt, amount_fmt = result_ok_fmt, money_ok_fmt
+            elif line.line_kind == "total" or line.is_total:
+                line_fmt, amount_fmt = total_row_fmt, money_total_fmt
+            else:
+                line_fmt, amount_fmt = text_fmt, money_fmt
             for col, value in enumerate(values):
                 if col and isinstance(value, (int, float)):
                     sheet.write_number(row, col, value, amount_fmt)
@@ -677,10 +719,17 @@ class HomeblendAccountStatementLine(models.TransientModel):
     currency_id = fields.Many2one(related="statement_id.currency_id")
     sequence = fields.Integer()
     line_kind = fields.Selection(
-        [("header", "عنوان"), ("account", "حساب"), ("total", "إجمالي")],
+        [
+            ("header", "عنوان"),
+            ("account", "حساب"),
+            ("total", "إجمالي"),
+            ("result", "نتيجة"),
+        ],
         default="account",
     )
     is_total = fields.Boolean()
+    is_result = fields.Boolean()
+    is_negative = fields.Boolean()
     code = fields.Char(string="الكود")
     name = fields.Char(string="البيان", required=True)
     nature = fields.Char(string="الطبيعة")

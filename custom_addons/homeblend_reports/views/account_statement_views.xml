@@ -209,22 +209,36 @@
                         <field name="difference"/>
                         <field name="is_balanced"/>
                     </group>
-                    <field name="line_ids" readonly="1">
-                        <list decoration-bf="is_total" create="false" delete="false">
+                    <div class="hb-statement-legend alert alert-light mb-2" role="note">
+                        <span class="hb-legend-item hb-legend-header">عنوان قسم</span>
+                        <span class="hb-legend-item hb-legend-total">إجمالي فرعي</span>
+                        <span class="hb-legend-item hb-legend-result-ok">نتيجة ≥ 0</span>
+                        <span class="hb-legend-item hb-legend-result-bad">نتيجة &lt; 0</span>
+                        <span class="text-muted ms-2">الأسهم ⟸ توضّح اتجاه الإجمالي والنتيجة (RTL)</span>
+                    </div>
+                    <field name="line_ids" readonly="1" class="hb-statement-lines">
+                        <list create="false" delete="false"
+                              decoration-info="line_kind == 'header'"
+                              decoration-warning="line_kind == 'total'"
+                              decoration-success="line_kind == 'result' and not is_negative"
+                              decoration-danger="line_kind == 'result' and is_negative"
+                              decoration-bf="is_total or line_kind == 'header'">
                             <field name="currency_id" column_invisible="1"/>
                             <field name="is_total" column_invisible="1"/>
+                            <field name="is_result" column_invisible="1"/>
+                            <field name="is_negative" column_invisible="1"/>
                             <field name="line_kind" column_invisible="1"/>
                             <field name="code" optional="show"/>
                             <field name="name"/>
                             <field name="nature" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="opening_debit" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="opening_credit" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="period_debit" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="period_credit" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="closing_debit" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="closing_credit" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="amount" column_invisible="parent.report_type == 'trial'"/>
-                            <field name="amount_compare" column_invisible="parent.report_type == 'trial'"/>
+                            <field name="opening_debit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="opening_credit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="period_debit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="period_credit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="closing_debit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="closing_credit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
+                            <field name="amount" class="text-end" column_invisible="parent.report_type == 'trial'"/>
+                            <field name="amount_compare" class="text-end" column_invisible="parent.report_type == 'trial'"/>
                         </list>
                     </field>
                 </sheet>

@@ -14,10 +14,29 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" dir="rtl">
+                        <style>
+                            .hb-pdf-legend { font-size: 11px; margin: 6px 0 12px; }
+                            .hb-pdf-legend span { display: inline-block; padding: 2px 8px; margin-left: 6px; border-radius: 3px; }
+                            .hb-pdf-h { background: #d6eaf8; }
+                            .hb-pdf-t { background: #fcf3cf; }
+                            .hb-pdf-ok { background: #d5f5e3; }
+                            .hb-pdf-bad { background: #fadbd8; }
+                            tr.hb-row-header td { background: #d6eaf8; font-weight: bold; }
+                            tr.hb-row-total td { background: #fcf3cf; font-weight: bold; }
+                            tr.hb-row-result-ok td { background: #d5f5e3; font-weight: bold; }
+                            tr.hb-row-result-bad td { background: #fadbd8; font-weight: bold; }
+                        </style>
                         <h2 t-out="o.name"/>
                         <p>
                             الشركة: <span t-field="o.company_id"/> —
                             من <span t-field="o.date_from"/> إلى <span t-field="o.date_to"/>
+                        </p>
+                        <p class="hb-pdf-legend">
+                            <span class="hb-pdf-h">عنوان</span>
+                            <span class="hb-pdf-t">إجمالي</span>
+                            <span class="hb-pdf-ok">نتيجة ≥ 0</span>
+                            <span class="hb-pdf-bad">نتيجة &lt; 0</span>
+                            — الأسهم ⟸ باتجاه الإجمالي والنتيجة
                         </p>
 
                         <t t-if="o.report_type == 'trial'">
@@ -44,7 +63,13 @@
                                 </thead>
                                 <tbody>
                                     <tr t-foreach="o.line_ids" t-as="line"
-                                        t-att-style="'font-weight: bold;' if line.is_total or line.line_kind == 'header' else None">
+                                        t-att-class="(
+                                            'hb-row-header' if line.line_kind == 'header'
+                                            else 'hb-row-result-bad' if line.line_kind == 'result' and line.is_negative
+                                            else 'hb-row-result-ok' if line.line_kind == 'result'
+                                            else 'hb-row-total' if line.line_kind == 'total' or line.is_total
+                                            else None
+                                        )">
                                         <td t-out="line.name"/>
                                         <td t-out="line.code or ''"/>
                                         <td t-out="line.nature or ''"/>
@@ -89,7 +114,13 @@
                                 </thead>
                                 <tbody>
                                     <tr t-foreach="o.line_ids" t-as="line"
-                                        t-att-style="'font-weight: bold;' if line.is_total or line.line_kind == 'header' else None">
+                                        t-att-class="(
+                                            'hb-row-header' if line.line_kind == 'header'
+                                            else 'hb-row-result-bad' if line.line_kind == 'result' and line.is_negative
+                                            else 'hb-row-result-ok' if line.line_kind == 'result'
+                                            else 'hb-row-total' if line.line_kind == 'total' or line.is_total
+                                            else None
+                                        )">
                                         <td t-out="line.name"/>
                                         <td t-out="line.code or ''"/>
                                         <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
