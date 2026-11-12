@@ -136,13 +136,16 @@ class HomeblendCashForecast(models.TransientModel):
         if not self.line_ids:
             self.action_compute()
         day_rows = [
-            [
-                line.date.isoformat() if line.date else "",
-                line.inflow or 0.0,
-                line.outflow or 0.0,
-                line.balance or 0.0,
-                "تنبيه" if line.is_alert else "",
-            ]
+            {
+                "kind": "alert" if line.is_alert else None,
+                "values": [
+                    line.date.isoformat() if line.date else "",
+                    line.inflow or 0.0,
+                    line.outflow or 0.0,
+                    line.balance or 0.0,
+                    "تنبيه" if line.is_alert else "",
+                ],
+            }
             for line in self.line_ids
         ]
         source_labels = dict(self.env["homeblend.cash.forecast.flow"]._fields["source"].selection)

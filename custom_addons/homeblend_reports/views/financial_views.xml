@@ -39,14 +39,16 @@
                 <t t-set="data" t-value="o._get_report_data()"/>
                 <t t-call="web.external_layout">
                     <div class="page" dir="rtl">
+                        <t t-call="homeblend_reports.hb_fin_report_css"/>
                         <h2 t-out="data['title']"/>
                         <p>
                             الشركة: <span t-field="o.company_id"/> —
                             من <span t-field="o.date_from"/> إلى <span t-field="o.date_to"/>
                         </p>
+                        <t t-call="homeblend_reports.hb_fin_report_legend"/>
                         <t t-foreach="data['sections']" t-as="section">
-                            <h3 t-out="section['name']"/>
-                            <table class="table table-sm">
+                            <h3 class="hb-row-header" t-out="section['name']"/>
+                            <table class="table table-sm table-bordered">
                                 <thead>
                                     <tr>
                                         <th>الكود</th>
@@ -58,33 +60,40 @@
                                     <tr t-foreach="section['lines']" t-as="line">
                                         <td t-out="line['code']"/>
                                         <td t-out="line['name']"/>
-                                        <td class="text-end" t-out="line['balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                        <td t-att-class="'text-end' + (' hb-neg' if line['balance'] &lt; 0 else '')"
+                                            t-out="line['balance']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    </tr>
+                                    <tr class="hb-row-total">
+                                        <td colspan="2">⟸ إجمالي · <t t-out="section['name']"/></td>
+                                        <td t-att-class="'text-end' + (' hb-neg' if section['total'] &lt; 0 else '')"
+                                            t-out="section['total']" t-options="{'widget': 'float', 'precision': 2}"/>
                                     </tr>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th colspan="2">الإجمالي</th>
-                                        <th class="text-end" t-out="section['total']" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </t>
                         <t t-if="o.report_type == 'pnl'">
-                            <p><strong>صافي النتيجة: <t t-out="data['net']" t-options="{'widget': 'float', 'precision': 2}"/></strong></p>
+                            <table class="table table-sm table-bordered">
+                                <tr t-att-class="'hb-row-result-ok' if data['net'] &gt;= 0 else 'hb-row-result-bad'">
+                                    <td>⟸ نتيجة · صافي النتيجة</td>
+                                    <td t-att-class="'text-end' + (' hb-neg' if data['net'] &lt; 0 else '')"
+                                        t-out="data['net']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                            </table>
                         </t>
                         <t t-if="o.report_type == 'balance'">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th>إجمالي الأصول</th>
-                                    <th class="text-end" t-out="data['assets_total']" t-options="{'widget': 'float', 'precision': 2}"/>
+                            <table class="table table-sm table-bordered">
+                                <tr class="hb-row-total">
+                                    <td>⟸ إجمالي · إجمالي الأصول</td>
+                                    <td class="text-end" t-out="data['assets_total']" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </tr>
-                                <tr>
-                                    <th>إجمالي الخصوم وحقوق الملكية</th>
-                                    <th class="text-end" t-out="data['liab_equity_total']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <tr class="hb-row-total">
+                                    <td>⟸ إجمالي · إجمالي الخصوم وحقوق الملكية</td>
+                                    <td class="text-end" t-out="data['liab_equity_total']" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </tr>
-                                <tr t-if="data['difference']">
-                                    <th class="text-danger">فرق غير متوازن</th>
-                                    <th class="text-end text-danger" t-out="data['difference']" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <tr t-if="data['difference']"
+                                    t-att-class="'hb-row-result-bad' if data['difference'] else 'hb-row-result-ok'">
+                                    <td>⟸ نتيجة · فرق غير متوازن</td>
+                                    <td class="text-end hb-neg" t-out="data['difference']" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </tr>
                             </table>
                         </t>
@@ -113,7 +122,7 @@
         <field name="name">homeblend.budget.form</field>
         <field name="model">homeblend.budget</field>
         <field name="arch" type="xml">
-            <form>
+            <form class="hb-fin-report">
                 <header>
                     <button name="action_open" type="object" string="اعتماد" class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_done" type="object" string="إقفال" invisible="state != 'open'"/>
@@ -136,13 +145,21 @@
                             <field name="variance_total"/>
                         </group>
                     </group>
-                    <field name="line_ids">
+                    <div class="hb-fin-legend alert alert-light mb-2" role="note">
+                        <span class="hb-legend-item hb-legend-debit">مخطط</span>
+                        <span class="hb-legend-item hb-legend-credit">انحراف</span>
+                        <span class="hb-legend-item hb-legend-neg">رقم سالب (−)</span>
+                    </div>
+                    <field name="line_ids" class="hb-fin-report">
                         <list editable="bottom">
                             <field name="account_id"/>
                             <field name="analytic_account_id"/>
-                            <field name="planned_amount"/>
-                            <field name="actual_amount"/>
-                            <field name="variance_amount"/>
+                            <field name="planned_amount" class="text-end hb-col-debit"
+                                      decoration-danger="planned_amount &lt; 0"/>
+                            <field name="actual_amount" class="text-end"
+                                      decoration-danger="actual_amount &lt; 0"/>
+                            <field name="variance_amount" class="text-end hb-col-credit"
+                                      decoration-danger="variance_amount &lt; 0"/>
                         </list>
                     </field>
                     <field name="notes" placeholder="ملاحظات"/>

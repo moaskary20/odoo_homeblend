@@ -4,12 +4,14 @@
         <field name="name">homeblend.asset.list</field>
         <field name="model">homeblend.asset</field>
         <field name="arch" type="xml">
-            <list>
+            <list class="hb-fin-report">
                 <field name="name"/>
                 <field name="date_start"/>
-                <field name="purchase_value"/>
-                <field name="annual_depreciation"/>
-                <field name="residual"/>
+                <field name="purchase_value" class="hb-col-debit"
+                          decoration-danger="purchase_value &lt; 0"/>
+                <field name="annual_depreciation" class="hb-col-credit"
+                          decoration-danger="annual_depreciation &lt; 0"/>
+                <field name="residual" decoration-danger="residual &lt; 0"/>
                 <field name="state" widget="badge"/>
                 <field name="company_id" groups="base.group_multi_company"/>
             </list>

@@ -1,5 +1,6 @@
-/* ألوان صفوف قوائم الحسابات (ميزان / دخل / ميزانية) */
-.hb-statement-legend {
+/* أسطورة وتنسيق موحّد لكل التقارير المالية */
+.hb-statement-legend,
+.hb-fin-legend {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -51,31 +52,45 @@
     }
 }
 
-.o_form_view .hb-statement-lines .o_list_table {
-    /* أعمدة مدين / دائن */
+.o_form_view .hb-statement-lines .o_list_table,
+.o_form_view .hb-fin-report .o_list_table,
+.o_list_view.hb-fin-report .o_list_table {
+    /* أعمدة مدين / وارد */
     thead th[data-name="opening_debit"],
     thead th[data-name="period_debit"],
     thead th[data-name="closing_debit"],
+    thead th[data-name="debit"],
+    thead th[data-name="inflow"],
+    thead th[data-name="planned_amount"],
     tbody td[name="opening_debit"],
     tbody td[name="period_debit"],
     tbody td[name="closing_debit"],
+    tbody td[name="debit"],
+    tbody td[name="inflow"],
+    tbody td[name="planned_amount"],
     .hb-col-debit {
         background-color: rgba(209, 242, 235, 0.55) !important;
         color: #0e6655;
     }
 
+    /* أعمدة دائن / صادر / انحراف */
     thead th[data-name="opening_credit"],
     thead th[data-name="period_credit"],
     thead th[data-name="closing_credit"],
+    thead th[data-name="credit"],
+    thead th[data-name="outflow"],
+    thead th[data-name="variance_amount"],
     tbody td[name="opening_credit"],
     tbody td[name="period_credit"],
     tbody td[name="closing_credit"],
+    tbody td[name="credit"],
+    tbody td[name="outflow"],
+    tbody td[name="variance_amount"],
     .hb-col-credit {
         background-color: rgba(232, 218, 239, 0.55) !important;
         color: #6c3483;
     }
 
-    /* الطبيعة: مدين أزرق مخضر / دائن بنفسجي */
     tbody td[name="nature"].text-info,
     tbody td[name="nature"].table-info {
         color: #0e6655 !important;
@@ -88,7 +103,7 @@
         opacity: 1;
     }
 
-    /* أرقام سالبة (−) بالأحمر */
+    /* أرقام سالبة */
     tbody td.text-danger,
     tbody td.table-danger,
     tbody .text-danger {
@@ -137,7 +152,6 @@
             }
         }
 
-        /* أعمدة المدين/الدائن تبقى مميزة حتى داخل صف ملوّن */
         &.text-info,
         &.table-info,
         &.text-warning,
@@ -148,13 +162,19 @@
         &.table-danger {
             > td[name="opening_debit"],
             > td[name="period_debit"],
-            > td[name="closing_debit"] {
+            > td[name="closing_debit"],
+            > td[name="debit"],
+            > td[name="inflow"],
+            > td[name="planned_amount"] {
                 background-color: rgba(209, 242, 235, 0.7) !important;
             }
 
             > td[name="opening_credit"],
             > td[name="period_credit"],
-            > td[name="closing_credit"] {
+            > td[name="closing_credit"],
+            > td[name="credit"],
+            > td[name="outflow"],
+            > td[name="variance_amount"] {
                 background-color: rgba(232, 218, 239, 0.7) !important;
             }
         }

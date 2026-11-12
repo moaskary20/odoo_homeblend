@@ -63,7 +63,7 @@
         <field name="name">homeblend.cash.forecast.form</field>
         <field name="model">homeblend.cash.forecast</field>
         <field name="arch" type="xml">
-            <form string="التنبؤ بالرصيد البنكي">
+            <form string="التنبؤ بالرصيد البنكي" class="hb-fin-report">
                 <header>
                     <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
                     <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
@@ -95,28 +95,39 @@
                             <field name="alert_days"/>
                         </group>
                     </group>
+                    <div class="hb-fin-legend alert alert-light mb-2" role="note">
+                        <span class="hb-legend-item hb-legend-debit">وارد</span>
+                        <span class="hb-legend-item hb-legend-credit">صادر</span>
+                        <span class="hb-legend-item hb-legend-neg">رصيد/رقم سالب أو تنبيه</span>
+                    </div>
                     <notebook>
                         <page string="الرصيد اليومي المتوقع" name="days">
-                            <field name="line_ids" readonly="1">
+                            <field name="line_ids" readonly="1" class="hb-fin-report">
                                 <list decoration-danger="is_alert" create="false" delete="false">
                                     <field name="currency_id" column_invisible="1"/>
                                     <field name="is_alert" column_invisible="1"/>
                                     <field name="date"/>
-                                    <field name="inflow"/>
-                                    <field name="outflow"/>
-                                    <field name="balance"/>
+                                    <field name="inflow" class="text-end hb-col-debit"
+                                              decoration-danger="inflow &lt; 0"/>
+                                    <field name="outflow" class="text-end hb-col-credit"
+                                              decoration-danger="outflow &lt; 0"/>
+                                    <field name="balance" class="text-end"
+                                              decoration-danger="balance &lt; 0 or is_alert"/>
                                 </list>
                             </field>
                         </page>
                         <page string="تفصيل التدفقات" name="flows">
-                            <field name="flow_ids" readonly="1">
-                                <list create="false" delete="false">
+                            <field name="flow_ids" readonly="1" class="hb-fin-report">
+                                <list create="false" delete="false"
+                                      decoration-info="direction == 'in'"
+                                      decoration-muted="direction == 'out'">
                                     <field name="currency_id" column_invisible="1"/>
                                     <field name="date"/>
                                     <field name="name"/>
                                     <field name="source"/>
                                     <field name="direction"/>
-                                    <field name="amount"/>
+                                    <field name="amount" class="text-end"
+                                              decoration-danger="amount &lt; 0"/>
                                     <field name="partner_id" optional="show"/>
                                     <field name="move_id" optional="hide"/>
                                 </list>

@@ -13,6 +13,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" dir="rtl">
+                        <t t-call="homeblend_reports.hb_fin_report_css"/>
                         <h2 t-out="o.name"/>
                         <p>
                             الشركة: <span t-field="o.company_id"/> —
@@ -20,22 +21,27 @@
                             نهائي: <span t-field="o.closing_balance"/> —
                             أدنى: <span t-field="o.lowest_balance"/>
                         </p>
+                        <t t-call="homeblend_reports.hb_fin_report_legend"/>
                         <h3>الرصيد اليومي</h3>
                         <table class="table table-sm table-bordered">
                             <thead>
                                 <tr>
                                     <th>اليوم</th>
-                                    <th class="text-end">وارد</th>
-                                    <th class="text-end">صادر</th>
+                                    <th class="text-end hb-th-debit">وارد</th>
+                                    <th class="text-end hb-th-credit">صادر</th>
                                     <th class="text-end">الرصيد</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.line_ids" t-as="line">
+                                <tr t-foreach="o.line_ids" t-as="line"
+                                    t-att-class="'hb-row-alert' if line.is_alert else None">
                                     <td t-out="line.date"/>
-                                    <td class="text-end" t-out="line.inflow" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.outflow" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.balance" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end hb-td-debit' + (' hb-neg' if line.inflow &lt; 0 else '')"
+                                        t-out="line.inflow" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end hb-td-credit' + (' hb-neg' if line.outflow &lt; 0 else '')"
+                                        t-out="line.outflow" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if line.balance &lt; 0 else '')"
+                                        t-out="line.balance" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </tr>
                             </tbody>
                         </table>
@@ -58,6 +64,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" dir="rtl">
+                        <t t-call="homeblend_reports.hb_fin_report_css"/>
                         <h2 t-out="o.name"/>
                         <p>
                             نظام: <span t-field="o.system_total"/> —
@@ -65,6 +72,7 @@
                             فرق: <span t-field="o.difference"/> —
                             مطابقات: <span t-field="o.matched_count"/>
                         </p>
+                        <t t-call="homeblend_reports.hb_fin_report_legend"/>
                         <h3>حركات النظام</h3>
                         <table class="table table-sm table-bordered">
                             <thead>
@@ -77,11 +85,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.system_line_ids" t-as="line">
+                                <tr t-foreach="o.system_line_ids" t-as="line"
+                                    t-att-class="'hb-row-result-ok' if line.is_matched else 'hb-row-alert'">
                                     <td t-out="line.date"/>
                                     <td t-out="line.name"/>
-                                    <td t-out="line.direction"/>
-                                    <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'hb-nature-debit' if line.direction == 'in' else 'hb-nature-credit'"
+                                        t-out="line.direction"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if line.amount &lt; 0 else '')"
+                                        t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
                                     <td><t t-if="line.is_matched">مسوّى</t><t t-else="">غير مسوّى</t></td>
                                 </tr>
                             </tbody>
@@ -98,11 +109,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.book_line_ids" t-as="line">
+                                <tr t-foreach="o.book_line_ids" t-as="line"
+                                    t-att-class="'hb-row-result-ok' if line.is_matched else 'hb-row-alert'">
                                     <td t-out="line.date"/>
                                     <td t-out="line.name"/>
-                                    <td t-out="line.direction"/>
-                                    <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'hb-nature-debit' if line.direction == 'in' else 'hb-nature-credit'"
+                                        t-out="line.direction"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if line.amount &lt; 0 else '')"
+                                        t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
                                     <td><t t-if="line.is_matched">مسوّى</t><t t-else="">غير مسوّى</t></td>
                                 </tr>
                             </tbody>
@@ -127,7 +141,9 @@
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page" dir="rtl">
+                    <t t-call="homeblend_reports.hb_fin_report_css"/>
                     <h2>سطور كشف التسوية</h2>
+                    <t t-call="homeblend_reports.hb_fin_report_legend"/>
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
@@ -140,12 +156,19 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr t-foreach="docs" t-as="line">
+                            <tr t-foreach="docs" t-as="line"
+                                t-att-class="(
+                                    'hb-row-result-ok' if line.state == 'matched'
+                                    else 'hb-row-alert' if line.state == 'cancel'
+                                    else None
+                                )">
                                 <td t-out="line.date"/>
                                 <td t-out="line.name"/>
                                 <td t-out="line.channel"/>
-                                <td t-out="line.direction"/>
-                                <td class="text-end" t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td t-att-class="'hb-nature-debit' if line.direction == 'in' else 'hb-nature-credit'"
+                                    t-out="line.direction"/>
+                                <td t-att-class="'text-end' + (' hb-neg' if line.amount &lt; 0 else '')"
+                                    t-out="line.amount" t-options="{'widget': 'float', 'precision': 2}"/>
                                 <td t-out="line.state"/>
                             </tr>
                         </tbody>
@@ -168,11 +191,13 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" dir="rtl">
+                        <t t-call="homeblend_reports.hb_fin_report_css"/>
                         <h2 t-out="o.name"/>
                         <p>
                             الشركة: <span t-field="o.company_id"/> —
                             الإجمالي: <span t-field="o.total_amount"/>
                         </p>
+                        <t t-call="homeblend_reports.hb_fin_report_legend"/>
                         <table class="table table-sm table-bordered">
                             <thead>
                                 <tr>
@@ -180,22 +205,31 @@
                                     <th>البيان</th>
                                     <th>الشريك</th>
                                     <th>الحساب</th>
-                                    <th class="text-end">مدين</th>
-                                    <th class="text-end">دائن</th>
+                                    <th class="text-end hb-th-debit">مدين</th>
+                                    <th class="text-end hb-th-credit">دائن</th>
                                     <th class="text-end">الرصيد</th>
                                     <th class="text-end">المتبقي</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr t-foreach="o.line_ids" t-as="line">
-                                    <td t-out="line.date"/>
+                                <tr t-foreach="o.line_ids" t-as="line"
+                                    t-att-class="(
+                                        'hb-row-result-bad' if line.is_total and line.is_negative
+                                        else 'hb-row-total' if line.is_total
+                                        else None
+                                    )">
+                                    <td t-out="line.date or ''"/>
                                     <td t-out="line.name"/>
-                                    <td t-out="line.partner_id.display_name"/>
-                                    <td t-out="line.account_id.display_name"/>
-                                    <td class="text-end" t-out="line.debit" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.credit" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.balance" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-out="line.partner_id.display_name if line.partner_id else ''"/>
+                                    <td t-out="line.account_id.display_name if line.account_id else ''"/>
+                                    <td t-att-class="'text-end hb-td-debit' + (' hb-neg' if line.debit &lt; 0 else '')"
+                                        t-out="line.debit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end hb-td-credit' + (' hb-neg' if line.credit &lt; 0 else '')"
+                                        t-out="line.credit" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if line.balance &lt; 0 else '')"
+                                        t-out="line.balance" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if line.residual &lt; 0 else '')"
+                                        t-out="line.residual" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </tr>
                             </tbody>
                         </table>
@@ -220,6 +254,7 @@
             <t t-foreach="docs" t-as="o">
                 <t t-call="web.external_layout">
                     <div class="page" dir="rtl">
+                        <t t-call="homeblend_reports.hb_fin_report_css"/>
                         <h2 t-out="o.name"/>
                         <p>
                             من <span t-field="o.date_from"/> إلى <span t-field="o.date_to"/> —
@@ -227,23 +262,36 @@
                             فعلي: <span t-field="o.actual_total"/> —
                             انحراف: <span t-field="o.variance_total"/>
                         </p>
+                        <t t-call="homeblend_reports.hb_fin_report_legend"/>
                         <table class="table table-sm table-bordered">
                             <thead>
                                 <tr>
                                     <th>الحساب</th>
                                     <th>مركز التكلفة</th>
-                                    <th class="text-end">المخطط</th>
+                                    <th class="text-end hb-th-debit">المخطط</th>
                                     <th class="text-end">الفعلي</th>
-                                    <th class="text-end">الانحراف</th>
+                                    <th class="text-end hb-th-credit">الانحراف</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr t-foreach="o.line_ids" t-as="line">
                                     <td t-out="line.account_id.display_name"/>
                                     <td t-out="line.analytic_account_id.display_name"/>
-                                    <td class="text-end" t-out="line.planned_amount" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.actual_amount" t-options="{'widget': 'float', 'precision': 2}"/>
-                                    <td class="text-end" t-out="line.variance_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end hb-td-debit' + (' hb-neg' if line.planned_amount &lt; 0 else '')"
+                                        t-out="line.planned_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if line.actual_amount &lt; 0 else '')"
+                                        t-out="line.actual_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end hb-td-credit' + (' hb-neg' if line.variance_amount &lt; 0 else '')"
+                                        t-out="line.variance_amount" t-options="{'widget': 'float', 'precision': 2}"/>
+                                </tr>
+                                <tr class="hb-row-total">
+                                    <td colspan="2">⟸ إجمالي · المجموع</td>
+                                    <td t-att-class="'text-end' + (' hb-neg' if o.planned_total &lt; 0 else '')"
+                                        t-out="o.planned_total" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if o.actual_total &lt; 0 else '')"
+                                        t-out="o.actual_total" t-options="{'widget': 'float', 'precision': 2}"/>
+                                    <td t-att-class="'text-end' + (' hb-neg' if o.variance_total &lt; 0 else '')"
+                                        t-out="o.variance_total" t-options="{'widget': 'float', 'precision': 2}"/>
                                 </tr>
                             </tbody>
                         </table>
@@ -267,15 +315,17 @@
         <t t-call="web.html_container">
             <t t-call="web.external_layout">
                 <div class="page" dir="rtl">
+                    <t t-call="homeblend_reports.hb_fin_report_css"/>
                     <h2>الأصول والإهلاك</h2>
+                    <t t-call="homeblend_reports.hb_fin_report_legend"/>
                     <table class="table table-sm table-bordered">
                         <thead>
                             <tr>
                                 <th>الأصل</th>
                                 <th>تاريخ الشراء</th>
-                                <th class="text-end">التكلفة</th>
-                                <th class="text-end">الإهلاك السنوي</th>
-                                <th class="text-end">مجمع الإهلاك</th>
+                                <th class="text-end hb-th-debit">التكلفة</th>
+                                <th class="text-end hb-th-credit">الإهلاك السنوي</th>
+                                <th class="text-end hb-th-credit">مجمع الإهلاك</th>
                                 <th class="text-end">القيمة الدفترية</th>
                                 <th>الحالة</th>
                             </tr>
@@ -284,10 +334,11 @@
                             <tr t-foreach="docs" t-as="asset">
                                 <td t-out="asset.name"/>
                                 <td t-out="asset.date_start"/>
-                                <td class="text-end" t-out="asset.purchase_value" t-options="{'widget': 'float', 'precision': 2}"/>
-                                <td class="text-end" t-out="asset.annual_depreciation" t-options="{'widget': 'float', 'precision': 2}"/>
-                                <td class="text-end" t-out="asset.accumulated" t-options="{'widget': 'float', 'precision': 2}"/>
-                                <td class="text-end" t-out="asset.residual" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td class="text-end hb-td-debit" t-out="asset.purchase_value" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td class="text-end hb-td-credit" t-out="asset.annual_depreciation" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td class="text-end hb-td-credit" t-out="asset.accumulated" t-options="{'widget': 'float', 'precision': 2}"/>
+                                <td t-att-class="'text-end' + (' hb-neg' if asset.residual &lt; 0 else '')"
+                                    t-out="asset.residual" t-options="{'widget': 'float', 'precision': 2}"/>
                                 <td t-out="asset.state"/>
                             </tr>
                         </tbody>

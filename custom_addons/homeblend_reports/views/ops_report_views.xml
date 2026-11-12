@@ -4,7 +4,7 @@
         <field name="name">homeblend.ops.report.form</field>
         <field name="model">homeblend.ops.report</field>
         <field name="arch" type="xml">
-            <form string="تقرير محاسبي">
+            <form string="تقرير محاسبي" class="hb-fin-report">
                 <header>
                     <button name="action_compute" type="object" string="تحديث" class="btn-primary"/>
                     <button name="action_export_xlsx" type="object" string="تصدير Excel"/>
@@ -26,17 +26,32 @@
                             <field name="total_amount"/>
                         </group>
                     </group>
-                    <field name="line_ids" readonly="1">
-                        <list create="false" delete="false">
+                    <div class="hb-fin-legend alert alert-light mb-2" role="note">
+                        <span class="hb-legend-item hb-legend-total">إجمالي</span>
+                        <span class="hb-legend-item hb-legend-debit">مدين</span>
+                        <span class="hb-legend-item hb-legend-credit">دائن</span>
+                        <span class="hb-legend-item hb-legend-neg">رقم سالب (−)</span>
+                    </div>
+                    <field name="line_ids" readonly="1" class="hb-fin-report">
+                        <list create="false" delete="false"
+                              decoration-warning="is_total"
+                              decoration-bf="is_total"
+                              decoration-danger="is_negative and is_total">
                             <field name="currency_id" column_invisible="1"/>
+                            <field name="is_total" column_invisible="1"/>
+                            <field name="is_negative" column_invisible="1"/>
                             <field name="date"/>
                             <field name="name"/>
                             <field name="partner_id" optional="show"/>
                             <field name="account_id" optional="show"/>
-                            <field name="debit"/>
-                            <field name="credit"/>
-                            <field name="balance"/>
-                            <field name="residual" optional="show"/>
+                            <field name="debit" class="text-end hb-col-debit"
+                                      decoration-danger="debit &lt; 0"/>
+                            <field name="credit" class="text-end hb-col-credit"
+                                      decoration-danger="credit &lt; 0"/>
+                            <field name="balance" class="text-end"
+                                      decoration-danger="balance &lt; 0"/>
+                            <field name="residual" class="text-end" optional="show"
+                                      decoration-danger="residual &lt; 0"/>
                         </list>
                     </field>
                 </sheet>

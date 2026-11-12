@@ -91,7 +91,7 @@
         <field name="name">homeblend.payment.settle.form</field>
         <field name="model">homeblend.payment.settle</field>
         <field name="arch" type="xml">
-            <form string="تسوية المدفوعات">
+            <form string="تسوية المدفوعات" class="hb-fin-report">
                 <header>
                     <button name="action_load" type="object" string="تحديث" class="btn-primary"/>
                     <button name="action_auto_match" type="object" string="مطابقة تلقائية"/>
@@ -103,6 +103,13 @@
                 <sheet>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <div class="hb-fin-legend alert alert-light mb-2" role="note">
+                        <span class="hb-legend-item hb-legend-result-ok">مسوّى</span>
+                        <span class="hb-legend-item hb-legend-result-bad">غير مسوّى</span>
+                        <span class="hb-legend-item hb-legend-debit">وارد</span>
+                        <span class="hb-legend-item hb-legend-credit">صادر</span>
+                        <span class="hb-legend-item hb-legend-neg">رقم سالب (−)</span>
                     </div>
                     <group>
                         <group>
@@ -131,7 +138,7 @@
                     </group>
                     <notebook>
                         <page string="حركات النظام" name="system">
-                            <field name="system_line_ids">
+                            <field name="system_line_ids" class="hb-fin-report">
                                 <list editable="bottom" decoration-success="is_matched" decoration-danger="not is_matched" create="false" delete="false">
                                     <field name="selected"/>
                                     <field name="currency_id" column_invisible="1"/>
@@ -140,9 +147,13 @@
                                     <field name="name"/>
                                     <field name="reference" optional="show"/>
                                     <field name="channel"/>
-                                    <field name="direction"/>
-                                    <field name="amount"/>
-                                    <field name="signed_amount" optional="hide"/>
+                                    <field name="direction"
+                                              decoration-info="direction == 'in'"
+                                              decoration-muted="direction == 'out'"/>
+                                    <field name="amount" class="text-end"
+                                              decoration-danger="amount &lt; 0"/>
+                                    <field name="signed_amount" optional="hide"
+                                              decoration-danger="signed_amount &lt; 0"/>
                                     <field name="partner_id" optional="show"/>
                                     <field name="payment_id" optional="hide"/>
                                     <field name="pos_payment_id" optional="hide"/>
@@ -151,7 +162,7 @@
                             </field>
                         </page>
                         <page string="حركات الكشف" name="book">
-                            <field name="book_line_ids">
+                            <field name="book_line_ids" class="hb-fin-report">
                                 <list editable="bottom" decoration-success="is_matched" decoration-danger="not is_matched" create="false" delete="false">
                                     <field name="selected"/>
                                     <field name="currency_id" column_invisible="1"/>
@@ -161,9 +172,13 @@
                                     <field name="name"/>
                                     <field name="reference" optional="show"/>
                                     <field name="channel"/>
-                                    <field name="direction"/>
-                                    <field name="amount"/>
-                                    <field name="signed_amount" optional="hide"/>
+                                    <field name="direction"
+                                              decoration-info="direction == 'in'"
+                                              decoration-muted="direction == 'out'"/>
+                                    <field name="amount" class="text-end"
+                                              decoration-danger="amount &lt; 0"/>
+                                    <field name="signed_amount" optional="hide"
+                                              decoration-danger="signed_amount &lt; 0"/>
                                 </list>
                             </field>
                         </page>

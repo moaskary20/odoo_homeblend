@@ -38,9 +38,14 @@ class HomeblendFinancialReportWizard(models.TransientModel):
                 ],
                 "headers": ["الكود", "الحساب", "الرصيد"],
                 "rows": [
-                    [line.get("code") or "", line.get("name") or "", line.get("balance") or 0.0]
+                    {
+                        "values": [line.get("code") or "", line.get("name") or "", line.get("balance") or 0.0],
+                    }
                     for line in section.get("lines") or []
-                ],
+                ] + [{
+                    "kind": "total",
+                    "values": ["", "⟸ إجمالي · %s" % (section.get("name") or ""), section.get("total") or 0.0],
+                }],
                 "notes": ["الإجمالي: %.2f" % (section.get("total") or 0.0)],
             })
         notes = []
@@ -194,15 +199,27 @@ class HomeblendBudget(models.Model):
     def action_export_xlsx(self):
         self.ensure_one()
         rows = [
-            [
-                line.account_id.display_name if line.account_id else "",
-                line.analytic_account_id.display_name if line.analytic_account_id else "",
-                line.planned_amount or 0.0,
-                line.actual_amount or 0.0,
-                line.variance_amount or 0.0,
-            ]
+            {
+                "values": [
+                    line.account_id.display_name if line.account_id else "",
+                    line.analytic_account_id.display_name if line.analytic_account_id else "",
+                    line.planned_amount or 0.0,
+                    line.actual_amount or 0.0,
+                    line.variance_amount or 0.0,
+                ],
+            }
             for line in self.line_ids
         ]
+        rows.append({
+            "kind": "total",
+            "values": [
+                "⟸ إجمالي · المجموع",
+                "",
+                self.planned_total or 0.0,
+                self.actual_total or 0.0,
+                self.variance_total or 0.0,
+            ],
+        })
         return self._hb_xlsx_download(
             self.name or "budget",
             [{

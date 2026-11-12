@@ -67,16 +67,19 @@ class HomeblendOpsReport(models.TransientModel):
             self.action_compute()
         rows = []
         for line in self.line_ids:
-            rows.append([
-                line.date.isoformat() if line.date else "",
-                line.name or "",
-                line.partner_id.display_name if line.partner_id else "",
-                line.account_id.display_name if line.account_id else "",
-                line.debit or 0.0,
-                line.credit or 0.0,
-                line.balance or 0.0,
-                line.residual or 0.0,
-            ])
+            rows.append({
+                "kind": "total" if line.is_total else None,
+                "values": [
+                    line.date.isoformat() if line.date else "",
+                    line.name or "",
+                    line.partner_id.display_name if line.partner_id else "",
+                    line.account_id.display_name if line.account_id else "",
+                    line.debit or 0.0,
+                    line.credit or 0.0,
+                    line.balance or 0.0,
+                    line.residual or 0.0,
+                ],
+            })
         return self._hb_xlsx_download(
             self.name or "ops_report",
             [{
@@ -158,6 +161,22 @@ class HomeblendOpsReport(models.TransientModel):
                     "balance": line.balance,
                     "residual": abs(line.amount_residual) if "amount_residual" in line._fields else 0.0,
                 })
+        if rows:
+            debit_sum = sum(r.get("debit") or 0.0 for r in rows)
+            credit_sum = sum(r.get("credit") or 0.0 for r in rows)
+            residual_sum = sum(r.get("residual") or 0.0 for r in rows)
+            rows.append({
+                "date": False,
+                "name": "⟸ إجمالي · الإجمالي",
+                "partner_id": False,
+                "account_id": False,
+                "debit": debit_sum,
+                "credit": credit_sum,
+                "balance": total,
+                "residual": residual_sum,
+                "is_total": True,
+                "is_negative": total < 0,
+            })
         self.line_ids = [Command.clear()] + [Command.create(vals) for vals in rows]
         self.total_amount = total
 
@@ -165,7 +184,7 @@ class HomeblendOpsReport(models.TransientModel):
 class HomeblendOpsReportLine(models.TransientModel):
     _name = "homeblend.ops.report.line"
     _description = "سطر تقرير محاسبي"
-    _order = "date, id"
+    _order = "is_total, date, id"
 
     report_id = fields.Many2one("homeblend.ops.report", required=True, ondelete="cascade")
     currency_id = fields.Many2one(related="report_id.currency_id")
@@ -177,3 +196,5 @@ class HomeblendOpsReportLine(models.TransientModel):
     credit = fields.Monetary(string="دائن")
     balance = fields.Monetary(string="الرصيد")
     residual = fields.Monetary(string="المتبقي")
+    is_total = fields.Boolean()
+    is_negative = fields.Boolean()

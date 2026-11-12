@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- تنسيق PDF موحّد لكل التقارير المالية -->
+    <template id="hb_fin_report_css">
+        <style>
+            .hb-pdf-legend { font-size: 11px; margin: 6px 0 12px; }
+            .hb-pdf-legend span { display: inline-block; padding: 2px 8px; margin-left: 6px; border-radius: 3px; }
+            .hb-pdf-h { background: #d6eaf8; }
+            .hb-pdf-t { background: #fcf3cf; }
+            .hb-pdf-ok { background: #d5f5e3; }
+            .hb-pdf-bad { background: #fadbd8; }
+            .hb-pdf-debit-chip { background: #d1f2eb; color: #0e6655; }
+            .hb-pdf-credit-chip { background: #e8daef; color: #6c3483; }
+            .hb-pdf-neg-chip { background: #f5b7b1; color: #7b241c; }
+            tr.hb-row-header td { background: #d6eaf8; font-weight: bold; }
+            tr.hb-row-total td { background: #fcf3cf; font-weight: bold; }
+            tr.hb-row-result-ok td { background: #d5f5e3; font-weight: bold; }
+            tr.hb-row-result-bad td { background: #fadbd8; font-weight: bold; }
+            tr.hb-row-alert td { background: #fadbd8; font-weight: bold; }
+            th.hb-th-debit, td.hb-td-debit { background: #d1f2eb; color: #0e6655; }
+            th.hb-th-credit, td.hb-td-credit { background: #e8daef; color: #6c3483; }
+            td.hb-nature-debit { color: #0e6655; font-weight: bold; }
+            td.hb-nature-credit { color: #6c3483; font-weight: bold; }
+            td.hb-neg { color: #c0392b !important; font-weight: bold; }
+        </style>
+    </template>
+
+    <template id="hb_fin_report_legend">
+        <p class="hb-pdf-legend">
+            <span class="hb-pdf-h">عنوان</span>
+            <span class="hb-pdf-t">إجمالي</span>
+            <span class="hb-pdf-ok">نتيجة ≥ 0</span>
+            <span class="hb-pdf-bad">نتيجة &lt; 0</span>
+            <span class="hb-pdf-debit-chip">مدين / وارد</span>
+            <span class="hb-pdf-credit-chip">دائن / صادر</span>
+            <span class="hb-pdf-neg-chip">سالب (−)</span>
+        </p>
+    </template>
+</odoo>
