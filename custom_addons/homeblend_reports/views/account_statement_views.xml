@@ -214,6 +214,9 @@
                         <span class="hb-legend-item hb-legend-total">إجمالي فرعي</span>
                         <span class="hb-legend-item hb-legend-result-ok">نتيجة ≥ 0</span>
                         <span class="hb-legend-item hb-legend-result-bad">نتيجة &lt; 0</span>
+                        <span class="hb-legend-item hb-legend-debit">مدين</span>
+                        <span class="hb-legend-item hb-legend-credit">دائن</span>
+                        <span class="hb-legend-item hb-legend-neg">رقم سالب (−)</span>
                         <span class="text-muted ms-2">الأسهم ⟸ توضّح اتجاه الإجمالي والنتيجة (RTL)</span>
                     </div>
                     <field name="line_ids" readonly="1" class="hb-statement-lines">
@@ -230,15 +233,34 @@
                             <field name="line_kind" column_invisible="1"/>
                             <field name="code" optional="show"/>
                             <field name="name"/>
-                            <field name="nature" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="opening_debit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="opening_credit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="period_debit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="period_credit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="closing_debit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="closing_credit" class="text-end" column_invisible="parent.report_type != 'trial'"/>
-                            <field name="amount" class="text-end" column_invisible="parent.report_type == 'trial'"/>
-                            <field name="amount_compare" class="text-end" column_invisible="parent.report_type == 'trial'"/>
+                            <field name="nature"
+                                      decoration-info="nature == 'مدين'"
+                                      decoration-muted="nature == 'دائن'"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="opening_debit" class="text-end hb-col-debit"
+                                      decoration-danger="opening_debit &lt; 0"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="opening_credit" class="text-end hb-col-credit"
+                                      decoration-danger="opening_credit &lt; 0"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="period_debit" class="text-end hb-col-debit"
+                                      decoration-danger="period_debit &lt; 0"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="period_credit" class="text-end hb-col-credit"
+                                      decoration-danger="period_credit &lt; 0"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="closing_debit" class="text-end hb-col-debit"
+                                      decoration-danger="closing_debit &lt; 0"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="closing_credit" class="text-end hb-col-credit"
+                                      decoration-danger="closing_credit &lt; 0"
+                                      column_invisible="parent.report_type != 'trial'"/>
+                            <field name="amount" class="text-end"
+                                      decoration-danger="amount &lt; 0"
+                                      column_invisible="parent.report_type == 'trial'"/>
+                            <field name="amount_compare" class="text-end"
+                                      decoration-danger="amount_compare &lt; 0"
+                                      column_invisible="parent.report_type == 'trial'"/>
                         </list>
                     </field>
                 </sheet>

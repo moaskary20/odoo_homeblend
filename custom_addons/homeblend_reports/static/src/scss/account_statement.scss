@@ -34,15 +34,74 @@
         background: #fadbd8;
         color: #922b21;
     }
+
+    .hb-legend-debit {
+        background: #d1f2eb;
+        color: #0e6655;
+    }
+
+    .hb-legend-credit {
+        background: #e8daef;
+        color: #6c3483;
+    }
+
+    .hb-legend-neg {
+        background: #f5b7b1;
+        color: #7b241c;
+    }
 }
 
 .o_form_view .hb-statement-lines .o_list_table {
+    /* أعمدة مدين / دائن */
+    thead th[data-name="opening_debit"],
+    thead th[data-name="period_debit"],
+    thead th[data-name="closing_debit"],
+    tbody td[name="opening_debit"],
+    tbody td[name="period_debit"],
+    tbody td[name="closing_debit"],
+    .hb-col-debit {
+        background-color: rgba(209, 242, 235, 0.55) !important;
+        color: #0e6655;
+    }
+
+    thead th[data-name="opening_credit"],
+    thead th[data-name="period_credit"],
+    thead th[data-name="closing_credit"],
+    tbody td[name="opening_credit"],
+    tbody td[name="period_credit"],
+    tbody td[name="closing_credit"],
+    .hb-col-credit {
+        background-color: rgba(232, 218, 239, 0.55) !important;
+        color: #6c3483;
+    }
+
+    /* الطبيعة: مدين أزرق مخضر / دائن بنفسجي */
+    tbody td[name="nature"].text-info,
+    tbody td[name="nature"].table-info {
+        color: #0e6655 !important;
+        font-weight: 700;
+    }
+
+    tbody td[name="nature"].text-muted {
+        color: #6c3483 !important;
+        font-weight: 700;
+        opacity: 1;
+    }
+
+    /* أرقام سالبة (−) بالأحمر */
+    tbody td.text-danger,
+    tbody td.table-danger,
+    tbody .text-danger {
+        color: #c0392b !important;
+        font-weight: 700;
+    }
+
     tbody tr.o_data_row {
         &.text-info,
         &.table-info {
             background-color: #d6eaf8 !important;
 
-            td {
+            > td {
                 background-color: transparent !important;
                 font-weight: 600;
             }
@@ -52,7 +111,7 @@
         &.table-warning {
             background-color: #fcf3cf !important;
 
-            td {
+            > td {
                 background-color: transparent !important;
                 font-weight: 700;
             }
@@ -62,7 +121,7 @@
         &.table-success {
             background-color: #d5f5e3 !important;
 
-            td {
+            > td {
                 background-color: transparent !important;
                 font-weight: 700;
             }
@@ -72,9 +131,31 @@
         &.table-danger {
             background-color: #fadbd8 !important;
 
-            td {
+            > td {
                 background-color: transparent !important;
                 font-weight: 700;
+            }
+        }
+
+        /* أعمدة المدين/الدائن تبقى مميزة حتى داخل صف ملوّن */
+        &.text-info,
+        &.table-info,
+        &.text-warning,
+        &.table-warning,
+        &.text-success,
+        &.table-success,
+        &.text-danger,
+        &.table-danger {
+            > td[name="opening_debit"],
+            > td[name="period_debit"],
+            > td[name="closing_debit"] {
+                background-color: rgba(209, 242, 235, 0.7) !important;
+            }
+
+            > td[name="opening_credit"],
+            > td[name="period_credit"],
+            > td[name="closing_credit"] {
+                background-color: rgba(232, 218, 239, 0.7) !important;
             }
         }
     }

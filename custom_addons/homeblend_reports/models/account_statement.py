@@ -597,28 +597,52 @@ class HomeblendAccountStatement(models.TransientModel):
         sheet.right_to_left()
         title_fmt = workbook.add_format({"bold": True, "font_size": 14, "align": "right"})
         col_header_fmt = workbook.add_format({"bold": True, "bg_color": "#D9E1F2", "align": "right", "border": 1})
+        debit_header_fmt = workbook.add_format({"bold": True, "bg_color": "#D1F2EB", "font_color": "#0E6655", "align": "right", "border": 1})
+        credit_header_fmt = workbook.add_format({"bold": True, "bg_color": "#E8DAEF", "font_color": "#6C3483", "align": "right", "border": 1})
         text_fmt = workbook.add_format({"align": "right", "border": 1})
+        nature_debit_fmt = workbook.add_format({"bold": True, "font_color": "#0E6655", "align": "right", "border": 1})
+        nature_credit_fmt = workbook.add_format({"bold": True, "font_color": "#6C3483", "align": "right", "border": 1})
         header_row_fmt = workbook.add_format({"bold": True, "bg_color": "#D6EAF8", "align": "right", "border": 1})
         total_row_fmt = workbook.add_format({"bold": True, "bg_color": "#FCF3CF", "align": "right", "border": 1})
         result_ok_fmt = workbook.add_format({"bold": True, "bg_color": "#D5F5E3", "align": "right", "border": 1})
         result_bad_fmt = workbook.add_format({"bold": True, "bg_color": "#FADBD8", "align": "right", "border": 1})
-        money_fmt = workbook.add_format({"num_format": "#,##0.00", "align": "left", "border": 1})
-        money_header_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#D6EAF8", "align": "left", "border": 1})
-        money_total_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#FCF3CF", "align": "left", "border": 1})
-        money_ok_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#D5F5E3", "align": "left", "border": 1})
-        money_bad_fmt = workbook.add_format({"num_format": "#,##0.00", "bold": True, "bg_color": "#FADBD8", "align": "left", "border": 1})
+        money_base = {"num_format": "#,##0.00;[Red]-#,##0.00", "align": "left", "border": 1}
+        money_fmt = workbook.add_format(dict(money_base))
+        money_debit_fmt = workbook.add_format({**money_base, "bg_color": "#D1F2EB", "font_color": "#0E6655"})
+        money_credit_fmt = workbook.add_format({**money_base, "bg_color": "#E8DAEF", "font_color": "#6C3483"})
+        money_header_fmt = workbook.add_format({**money_base, "bold": True, "bg_color": "#D6EAF8"})
+        money_total_fmt = workbook.add_format({**money_base, "bold": True, "bg_color": "#FCF3CF"})
+        money_ok_fmt = workbook.add_format({**money_base, "bold": True, "bg_color": "#D5F5E3"})
+        money_bad_fmt = workbook.add_format({**money_base, "bold": True, "bg_color": "#FADBD8", "font_color": "#C0392B"})
+        money_neg_fmt = workbook.add_format({**money_base, "font_color": "#C0392B", "bold": True})
+        money_debit_neg_fmt = workbook.add_format({**money_base, "bg_color": "#D1F2EB", "font_color": "#C0392B", "bold": True})
+        money_credit_neg_fmt = workbook.add_format({**money_base, "bg_color": "#E8DAEF", "font_color": "#C0392B", "bold": True})
         row = 0
         sheet.write(row, 0, self.name or "", title_fmt)
         row += 1
         sheet.write(row, 0, "الشركة: %s" % (self.company_id.name or ""), text_fmt)
         row += 1
-        sheet.write(row, 0, "أزرق=عنوان · كهرماني=إجمالي · أخضر/أحمر=نتيجة (ربح/خسارة) · الأسهم ⟸ باتجاه الإجمالي", text_fmt)
+        sheet.write(
+            row, 0,
+            "أزرق=عنوان · كهرماني=إجمالي · أخضر/أحمر=نتيجة · أخضر مزرق=مدين · بنفسجي=دائن · أحمر=رقم سالب (−) · الأسهم ⟸",
+            text_fmt,
+        )
         row += 2
         headers = self._xlsx_headers()
+        debit_cols = set()
+        credit_cols = set()
         for col, header in enumerate(headers):
-            sheet.write(row, col, header, col_header_fmt)
+            if "مدين" in header:
+                sheet.write(row, col, header, debit_header_fmt)
+                debit_cols.add(col)
+            elif "دائن" in header:
+                sheet.write(row, col, header, credit_header_fmt)
+                credit_cols.add(col)
+            else:
+                sheet.write(row, col, header, col_header_fmt)
             sheet.set_column(col, col, 18 if col else 42)
         row += 1
+        nature_col = 2 if self.report_type == "trial" else None
         for line in self.line_ids:
             values = self._xlsx_row_values(line)
             if line.line_kind == "header":
@@ -634,7 +658,23 @@ class HomeblendAccountStatement(models.TransientModel):
                 line_fmt, amount_fmt = text_fmt, money_fmt
             for col, value in enumerate(values):
                 if col and isinstance(value, (int, float)):
-                    sheet.write_number(row, col, value, amount_fmt)
+                    neg = value < 0
+                    if col in debit_cols:
+                        cell_fmt = money_debit_neg_fmt if neg else money_debit_fmt
+                    elif col in credit_cols:
+                        cell_fmt = money_credit_neg_fmt if neg else money_credit_fmt
+                    elif neg and line.line_kind not in ("result", "total", "header"):
+                        cell_fmt = money_neg_fmt
+                    else:
+                        cell_fmt = amount_fmt
+                    sheet.write_number(row, col, value, cell_fmt)
+                elif nature_col is not None and col == nature_col:
+                    if value == "مدين":
+                        sheet.write(row, col, value, nature_debit_fmt)
+                    elif value == "دائن":
+                        sheet.write(row, col, value, nature_credit_fmt)
+                    else:
+                        sheet.write(row, col, value if value is not None else "", line_fmt)
                 else:
                     sheet.write(row, col, value if value is not None else "", line_fmt)
             row += 1
