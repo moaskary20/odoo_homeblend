@@ -12,6 +12,10 @@ GUIDES = {
         "file": "شرح_حسابات_Home_Blend.html",
         "title": "دليل حسابات Home Blend",
     },
+    "ledger-training": {
+        "file": "تدريب_عملي_الدورة_المحاسبية.html",
+        "title": "تدريب عملي — الدورة المحاسبية",
+    },
     "artcasa": {
         "file": "شرح_تشغيل_Art_Casa.html",
         "title": "دليل تشغيل Art Casa",

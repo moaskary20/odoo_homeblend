@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>تدريب عملي — دورة Home Blend المحاسبية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --ink: #1c1612;
+      --walnut: #3b2a22;
+      --brass: #c4a574;
+      --cream: #f6f0e6;
+      --paper: #fffaf3;
+      --terra: #b85c38;
+      --muted: #6d6258;
+      --line: #e6d9c6;
+      --ok: #2f6b4f;
+      --gold-soft: rgba(196, 165, 116, 0.16);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans Arabic", sans-serif;
+      background:
+        radial-gradient(1200px 500px at 100% 0, rgba(184, 92, 56, 0.08), transparent 50%),
+        var(--cream);
+      color: var(--ink);
+      line-height: 1.85;
+    }
+    .wrap {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      min-height: 100vh;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      background: var(--walnut);
+      color: #f3e8d8;
+      padding: 28px 18px 40px;
+      order: 1;
+    }
+    main { order: 2; padding: 40px 52px 96px; max-width: 980px; }
+    nav .brand {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      color: var(--brass);
+      margin-bottom: 6px;
+    }
+    nav h1 {
+      font-size: 1.15rem;
+      margin: 0 0 8px;
+      color: #fffaf3;
+      line-height: 1.4;
+    }
+    nav .sub {
+      font-size: 0.78rem;
+      color: #cbb8a3;
+      margin: 0 0 22px;
+      line-height: 1.6;
+    }
+    nav a {
+      display: block;
+      color: #f3e8d8;
+      text-decoration: none;
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: 0.86rem;
+    }
+    nav a.group {
+      color: var(--brass);
+      font-weight: 600;
+      margin-top: 10px;
+      font-size: 0.78rem;
+    }
+    nav a:hover, nav a:focus {
+      background: var(--gold-soft);
+      color: #fff;
+    }
+    header.hero {
+      background: linear-gradient(135deg, #2d1f1a 0%, #5a3d2e 62%, #7a4e35 100%);
+      color: #fff;
+      padding: 40px 40px 36px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      box-shadow: 0 16px 40px rgba(59, 42, 34, 0.22);
+    }
+    header.hero small {
+      color: var(--brass);
+      letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    header.hero h1 {
+      margin: 10px 0 12px;
+      font-size: 2.05rem;
+      line-height: 1.35;
+    }
+    header.hero p { margin: 0; color: #f3e8d8; max-width: 44em; }
+    .rule {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 0 0 36px;
+    }
+    .rule span {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-right: 4px solid var(--brass);
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: 0.88rem;
+    }
+    h2 {
+      color: var(--walnut);
+      border-bottom: 2px solid var(--brass);
+      padding-bottom: 8px;
+      margin-top: 52px;
+      scroll-margin-top: 20px;
+    }
+    h3 { color: var(--terra); margin-top: 28px; }
+    p { margin: 12px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      background: var(--paper);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: right;
+      vertical-align: top;
+    }
+    th { background: #efe4d2; font-weight: 600; }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-right: 5px solid var(--brass);
+      padding: 16px 18px;
+      border-radius: 12px;
+      margin: 16px 0;
+    }
+    .card.warn { border-right-color: var(--terra); }
+    .card.ok { border-right-color: var(--ok); }
+    .path {
+      display: inline-block;
+      background: #efe4d2;
+      border: 1px solid var(--line);
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      margin: 2px 0;
+    }
+    ol.steps { padding-right: 22px; }
+    ol.steps li { margin: 10px 0; }
+    code {
+      background: #efe4d2;
+      padding: 1px 7px;
+      border-radius: 5px;
+      font-size: 0.92em;
+    }
+    .check {
+      list-style: none;
+      padding: 0;
+    }
+    .check li {
+      margin: 8px 0;
+      padding: 10px 14px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .check li::before {
+      content: "☐ ";
+      color: var(--terra);
+      font-weight: 700;
+    }
+    .flow {
+      background: #efe6d6;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-weight: 500;
+      line-height: 1.9;
+    }
+    @media (max-width: 920px) {
+      .wrap { grid-template-columns: 1fr; }
+      nav { position: relative; height: auto; order: 0; }
+      main { padding: 24px 18px 64px; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">HOME BLEND</div>
+    <h1>تدريب عملي</h1>
+    <p class="sub">دورة التشغيل الكاملة والدورة المحاسبية — بأسماء الصفحات في النظام</p>
+    <a href="#intro">مقدمة التمرين</a>
+    <a href="#numbers">أرقام التمرين</a>
+    <a class="group" href="#t1">1) العملاء 80/20</a>
+    <a href="#t2">2) تعريف الأصناف</a>
+    <a href="#t3">3) طلب البيع / POS</a>
+    <a href="#t4">4) مخزون سالب والقيود</a>
+    <a href="#t5">5) شراء بعد البيع</a>
+    <a href="#t6">6) تحصيل العميل</a>
+    <a href="#t7">7) سداد المورد</a>
+    <a href="#t8">8) مجمل الربح</a>
+    <a class="group" href="#verify">قائمة تحقق نهائية</a>
+    <a href="#links">روابط الأدلة</a>
+  </nav>
+
+  <main>
+    <header class="hero">
+      <small>PRACTICAL TRAINING</small>
+      <h1>تدريب عملي: دورة Home Blend المحاسبية</h1>
+      <p>
+        نفّذ التمارين بالترتيب على شركة <strong>Home Blend</strong>.
+        كل تمرين يذكر <strong>اسم الصفحة</strong> في النظام + ماذا يُسجَّل + القيد المحاسبي المتوقع.
+        المصدر: ملف HOME BLEND auto ledger accounts.
+      </p>
+    </header>
+
+    <div class="rule">
+      <span>شركة العمل: Home Blend</span>
+      <span>مثال: بيع 100,000 · تكلفة 70,000 · ربح 30,000</span>
+      <span>تحمل فاتورة 80/20 ≠ مشاركة أرباح</span>
+    </div>
+
+    <h2 id="intro">مقدمة التمرين</h2>
+    <div class="flow">
+      عميل + صنف → بيع (حتى لو المخزون صفر) → مخزون سالب + إيراد + تكلفة
+      → شراء واستلام → تحصيل عميل → سداد مورد → قراءة مجمل الربح
+    </div>
+    <div class="card warn">
+      قبل البدء: تأكد أنك على شركة <strong>Home Blend</strong> وليست Art Casa.
+      بعد أي تحديث واجهة حدّث الصفحة بـ <code>Ctrl+F5</code>.
+    </div>
+
+    <h2 id="numbers">أرقام التمرين الثابتة</h2>
+    <table>
+      <thead><tr><th>البيان</th><th>القيمة</th></tr></thead>
+      <tbody>
+        <tr><td>كمية البيع</td><td>10</td></tr>
+        <tr><td>رصيد المخزون قبل البيع</td><td>0</td></tr>
+        <tr><td>رصيد بعد البيع</td><td>−10</td></tr>
+        <tr><td>سعر البيع الإجمالي</td><td>100,000</td></tr>
+        <tr><td>تكلفة الصنف الإجمالية</td><td>70,000</td></tr>
+        <tr><td>مجمل الربح المتوقع</td><td>30,000</td></tr>
+        <tr><td>تحمل الشركة / Home Blend (مسؤولية فاتورة)</td><td>80% / 20%</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>الحساب</th><th>الكود</th></tr></thead>
+      <tbody>
+        <tr><td>العملاء</td><td><code>HB12010</code></td></tr>
+        <tr><td>المخزون</td><td><code>HB12012</code></td></tr>
+        <tr><td>الخزينة</td><td><code>HB12001</code> / يومية <code>HBCSH</code></td></tr>
+        <tr><td>البنك</td><td><code>HB12005</code> / يومية <code>HBBNK</code></td></tr>
+        <tr><td>الموردون</td><td><code>HB22003</code></td></tr>
+        <tr><td>تكلفة البضاعة المباعة</td><td><code>HB31000</code></td></tr>
+        <tr><td>فروق أسعار المخزون</td><td><code>HB31019</code></td></tr>
+        <tr><td>إيراد المبيعات</td><td><code>HB42001</code></td></tr>
+      </tbody>
+    </table>
+
+    <!-- ========== 1 ========== -->
+    <h2 id="t1">تمرين 1 — تسجيل العملاء وتحمل 80/20</h2>
+    <p><strong>الهدف:</strong> إنشاء عميل شركة مع تحمل فاتورة (ليست أرباحاً).</p>
+    <h3>الصفحات</h3>
+    <p>
+      <span class="path">Home Blend → الحسابات → الأصول → العملاء / إضافة عميل</span><br/>
+      أو بطاقة الشريك من جهات الاتصال، ثم تفعيل تقسيم التحمل من بطاقة الشركة حسب الدليل.
+    </p>
+    <ol class="steps">
+      <li>أنشئ عميل <strong>شركة</strong>.</li>
+      <li>أضف أفراداً تابعين إن لزم.</li>
+      <li>اضبط نسبة التحمل مثال: الشركة 80٪ = 80,000 · Home Blend 20٪ = 20,000.</li>
+    </ol>
+    <table>
+      <thead><tr><th>الطرف</th><th>نسبة التحمل</th><th>المبلغ</th></tr></thead>
+      <tbody>
+        <tr><td>الشركة</td><td>80%</td><td>80,000</td></tr>
+        <tr><td>Home Blend</td><td>20%</td><td>20,000</td></tr>
+        <tr><td>الإجمالي</td><td>100%</td><td>100,000</td></tr>
+      </tbody>
+    </table>
+    <div class="card">نسبة 80/20 توزيع مسؤولية قيمة الفاتورة فقط — وليست مشاركة في الأرباح.</div>
+    <div class="card ok"><strong>تحقق:</strong> بطاقة العميل تظهر في العملاء، والنسب محفوظة قبل البيع.</div>
+
+    <!-- ========== 2 ========== -->
+    <h2 id="t2">تمرين 2 — تعريف الأصناف</h2>
+    <p><strong>الهدف:</strong> صنف مخزني جاهز للبيع والشراء مع باركود.</p>
+    <h3>الصفحات</h3>
+    <p>
+      <span class="path">Home Blend → المبيعات → المنتجات</span><br/>
+      <span class="path">Home Blend → المبيعات → فئات المنتجات</span><br/>
+      <span class="path">Home Blend → المبيعات → توليد باركودات المنتجات</span>
+    </p>
+    <ol class="steps">
+      <li>أنشئ صنفاً مخزنياً: كود، اسم، مجموعة، سعر شراء، سعر بيع، مورد.</li>
+      <li>تأكد من حسابات الفئة: مخزون / مبيعات / تكلفة مبيعات.</li>
+      <li>ضع تكلفة تقديرية تناسب مثال 70,000 لعشر قطع (7,000 للقطعة) أو أرقام تناسب تمرينك.</li>
+      <li>أنشئ/اطبع الباركود أو QR.</li>
+    </ol>
+    <div class="card ok"><strong>تحقق:</strong> المنتج يظهر في نقطة البيع ويمكن مسح باركوده.</div>
+
+    <!-- ========== 3 ========== -->
+    <h2 id="t3">تمرين 3 — دورة إنشاء طلب البيع / نقطة البيع</h2>
+    <p><strong>الهدف:</strong> بيع 10 قطع والسعر الإجمالي 100,000.</p>
+    <h3>الخيار أ — أمر بيع</h3>
+    <p>
+      <span class="path">Home Blend → المبيعات → أوامر البيع</span>
+    </p>
+    <ol class="steps">
+      <li>جديد → اختر العميل.</li>
+      <li>امسح QR/باركود الصنف أو اكتب الكود ثم أضف.</li>
+      <li>الكمية 10 → تأكيد الأمر → إنشاء فاتورة العميل → ترحيل.</li>
+    </ol>
+    <h3>الخيار ب — نقطة البيع (الأشهر للكاشير)</h3>
+    <p>
+      <span class="path">Home Blend → المبيعات → نقطة البيع</span><br/>
+      <span class="path">Home Blend → المبيعات → طلبات نقطة البيع</span>
+    </p>
+    <ol class="steps">
+      <li>افتح جلسة POS.</li>
+      <li>اختر العميل (+ العقد إن لزم).</li>
+      <li>امسح باركود الصنف → كمية 10.</li>
+      <li>ادفع نقداً أو آجل حسب التمرين.</li>
+      <li>راجع الطلب في <strong>طلبات نقطة البيع</strong> والفاتورة في <strong>فواتير العملاء</strong>.</li>
+    </ol>
+    <div class="card ok">
+      <strong>تحقق:</strong>
+      <span class="path">المبيعات → فواتير العملاء</span>
+      تظهر فاتورة مرحّلة بمبلغ ≈ 100,000.
+    </div>
+
+    <!-- ========== 4 ========== -->
+    <h2 id="t4">تمرين 4 — البيع بمخزون سالب والقيود</h2>
+    <p><strong>الهدف:</strong> فهم أن النظام يسمح بالبيع والرصيد صفر.</p>
+    <table>
+      <thead><tr><th>البيان</th><th>الكمية</th></tr></thead>
+      <tbody>
+        <tr><td>رصيد قبل البيع</td><td>0</td></tr>
+        <tr><td>الكمية المباعة</td><td>10</td></tr>
+        <tr><td>رصيد بعد البيع</td><td>−10</td></tr>
+      </tbody>
+    </table>
+    <h3>أين تراجع الكمية؟</h3>
+    <p><span class="path">Home Blend → المبيعات → المنتجات</span> → افتح الصنف → الكمية المتاحة / الحركات.</p>
+    <h3>القيد الأول: إثبات فاتورة البيع</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>حسابات العملاء – مدينون <code>HB12010</code></td><td>100,000</td><td>—</td></tr>
+        <tr><td>إيرادات المبيعات <code>HB42001</code></td><td>—</td><td>100,000</td></tr>
+      </tbody>
+    </table>
+    <h3>القيد الثاني: صرف البضاعة (تلقائي)</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>تكلفة البضاعة المباعة <code>HB31000</code></td><td>70,000</td><td>—</td></tr>
+        <tr><td>المخزون السلعي <code>HB12012</code></td><td>—</td><td>70,000</td></tr>
+      </tbody>
+    </table>
+    <h3>صفحات التحقق من القيود</h3>
+    <ol class="steps">
+      <li>افتح الفاتورة → تبويب/زر <strong>قيود اليومية</strong>.</li>
+      <li>أو <span class="path">الحسابات → العمليات → القيود اليومية</span></li>
+      <li>أو <span class="path">الحسابات → العمليات → بنود القيود</span></li>
+    </ol>
+    <div class="card warn">إن دفعت نقداً في POS يُقفل حساب العملاء بتحصيل فوري على الخزينة/البنك ضمن نفس الدورة.</div>
+
+    <!-- ========== 5 ========== -->
+    <h2 id="t5">تمرين 5 — دورة الشراء بعد البيع</h2>
+    <p><strong>الهدف:</strong> تغطية الرصيد السالب (−10) بشراء واستلام +10.</p>
+    <h3>الصفحات بالترتيب</h3>
+    <ol class="steps">
+      <li><span class="path">المشتريات → معاملات الموردين → الموردون</span> — تأكد المورد.</li>
+      <li><span class="path">المشتريات → أوامر الشراء → أوامر الشراء</span> — أمر بكمية 10.</li>
+      <li>من أمر الشراء نفّذ <strong>استلام الأصناف</strong> حتى الحالة Done.</li>
+      <li><span class="path">المبيعات → المنتجات</span> — الرصيد النهائي يصبح 0.</li>
+      <li><span class="path">المشتريات → معاملات الموردين → فواتير الموردين</span> — رحّل فاتورة ≈ 70,000.</li>
+    </ol>
+    <h3>قيد فاتورة المورد</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>المخزون السلعي <code>HB12012</code></td><td>70,000</td><td>—</td></tr>
+        <tr><td>الموردون – دائنون <code>HB22003</code></td><td>—</td><td>70,000</td></tr>
+      </tbody>
+    </table>
+    <table>
+      <thead><tr><th>الحركة</th><th>الكمية</th></tr></thead>
+      <tbody>
+        <tr><td>قبل البيع</td><td>0</td></tr>
+        <tr><td>البيع</td><td>−10</td></tr>
+        <tr><td>الشراء والاستلام</td><td>+10</td></tr>
+        <tr><td>الرصيد النهائي</td><td>0</td></tr>
+      </tbody>
+    </table>
+    <div class="card">
+      مهم: لا يُخصم المخزون مرة أخرى عند الشراء. البيع سجّل الصرف، والشراء يسجّل الإضافة.
+      إن اختلف سعر الشراء عن التكلفة التقديرية تظهر تسوية على <code>HB31019</code>.
+    </div>
+
+    <!-- ========== 6 ========== -->
+    <h2 id="t6">تمرين 6 — دورة تحصيل العميل</h2>
+    <p><strong>الهدف:</strong> تحصيل 100,000 وربط الإيصال بالفاتورة.</p>
+    <h3>الصفحة</h3>
+    <p><span class="path">Home Blend → التحصيل → مدفوعات العملاء / إيصالات التحصيل</span><br/>
+       أو <span class="path">الحسابات → العمليات → مدفوعات العملاء</span></p>
+    <ol class="steps">
+      <li>جديد → العميل → المبلغ 100,000.</li>
+      <li>اختر اليومية:
+        <ul>
+          <li>نقدي: <strong>الخزينة الرئيسية</strong> <code>HBCSH</code> / <code>HB12001</code></li>
+          <li>تحويل/بطاقة: <strong>البنك – الحساب الرئيسي</strong> <code>HBBNK</code> / <code>HB12005</code></li>
+        </ul>
+      </li>
+      <li>اربط الدفعة بفاتورة العميل → أكّد.</li>
+      <li>اطبع إيصال التحصيل من الدفعة.</li>
+    </ol>
+    <h3>قيد نقدي</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>الخزينة الرئيسية</td><td>100,000</td><td>—</td></tr>
+        <tr><td>حسابات العملاء – مدينون</td><td>—</td><td>100,000</td></tr>
+      </tbody>
+    </table>
+    <h3>قيد بنكي</h3>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>البنك – الحساب الرئيسي</td><td>100,000</td><td>—</td></tr>
+        <tr><td>حسابات العملاء – مدينون</td><td>—</td><td>100,000</td></tr>
+      </tbody>
+    </table>
+    <div class="card ok">
+      بعد الحفظ: يتحدّث كشف العميل ورصيد الخزينة/البنك، ويُنشأ إيصال مربوط بالفاتورة.
+      راجع أيضاً <span class="path">الحسابات → تقارير مالية → الذمم المدينة</span>.
+    </div>
+
+    <!-- ========== 7 ========== -->
+    <h2 id="t7">تمرين 7 — دورة سداد المورد</h2>
+    <p><strong>الهدف:</strong> سداد 70,000 للمورد.</p>
+    <h3>الصفحة</h3>
+    <p>
+      <span class="path">المشتريات → معاملات الموردين → مدفوعات الموردين</span><br/>
+      أو <span class="path">الحسابات → العمليات → مدفوعات الموردين</span>
+    </p>
+    <ol class="steps">
+      <li>جديد → المورد → 70,000.</li>
+      <li>اختر الخزينة أو البنك.</li>
+      <li>اربط بفاتورة المورد → أكّد.</li>
+    </ol>
+    <table>
+      <thead><tr><th>الحساب</th><th>مدين</th><th>دائن</th></tr></thead>
+      <tbody>
+        <tr><td>الموردون – دائنون <code>HB22003</code></td><td>70,000</td><td>—</td></tr>
+        <tr><td>الخزينة الرئيسية (أو البنك)</td><td>—</td><td>70,000</td></tr>
+      </tbody>
+    </table>
+    <div class="card ok">تحقق من <span class="path">الحسابات → تقارير مالية → الذمم الدائنة</span> أن الفاتورة مسددة.</div>
+
+    <!-- ========== 8 ========== -->
+    <h2 id="t8">تمرين 8 — حساب الأرباح (مجمل الربح)</h2>
+    <p><strong>الهدف:</strong> قراءة أن كامل مجمل الربح يخص Home Blend.</p>
+    <table>
+      <thead><tr><th>البيان</th><th>المبلغ</th></tr></thead>
+      <tbody>
+        <tr><td>إجمالي المبيعات</td><td>100,000</td></tr>
+        <tr><td>تكلفة البضاعة المباعة</td><td>70,000</td></tr>
+        <tr><td><strong>مجمل الربح</strong></td><td><strong>30,000</strong></td></tr>
+      </tbody>
+    </table>
+    <h3>الصفحة</h3>
+    <p><span class="path">Home Blend → الحسابات → القوائم → قائمة الدخل</span> → من/إلى → <strong>تحديث</strong></p>
+    <ol class="steps">
+      <li>راجع إيراد المبيعات وتكلفة البضاعة وصافي/مجمل الفترة.</li>
+      <li>اختياري: <span class="path">ميزان المراجعة</span> و <span class="path">الميزانية العمومية</span>.</li>
+    </ol>
+    <div class="card warn">
+      لا توجد مشاركة في صافي الأرباح من نسبة 80/20.
+      عمولة المستأجر — إن وُجد عقد — فاتورة منفصلة وليست اقتسام مجمل ربح البضاعة.
+    </div>
+
+    <!-- ========== verify ========== -->
+    <h2 id="verify">قائمة تحقق نهائية</h2>
+    <ul class="check">
+      <li>عميل مسجّل + نسب تحمل (إن استخدمتها)</li>
+      <li>صنف مخزني بتكلفة وباركود</li>
+      <li>بيع POS أو أمر بيع → فاتورة عميل مرحّلة</li>
+      <li>كمية المنتج كانت سالبة ثم عادت لصفر بعد الاستلام</li>
+      <li>قيود الإيراد والتكلفة ظاهرة في القيود اليومية</li>
+      <li>أمر شراء + استلام + فاتورة مورد مرحّلة</li>
+      <li>تحصيل عميل مربوط بالفاتورة</li>
+      <li>سداد مورد مربوط بفاتورة المورد</li>
+      <li>قائمة الدخل تعرض مبيعات − تكلفة ≈ مجمل ربح التمرين</li>
+    </ul>
+
+    <h2 id="links">روابط الأدلة</h2>
+    <ul>
+      <li><a href="/guides/homeblend">دليل مستأجري Home Blend</a></li>
+      <li><a href="/guides/accounting">دليل حسابات Home Blend</a></li>
+      <li><a href="/guides">فهرس صفحات الشرح</a></li>
+    </ul>
+    <div class="card ok">
+      هذه الصفحة: <code>/guides/ledger-training</code>
+    </div>
+  </main>
+</div>
+</body>
+</html>
