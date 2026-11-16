@@ -1,6 +1,6 @@
 {
     "name": "Home Blend Tenants",
-    "version": "19.0.1.16.0",
+    "version": "19.0.1.17.0",
     "category": "Sales",
     "summary": "المستأجرون والعقود والعمولات",
     "author": "HomeBlend",
@@ -8,9 +8,12 @@
     "depends": [
         "homeblend_base",
         "sale_management",
+        "sale_stock",
         "sale_loyalty",
         "account",
         "purchase",
+        "purchase_stock",
+        "stock",
         "product",
         "mail",
         "point_of_sale",

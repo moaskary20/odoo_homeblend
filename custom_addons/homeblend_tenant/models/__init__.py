@@ -5,3 +5,4 @@ from . import res_partner
 from . import pos_order
 from . import pos_session
 from . import product
+from . import stock_shortfall_purchase
